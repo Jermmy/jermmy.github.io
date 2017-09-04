@@ -1,0 +1,1057 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="计算机视觉,深度学习,论文," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照定位+分割+识别的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
+<meta property="og:url" content="https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照定位+分割+识别的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/rcnn.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/IoU.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn%20feature.png">
+<meta property="og:updated_time" content="2017-05-13T08:17:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
+<meta name="twitter:description" content="在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照定位+分割+识别的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-5-8/rcnn.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/"/>
+
+
+
+
+
+  <title>论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T20:40:06+08:00">
+                2017-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/05/08/2017-5-8-paper-notes-rcnn/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/05/08/2017-5-8-paper-notes-rcnn/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/05/08/2017-5-8-paper-notes-rcnn/" class="leancloud_visitors" data-flag-title="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照<strong>定位</strong>+<strong>分割</strong>+<strong>识别</strong>的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理方法，因此很难有通用的解决策略。在深度学习火起来之后，很多研究人员开始尝试用深度学习的特征提取能力来解决定位的问题，本文学习的这篇论文，就是被誉为用 CNN 解决物体定位的开山之作：<strong>R-CNN</strong>。</p>
+<p>这篇文章打算浅浅地分析一下 R-CNN。</p>
+<div class="figure">
+<img src="/images/2017-5-8/rcnn.png" alt="rcnn">
+<p class="caption">rcnn</p>
+</div>
+<a id="more"></a>
+<h3 id="r-cnn是什么">R-CNN是什么</h3>
+<p>R-CNN 中的 R 指的是 Region，所以，R-CNN 其实就是用 CNN 来定位 Region。它由 <a href="http://www.rossgirshick.info/" target="_blank" rel="external">Ross Girshick</a> 等人于 2014 年提出，当时实现了物体检测上 state-of-art（最好） 的精度，而且速度上也比以往的方法有所提高。</p>
+<h3 id="r-cnn-的流程">R-CNN 的流程</h3>
+<p>文章最开始的图片中给出了 R-CNN 的基本框架。R-CNN 的算法流程其实很简单，主要分为三步：</p>
+<ol style="list-style-type: decimal">
+<li>通过 <strong>Selective Search</strong> 选出大约 2000 个 bounding box（不了解 <strong>Selective Search</strong> 的同学可以上网自学，不介意的话还可以查看我<a href="http://jermmy.xyz/2017/05/04/2017-5-4-paper-notes-selective-search/" target="_blank" rel="external">上一篇文章</a>，由于本文重点是 R-CNN，所以这里直接把它当作一个黑盒子使用了）；</li>
+<li>用 CNN 对这些 bounding box 提取特征；</li>
+<li>使用 linear SVM 对这些特征进行分类，判断 bounding box 内是否是物体，或者是什么物体。</li>
+</ol>
+<h3 id="训练阶段">训练阶段</h3>
+<p>训练阶段分为 CNN 和 SVM 两部分。</p>
+<h4 id="supervised-pre-training">1. Supervised pre-training</h4>
+<p>CNN 模型直接采用了 Krizhevsky 等人在 2012 年的分类网络模型</p>
+<div class="figure">
+<img src="/images/2017-5-8/cnn.jpg" alt="cnn">
+<p class="caption">cnn</p>
+</div>
+<p>这个网络的参数比较多（超过一百万），因此需要大量的训练数据。作者直接将 Krizhevsky 在 ILSVRC 2012 上训练好的参数复制过来，有人称这种做法为「迁移学习」，因为 CNN 的本质就是提取图片的特征（类似于 SIFT ），因此，尽管训练集不同，训练出来的参数其实是可以通用的。当然啦，对于一些更具体的任务（如手写体识别），个人觉得最好还是单独训练一下。</p>
+<h4 id="domain-specific-fine-tuning">2. Domain-specific fine-tuning</h4>
+<p>前面刚说了，直接用其他数据集训练好的参数不太保险，作者马上用行动打消了我的疑虑。这一步，为了让 CNN 适应新的数据集，作者在原来参数的基础上，用 PASCAL VOC 的数据继续训练网络（PASCAL VOC 是论文采用的数据集）。另外，考虑到 VOC 的数据集比较小（ILSVRC 2012 有 1000 种类别，VOC 只有 20 种），论文将原网络最后一层 1000 classification 的输出层减小为 21 classification（20个类别 + 背景），并将这一层 fc 的参数随机初始化，这一步相当于优化参数 (fine-tuning) 的作用。除此之外，为了获得大量的训练样本，还需要事先对 VOC 数据集标定出物体所在的矩形区域（这一步比单纯的图片类别标记难度要大得多，因此数据量很少，且缺乏背景数据）。</p>
+<p>之后，论文采用 Selective Search 在 VOC 上选出很多矩形框，将与标准矩形框的覆盖区域 &gt;= <strong>0.5 IoU</strong> 的标为正样本，其余的标为负样本（负样本应该就是背景了）。然后，采用 SGD，以 0.001 为学习率进行训练。每次训练的 batch 为 32 个正样本和 96 个背景样本。这里之所以让背景样本多于正样本，原因在于图片中的正样本窗口相比于背景窗口，数量很少。</p>
+<p>关于 IoU，这里简单提一下。IoU 指的是 intersection-over-union，是一个定位精度的评价标准。因为算法的结果不可能百分之百跟人工标定的矩形数据吻合，因此就需要有一个标准判断结果的准确性。</p>
+<div class="figure">
+<img src="/images/2017-5-8/IoU.jpg" alt="IoU">
+<p class="caption">IoU</p>
+</div>
+<p>上面这幅图摘自文末<a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="external">链接</a>。IoU 的计算方法为：<span class="math inline">\(IOU=(A \bigcap B) / (A \bigcup B)\)</span>。</p>
+<h4 id="object-category-classifiers">3. Object category classifiers</h4>
+<p>训练完 CNN 后，我们就可以通过它提取物体的特征了。这里使用 fc7 层输出的 4096 维的向量作为特征。</p>
+<p>对于每一类物体，我们要训练一个二分类的 SVM 模型，由 SVM 来判断矩形区域内是否有物体存在。SVM 的训练数据是 CNN 提取的特征向量，对应的 label 和上面一样分为 21 类。与 CNN 不同的是，我们重新调整了 IoU 的阈值。在 CNN 中，我们将 &gt;= 0.5 IoU 的矩形都标为正样本，但在训练 SVM 的时候，作者发现，取 0.3 IoU 效果最好。所以，这一次我们将 &gt;= 0.3 IoU 的矩形都标记为正样本作为 SVM 的训练数据。</p>
+<h3 id="预测阶段">预测阶段</h3>
+<p>预测的时候，我们先通过 Selective Search 选出 2000+ 矩形区域，用 CNN 的 fc7 层提取特征向量，再用 SVM 对这些矩形区域进行评分判断。由于矩形区域存在大量的重叠，因此论文最后用<strong>非极大值抑制（non-maximum suppression）</strong>的方法对这些区域进行筛选。</p>
+<p>具体做法是：先从所有矩形区域中，选出 SVM 得分最高的区域，将与该区域的 IoU 面积超过阈值的都删除，然后从剩下的矩形区域中再挑选出得分最高的，继续剔除 IoU 超过阈值的区域，如此往复直到没有矩形区域可选为止。</p>
+<p>做完这一步，剩下的矩形基本就是比较可靠的物体所在的位置了。但作者还想更进一步，结合 CNN 的 pool5 层提取的特征以及 DPM 中的 box regression 对矩形位置进一步微调。这一步论文没有详细说明，而我自己也知之甚少，日后明白了再补上。</p>
+<h3 id="几个细节问题">几个细节问题</h3>
+<h4 id="cnn的输入">1. CNN的输入</h4>
+<p>论文中使用的 CNN 需要输入 227*227 的图片，但 Selective Search 找出来的矩形框尺寸各异，因此需要提供一种方法对矩形中的图片进行归一化。</p>
+<p>归一化方法无非分为两种：<strong>各向异性的缩放</strong>和<strong>各向同性的缩放</strong>。</p>
+<p>各向异性的缩放就是直接将图片缩放成 227*227 的规格，而不管图片内容是否扭曲，这种方法最简单，但效果应该比较差。</p>
+<p>各向同性的缩放就是要保持长宽的比例，一种方法是将 bounding box 裁剪出来后，先缩放，再用固定的背景颜色填充到需要的尺寸；另一种方法是将原本的 bounding box 的边界延伸后，再进行裁剪及缩放，如果延伸后的 bounding box 超过图片边界，就用 bounding box 中的颜色均值进行填充。</p>
+<p>论文中采用的应该是各向异性的方法，但我倾向于采用各向同性的方法。</p>
+<h4 id="cnn对特征的提取">2. CNN对特征的提取</h4>
+<p>CNN 中包含很多层，具体要选用哪一层的输出作为特征呢？为此，作者进行了多次对比试验：</p>
+<div class="figure">
+<img src="/images/2017-5-8/cnn%20feature.png" alt="cnn feature">
+<p class="caption">cnn feature</p>
+</div>
+<p>实验结果显示，如果没有进行 fine-tuning，那么 pool5、fc6 以及 fc7 的结果都相差无几，而如果进行 fine-tuning 后，fc6 和 fc7 的结果有了显著提升。</p>
+<p>前面说过，FT 就是针对特定情景的训练集，将原本最后一层的 1000 维输出转变为 21 维的输出。如果没有进行 FT，那么相当于把 CNN 当作一种通用的图像特征来使用（只在 ILSVRC 2012 上训练的 CNN，效果上类似 SIFT），其结果表明，pool5、fc6 以及 fc7 效果上差不多，也就是说，在这种情况下，fc6 和 fc7 对特征的表达几乎不起作用，因此我们可以得出这样一个结论：在没有 FT 的时候，CNN 的特征主要是由卷积层（这里是 pool5）学习出来的。</p>
+<p>但如果对 CNN 做过 FT 处理，fc6 和 fc7 的效果会有显著提升，反倒是 pool5 的提升效果比较小。对此，我的理解是这样的：pool5 提取的更像是一种通用的特征，不针对特定的训练集，而 fc6 和 fc7 则更具有导向性，对具体的应用场景比较敏感。套用文末<a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="external">参考链接</a>的例子，如果我们要通过图像中的人脸预测性别，那么 pool5 提取的是通用的人脸特征，而 fc6 和 fc7 提取的则是更多跟性别相关的信息。</p>
+<p>表中第 7 行是用 BB（binding box regression）微调后的结果，精度上有了进一步提高。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><p><a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="external">RCNN学习笔记(2):Rich feature hierarchies for accurate object detection and semantic segmentation</a></p></li>
+<li><a href="http://www.jianshu.com/p/deb0f69f5597" target="_blank" rel="external">R-CNN详解</a></li>
+<li><p><a href="http://blog.csdn.net/shenxiaolu1984/article/details/51066975" target="_blank" rel="external">【目标检测】RCNN算法详解</a></p></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/" title="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/论文/" rel="tag"># 论文</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/04/2017-5-4-paper-notes-selective-search/" rel="next" title="论文笔记：Selective Search for Object Recognition">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Selective Search for Object Recognition
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/10/2017-5-10-paper-notes-joint-embeddings-of-shapes-and-images-via-cnn-image-purification/" rel="prev" title="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
+                论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn是什么"><span class="nav-number">1.</span> <span class="nav-text">R-CNN是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn-的流程"><span class="nav-number">2.</span> <span class="nav-text">R-CNN 的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练阶段"><span class="nav-number">3.</span> <span class="nav-text">训练阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#supervised-pre-training"><span class="nav-number">3.1.</span> <span class="nav-text">1. Supervised pre-training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#domain-specific-fine-tuning"><span class="nav-number">3.2.</span> <span class="nav-text">2. Domain-specific fine-tuning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#object-category-classifiers"><span class="nav-number">3.3.</span> <span class="nav-text">3. Object category classifiers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测阶段"><span class="nav-number">4.</span> <span class="nav-text">预测阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个细节问题"><span class="nav-number">5.</span> <span class="nav-text">几个细节问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn的输入"><span class="nav-number">5.1.</span> <span class="nav-text">1. CNN的输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn对特征的提取"><span class="nav-number">5.2.</span> <span class="nav-text">2. CNN对特征的提取</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

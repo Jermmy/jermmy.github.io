@@ -1,0 +1,1107 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机器学习,标数据," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近想做一个识别验证码的程序。目标其实很简单，就是识别出某网站验证码的字母和数字。
+
+
+验证码
+
+这种类型的验证码已经被做烂了，相应的破解程序也很多。但我只是想学习消遣一下。
+我已经通过爬虫收集了某网站的大量验证码图片，并通过图像处理的方法把字母和数字分割出来（好在这类验证码比较简单，切割工作相对容易）。之后，便是要对这些图片进行标记并训练。我总共爬了 20000 张，每张上面有四个数字或字母，相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何「优雅」地标数据">
+<meta property="og:url" content="https://jermmy.github.io/2017/04/19/2017-4-19-how-to-label-images/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="最近想做一个识别验证码的程序。目标其实很简单，就是识别出某网站验证码的字母和数字。
+
+
+验证码
+
+这种类型的验证码已经被做烂了，相应的破解程序也很多。但我只是想学习消遣一下。
+我已经通过爬虫收集了某网站的大量验证码图片，并通过图像处理的方法把字母和数字分割出来（好在这类验证码比较简单，切割工作相对容易）。之后，便是要对这些图片进行标记并训练。我总共爬了 20000 张，每张上面有四个数字或字母，相">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/验证码.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/image%20set.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/tag%20folder.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/屏幕快照%202017-04-19%20下午10.29.55.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/test%20folder.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/good%20result.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-4-19/bad%20result.png">
+<meta property="og:updated_time" content="2017-04-23T05:36:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何「优雅」地标数据">
+<meta name="twitter:description" content="最近想做一个识别验证码的程序。目标其实很简单，就是识别出某网站验证码的字母和数字。
+
+
+验证码
+
+这种类型的验证码已经被做烂了，相应的破解程序也很多。但我只是想学习消遣一下。
+我已经通过爬虫收集了某网站的大量验证码图片，并通过图像处理的方法把字母和数字分割出来（好在这类验证码比较简单，切割工作相对容易）。之后，便是要对这些图片进行标记并训练。我总共爬了 20000 张，每张上面有四个数字或字母，相">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-4-19/验证码.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/04/19/2017-4-19-how-to-label-images/"/>
+
+
+
+
+
+  <title>如何「优雅」地标数据 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/04/19/2017-4-19-how-to-label-images/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何「优雅」地标数据
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T20:56:02+08:00">
+                2017-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/04/19/2017-4-19-how-to-label-images/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/04/19/2017-4-19-how-to-label-images/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/04/19/2017-4-19-how-to-label-images/" class="leancloud_visitors" data-flag-title="如何「优雅」地标数据">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近想做一个识别验证码的程序。目标其实很简单，就是识别出某网站验证码的字母和数字。</p>
+<div class="figure">
+<img src="/images/2017-4-19/验证码.png" alt="验证码">
+<p class="caption">验证码</p>
+</div>
+<p>这种类型的验证码已经被做烂了，相应的破解程序也很多。但我只是想学习消遣一下。</p>
+<p>我已经通过爬虫收集了某网站的大量验证码图片，并通过图像处理的方法把字母和数字分割出来（好在这类验证码比较简单，切割工作相对容易）。之后，便是要对这些图片进行标记并训练。我总共爬了 20000 张，每张上面有四个数字或字母，相当于要对 80000 张图片做标记分类。嗯，这很有趣！</p>
+<a id="more"></a>
+<h3 id="需求分析">需求分析</h3>
+<p>通过对原图进行处理分割后，我已经得到如下的图片数据（图片尺寸 32 * 32，除了灰度图，最好保留对应的原图）：</p>
+<div class="figure">
+<img src="/images/2017-4-19/image%20set.png" alt="image set">
+<p class="caption">image set</p>
+</div>
+<p>现在，要将这些图片分门别类。数字和字母，最多可以组合出 10 + 26 = 36 类，但仔细观察数据后，我发现有很多数字和字母压根没出现。通过粗略地扫描一下数据，我统计出这个网站的验证码总共只使用了 23 类数字和字母。于是，我按照如下规则对图片做了分类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">image_tag = &#123;<span class="number">0</span>: <span class="string">'3'</span>, <span class="number">1</span>: <span class="string">'5'</span>, <span class="number">2</span>: <span class="string">'6'</span>, <span class="number">3</span>: <span class="string">'7'</span>, <span class="number">4</span>: <span class="string">'8'</span>, <span class="number">5</span>: <span class="string">'a'</span>, <span class="number">6</span>: <span class="string">'c'</span>, <span class="number">7</span>: <span class="string">'e'</span>, <span class="number">8</span>: <span class="string">'f'</span>, <span class="number">9</span>: <span class="string">'g'</span>, <span class="number">10</span>: <span class="string">'h'</span>, <span class="number">11</span>: <span class="string">'j'</span>, <span class="number">12</span>: <span class="string">'k'</span>, <span class="number">13</span>: <span class="string">'m'</span>, <span class="number">14</span>: <span class="string">'n'</span>, <span class="number">15</span>: <span class="string">'p'</span>, <span class="number">16</span>: <span class="string">'r'</span>, <span class="number">17</span>: <span class="string">'s'</span>, <span class="number">18</span>: <span class="string">'t'</span>, <span class="number">19</span>: <span class="string">'v'</span>, <span class="number">20</span>: <span class="string">'w'</span>, <span class="number">21</span>: <span class="string">'x'</span>, <span class="number">22</span>: <span class="string">'y'</span>&#125;</div></pre></td></tr></table></figure>
+<p>将出现的数字和字母分为 23 类。然后，接下来的目标，就是把图片分到如下 23 个文件夹中：</p>
+<div class="figure">
+<img src="/images/2017-4-19/tag%20folder.png" alt="tag folder">
+<p class="caption">tag folder</p>
+</div>
+<h3 id="实现思路">实现思路</h3>
+<p>很多人都觉得标数据这种事情很没技术含量，纯属「dirty work」。如果你只是单纯地用肉眼把一张张图片分到这些目录里面，当然显得很「笨拙」。而且，仔细想想，80000 张图片的分类，（一个人）几乎是不可能人工完成的。我们要用<strong>优雅</strong>的方法来归类。</p>
+<p>这个<strong>优雅</strong>的方法其实也很简单。分以下几步进行：</p>
+<ol style="list-style-type: decimal">
+<li>先人工挑出几个或十几个样本，训练一个分类器出来，这个分类器准确率会很低，但不要紧；</li>
+<li>再从原图片中，选出几十上百张，用刚才的分类器对它们进行分类。由于分类器精度有限，需要从分类后的结果中挑出分错的样本，然后人工将它们分到正确的目录（这个工作比你自己去对上百张图片做分类真的要轻松好多）；</li>
+<li>用已经分好类的数据继续训练一个新的分类器，重复第 2 步直到数据都分类完（随着分类器精度提高，可以逐步增加待分类图片的数量）；</li>
+</ol>
+<p>这个方法虽然还是需要不少人工辅助，但总体来说，比人工手动分类的效率实在高太多了。</p>
+<h3 id="具体实现">具体实现</h3>
+<h4 id="人工选取小样本">人工选取小样本</h4>
+<p>要训练分类器，挑选样本是必须的，我从分割的图片中，随机挑出一两百张，将它们分类到相应的目录内：</p>
+<div class="figure">
+<img src="/images/2017-4-19/屏幕快照%202017-04-19%20下午10.29.55.png" alt="屏幕快照 2017-04-19 下午10.29.55">
+<p class="caption">屏幕快照 2017-04-19 下午10.29.55</p>
+</div>
+<p>然后，我需要一个函数来读取这些文件夹的数据，方便之后继续训练。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="string">'''读取图片数据文件，转换成numpy格式，并保存'''</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">maybe_pickle_data</span><span class="params">(all_image_folder, dest_folder, pickle_file, force=False)</span>:</span></div><div class="line">    <span class="keyword">if</span> os.path.exists(pickle_file) <span class="keyword">and</span> force==<span class="keyword">False</span>:</div><div class="line">        print(<span class="string">"data already pickled, pass"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line"></div><div class="line">    image_folders = os.listdir(all_image_folder)</div><div class="line">    train_image_data = []</div><div class="line">    train_image_label = []</div><div class="line"></div><div class="line">    <span class="keyword">for</span> folder <span class="keyword">in</span> image_folders:</div><div class="line">        image_folder = os.path.join(all_image_folder, folder)</div><div class="line">        <span class="keyword">if</span> os.path.isdir(image_folder):</div><div class="line">            print(image_folder)</div><div class="line">            train_image_data.append(load_letter(image_folder))</div><div class="line">            train_image_label.append(int(folder))</div><div class="line"></div><div class="line">    <span class="comment"># merge all the train data to ndarray</span></div><div class="line">    train_dataset, train_label = merge_datasets(train_image_data, train_image_label)</div><div class="line"></div><div class="line">    <span class="comment"># randomize dataset and label</span></div><div class="line">    train_dataset, train_label = randomize(train_dataset, train_label)</div><div class="line"></div><div class="line">    <span class="comment"># write to file</span></div><div class="line">    <span class="keyword">with</span> open(pickle_file, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</div><div class="line">        save = &#123;</div><div class="line">            <span class="string">'train_dataset'</span>: train_dataset,</div><div class="line">            <span class="string">'train_labels'</span>: train_label,</div><div class="line">        &#125;</div><div class="line">        pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)</div></pre></td></tr></table></figure>
+<p>这个函数的主要工作是循环每一个目录文件夹里的文件，将它们依次读入，变成矩阵形式方便处理，并通过 <code>Pickle</code> 保存成文件。</p>
+<p>这里主要用了其他几个函数的功能：</p>
+<ol style="list-style-type: decimal">
+<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">load_letter(image_folder)   <span class="comment"># 读取一个tag文件夹里的推按文件，并返回所有图片数据的矩阵</span></div></pre></td></tr></table></figure></li>
+<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">merge_datasets(train_image_data, train_image_label)   <span class="comment"># 将所有类别的图片数据合并成一个大的矩阵样本数据</span></div></pre></td></tr></table></figure></li>
+<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">randomize(train_dataset, train_label)   <span class="comment"># 打乱训练数据</span></div></pre></td></tr></table></figure></li>
+</ol>
+<p><br\></br\></p>
+<p>下面放点关键函数的代码。</p>
+<p><code>load_letter()</code> 函数代码如下，对图片的读取用了 <code>opencv</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="string">'''读取同种类别的图片转换成numpy数组'''</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_letter</span><span class="params">(folder)</span>:</span></div><div class="line">    image_files = os.listdir(folder)</div><div class="line">    <span class="comment"># image_size 为 32</span></div><div class="line">    dataset = np.ndarray(shape=(len(image_files), image_size, image_size), dtype=np.float32)</div><div class="line">    num_images = <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> image <span class="keyword">in</span> image_files:</div><div class="line">        image_file = os.path.join(folder, image)</div><div class="line">        image_data = cv2.imread(image_file, cv2.IMREAD_GRAYSCALE)</div><div class="line">        <span class="keyword">if</span> image_data <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">continue</span></div><div class="line">        <span class="keyword">if</span> image_data.shape != (image_size, image_size):</div><div class="line">            <span class="keyword">raise</span>  Exception(<span class="string">"%s  Unexpected image size: %s"</span> % image_file, str(image_data.shape))</div><div class="line">        dataset[num_images, :, :] = image_data</div><div class="line">        num_images = num_images + <span class="number">1</span></div><div class="line"></div><div class="line">    dataset = dataset[<span class="number">0</span>:num_images, :, :]</div><div class="line"></div><div class="line">    <span class="keyword">return</span> dataset</div></pre></td></tr></table></figure>
+<p>代码比较简单，就不多解释了。</p>
+<p><br\></br\></p>
+<p><code>merge_datasets()</code> 函数代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_datasets</span><span class="params">(train_image_data, train_image_label)</span>:</span></div><div class="line">    image_number = <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> image_datas <span class="keyword">in</span> train_image_data:</div><div class="line">        image_number = image_number + len(image_datas)</div><div class="line">    <span class="comment">#print(image_number)</span></div><div class="line">    train_dataset, train_labels = make_array(image_number, image_size)</div><div class="line"></div><div class="line">    image_number = <span class="number">0</span></div><div class="line">    </div><div class="line">    <span class="comment"># train_image_data 是所有图片矩阵的list，list每个元素对应每个tag图片的矩阵数据</span></div><div class="line">    <span class="keyword">for</span> label, image_datas <span class="keyword">in</span> enumerate(train_image_data):</div><div class="line">        <span class="keyword">for</span> image_data <span class="keyword">in</span> image_datas:</div><div class="line">            train_dataset[image_number, :, :] = image_data</div><div class="line">            train_labels[image_number] = train_image_label[label]</div><div class="line">            image_number = image_number + <span class="number">1</span></div><div class="line">    <span class="comment">#print(train_labels)</span></div><div class="line">    <span class="keyword">return</span> train_dataset, train_labels</div></pre></td></tr></table></figure>
+<p><br\></br\></p>
+<h4 id="训练分类器">训练分类器</h4>
+<p>好了，准备好数据，我们需要训练一个分类器。简单起见，这里选择用 SVM，并选用 sklearn 函数库。</p>
+<p>其实，可以直接把图片矩阵转换成一个向量进行训练（32 * 32 —&gt; 1 * 1024），但我们拥有的数据量太少，这样效果较差。所以，我们先提取图片的 HOG 特征再进行训练：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">bin_n = <span class="number">16</span> <span class="comment"># Number of bins</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hog</span><span class="params">(image)</span>:</span></div><div class="line">    gx = cv2.Sobel(image, cv2.CV_32F, <span class="number">1</span>, <span class="number">0</span>)</div><div class="line">    gy = cv2.Sobel(image, cv2.CV_32F, <span class="number">0</span>, <span class="number">1</span>)</div><div class="line">    mag, ang = cv2.cartToPolar(gx, gy)</div><div class="line">    bins = np.int32(bin_n*ang/(<span class="number">2</span>*np.pi))    <span class="comment"># quantizing binvalues in (0...16)</span></div><div class="line">    bin_cells = bins[:<span class="number">16</span>,:<span class="number">16</span>], bins[<span class="number">16</span>:,:<span class="number">16</span>], bins[:<span class="number">16</span>,<span class="number">16</span>:], bins[<span class="number">16</span>:,<span class="number">16</span>:]</div><div class="line">    mag_cells = mag[:<span class="number">16</span>,:<span class="number">16</span>], mag[<span class="number">16</span>:,:<span class="number">16</span>], mag[:<span class="number">16</span>,<span class="number">16</span>:], mag[<span class="number">16</span>:,<span class="number">16</span>:]</div><div class="line">    hists = [np.bincount(b.ravel(), m.ravel(), bin_n) <span class="keyword">for</span> b, m <span class="keyword">in</span> zip(bin_cells, mag_cells)]</div><div class="line">    hist = np.hstack(hists)     <span class="comment"># hist is a 64 bit vector</span></div><div class="line">    <span class="keyword">return</span> hist</div></pre></td></tr></table></figure>
+<p>这个函数代码摘自 opencv3 的文档，想了解代码，请自行去<a href="http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_ml/py_svm/py_svm_opencv/py_svm_opencv.html#svm-opencv" target="_blank" rel="external">官网</a>阅读文档。</p>
+<p>有了特征之后，我们可以正式用 SVM 进行训练了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_svm</span><span class="params">(train_datasets, train_labels)</span>:</span></div><div class="line">    x = np.ndarray(shape=(len(train_datasets), <span class="number">64</span>))</div><div class="line">    y = np.ndarray(shape=(len(train_datasets)), dtype=np.int32)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> index, image <span class="keyword">in</span> enumerate(train_datasets):</div><div class="line">        hist = np.float32(hog(image)).reshape(<span class="number">-1</span>, <span class="number">64</span>)</div><div class="line">        x[index] = hist</div><div class="line">        y[index] = train_labels[index]</div><div class="line"></div><div class="line">    model = svm.LinearSVC(C=<span class="number">1.0</span>, multi_class=<span class="string">'ovr'</span>, max_iter=<span class="number">1000</span>)</div><div class="line">    model.fit(x, y)</div><div class="line">    <span class="keyword">return</span> model</div></pre></td></tr></table></figure>
+<p>这个函数代码一样很简单，如果看不懂，证明你需要熟悉 <code>numpy</code> 和 <code>sklearn</code> 函数库的用法。</p>
+<p>然后，我们需要选取图片进行预测分类。可以人工挑出个几百上千张，放在一个预测目录内。同时再开一个目录文件夹如下：</p>
+<div class="figure">
+<img src="/images/2017-4-19/test%20folder.png" alt="test folder">
+<p class="caption">test folder</p>
+</div>
+<p>这个 test 文件夹和先前人工分类的文件夹要分开，因为之后还要人工对这里面的图片除杂。最后，我们遍历预测目录内的图片，用 SVM 做预测，并将图片放到预测结果对应的文件夹里。</p>
+<p>测试函数代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_image</span><span class="params">(image_folder, result_folder, model)</span>:</span></div><div class="line">    image_files = os.listdir(image_folder)</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> image <span class="keyword">in</span> image_files:</div><div class="line">        image_file = os.path.join(image_folder, image)</div><div class="line">        image_data = cv2.imread(image_file, cv2.IMREAD_GRAYSCALE)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> image_data <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">continue</span></div><div class="line"></div><div class="line">        hist = np.float32(hog(image_data)).reshape(<span class="number">-1</span>, <span class="number">64</span>)</div><div class="line">        pred = model.predict(hist)</div><div class="line"></div><div class="line">        shutil.copy(image_file, os.path.join(result_folder+<span class="string">"/"</span>+str(int(pred)), image))</div></pre></td></tr></table></figure>
+<p><b\></b\></p>
+<p>做完这一步，我们最关键，同时也是最<strong>优雅</strong>的一步就完成了。之后，SVM 也帮不了你了。你需要依次打开每个文件夹，看看里面的图片有没有分错的，然后人工矫正它们，最后把它们归类到我们一开始挑选样本分好类的文件夹里，后者这个文件夹的数据表示已经分类好的。</p>
+<p>如果运气好的，这个初步训练好的 SVM 已经稍微有点「聪明」了。看看我得到的分类结果：</p>
+<div class="figure">
+<img src="/images/2017-4-19/good%20result.png" alt="good result">
+<p class="caption">good result</p>
+</div>
+<p>这个准确率我已经很欣慰了，基本上人工挑出几张分错的，剩下的都是同一类了。</p>
+<p>当然，肯定有分的不好的情况：</p>
+<div class="figure">
+<img src="/images/2017-4-19/bad%20result.png" alt="bad result">
+<p class="caption">bad result</p>
+</div>
+<p>对于这种，就是发挥你眼力的时候了。基本上，之后所有的工作都是在这一堆类似的图片里面找不同。当然，你要相信这种情况会越来越少，因为随着训练样本逐渐增多，SVM 的训练效果会越来越好。如果越到后面效果越差，程序员，请你不要怀疑，一定是你的代码出问题了。</p>
+<p><br\></br\></p>
+<p>接下来我给出整个程序的主体部分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    maybe_create_directory_1(image_real_tag_folder)</div><div class="line">    maybe_create_directory_1(image_test_folder)</div><div class="line">    maybe_pickle_data(image_real_tag_folder, image_dataset_folder,</div><div class="line">                      image_dataset_folder + <span class="string">"/data.pickle"</span>, force=<span class="keyword">True</span>)</div><div class="line"></div><div class="line">    f = open(image_dataset_folder + <span class="string">"/data.pickle"</span>, <span class="string">'rb'</span>)</div><div class="line">    data = pickle.load(f)</div><div class="line">    train_datasets = data[<span class="string">'train_dataset'</span>]</div><div class="line">    train_labels = data[<span class="string">'train_labels'</span>]</div><div class="line"></div><div class="line">    model = train_svm(train_datasets, train_labels)</div><div class="line"></div><div class="line">    print(<span class="string">"remove data in "</span> + image_src_folder)</div><div class="line">    remove_files(image_src_folder)</div><div class="line">    print(<span class="string">"copy data to "</span> + image_src_folder + <span class="string">"..."</span>)</div><div class="line">    copy_src_to_test(original_image_folder, image_src_folder)</div><div class="line"></div><div class="line">    test_image(image_src_folder, image_test_folder, model)</div></pre></td></tr></table></figure>
+<p><code>main</code> 函数就是上面几个函数的结合。之后，我们就是不断地 run 一遍代码，人工除杂精分类，再 run 一遍代码，再人工……循环往复直到数据分类完为止。</p>
+<h3 id="总结">总结</h3>
+<p>这个方法可以节省你大量的体力活动，有助于提高逼格。虽然如此，这 80000 个样本我还是生生花了一天半时间才分完，工作量还是稍微超出预期。如果有小伙伴有逼格更高，更能提高生产效率的方法，望不吝赐教！</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_ml/py_svm/py_svm_opencv/py_svm_opencv.html#svm-opencv" target="_blank" rel="external">opencv3 svm教程</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/04/19/2017-4-19-how-to-label-images/" title="如何「优雅」地标数据">https://jermmy.github.io/2017/04/19/2017-4-19-how-to-label-images/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/标数据/" rel="tag"># 标数据</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/18/2017-4-18-python-numpy-randomize/" rel="next" title="python numpy 三行代码打乱训练数据">
+                <i class="fa fa-chevron-left"></i> python numpy 三行代码打乱训练数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/22/2017-4-22-tool-switch-hosts/" rel="prev" title="翻墙神器SwitchHosts">
+                翻墙神器SwitchHosts <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求分析"><span class="nav-number">1.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现思路"><span class="nav-number">2.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#人工选取小样本"><span class="nav-number">3.1.</span> <span class="nav-text">人工选取小样本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练分类器"><span class="nav-number">3.2.</span> <span class="nav-text">训练分类器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

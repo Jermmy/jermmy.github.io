@@ -1,0 +1,1081 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机器学习,优化理论," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
+什么是拉格朗日乘子法
+按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
+\u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拉格朗日乘子法">
+<meta property="og:url" content="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
+什么是拉格朗日乘子法
+按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
+\u">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/lagrange1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/orange-gradient.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/black-gradient.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/LagrangeConstraints.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/multiple-solution.jpg">
+<meta property="og:updated_time" content="2017-09-03T14:54:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="拉格朗日乘子法">
+<meta name="twitter:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
+什么是拉格朗日乘子法
+按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
+\u">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-27/lagrange1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/"/>
+
+
+
+
+
+  <title>拉格朗日乘子法 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                拉格朗日乘子法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-27T22:50:27+08:00">
+                2017-07-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/优化理论/" itemprop="url" rel="index">
+                    <span itemprop="name">优化理论</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/07/27/2017-7-27-understand-lagrange-multiplier/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/07/27/2017-7-27-understand-lagrange-multiplier/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/07/27/2017-7-27-understand-lagrange-multiplier/" class="leancloud_visitors" data-flag-title="拉格朗日乘子法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。</p>
+<h3 id="什么是拉格朗日乘子法">什么是拉格朗日乘子法</h3>
+<p>按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： <span class="math display">\[
+\underset{x, y} {\operatorname {minimize}} f(x, y)   \\\\
+\operatorname{subject\ to}  g(x, y) = c
+\]</span> 简单理解就是，我们要在满足 <span class="math inline">\(g(x, y)=c\)</span> 这个等式的前提下，求 <span class="math inline">\(f(x, y)\)</span> 函数的最小值（最大值道理相同）。这样的问题我们在高中的时候就遇到过了，只不过高中时遇到的限制条件 <span class="math inline">\(g(x, y)=c\)</span> 都比较简单，一般而言都可以将 <span class="math inline">\(y\)</span> 用 <span class="math inline">\(x\)</span> 的式子表示出来，然后用变量替换的方法代回 <span class="math inline">\(f(x, y)\)</span> 求解。但是，如果 <span class="math inline">\(g(x, y)\)</span> 的形式过于复杂，或者变量太多时，这种方法就失效了。而拉格朗日乘子法就是解决这类问题的通用策略。</p>
+<a id="more"></a>
+<h3 id="拉格朗日乘子法的原理">拉格朗日乘子法的原理</h3>
+<h4 id="一个约束条件">一个约束条件</h4>
+<p>我们先从只有一个约束条件的情况入手，看看拉格朗日乘子法到底是怎么做的。</p>
+<p>假设，我们的问题如下： <span class="math display">\[
+\underset{x,y} {\operatorname{minimize}} f(x, y)=x^2+y^2 \\\\
+{\operatorname {subject to}}\ g(x, y)=xy-1=0
+\]</span> 当然，这个问题比较简单，直接用 <span class="math inline">\(g(x, y)\)</span> 解出 y 再代入 <span class="math inline">\(f(x, y)\)</span> 也可以求解，但这里，我们准备用拉格朗日乘子法。</p>
+<p>首先我们画出 <span class="math inline">\(f(x, y)\)</span> 的图像，这个图像应该是 3 维的，但为了方便讲解，这里给出它的 2 维投影：</p>
+<div class="figure">
+<img src="/images/2017-7-27/lagrange1.png" alt="lagrange1">
+<p class="caption">lagrange1</p>
+</div>
+<p>图中的红色圆表示 <span class="math inline">\(f(x, y)\)</span>，越靠近原点的部分，值越小（表示“谷底”），这些圆又称为「等高线」，因为同一个圆代表的函数值相同。</p>
+<p>图中的蓝线代表 <span class="math inline">\(g(x, y)\)</span>，这里只取 <span class="math inline">\(g(x, y)=0\)</span> 的部分。</p>
+<p>整幅图像可以想象成一个巨大的山谷，原点是谷底，而我们的任务是在蓝线表示的道路上，找到最低的位置。</p>
+<p>那要如何找到这个最低点呢？注意，图中用橙色和黑色标记了两个点。如果我们走到了橙色这个位置，那么很明显，可以发现这个点肯定不是最低的，因为我们可以沿着蓝线继续往内部的圆走，当我们走到黑色这个点时，会发现没法再往里面走了，而且，这个时候如果继续沿蓝线走，我们的位置反而升高了，这时，我们基本可以认为：我们找到了在蓝线这个限制条件下的最低点。</p>
+<p>那么橙色这个点和黑色这个点有什么本质区别呢？拉格朗日观察到，黑点位置，蓝线和圆是相切的，而橙点位置显然不满足这个性质。那相切是否是必然的呢？拉格朗日告诉我们，是的，一定是相切的。而这一点，正是拉格朗日乘子法的核心。</p>
+<h4 id="梯度">梯度</h4>
+<p>在正式理解拉格朗日乘子法的原理之前，我们要回顾一下梯度的概念。</p>
+<p>在数学里面，梯度指的是函数变化最快的方向。例如：在一元函数 <span class="math inline">\(f(x)\)</span> 中，梯度只能沿 x 轴正方向或负方向，而在二元函数 <span class="math inline">\(f(x,y)\)</span> 中，梯度则是一个二维向量 <span class="math inline">\((\partial f/\partial x,\partial f/\partial y)\)</span>。</p>
+<p>现在，我们要用到梯度一个重要的性质：<strong>梯度跟函数等高线是垂直的</strong>。</p>
+<p>证明需要用到一点极限的知识。</p>
+<p>梯度的数学定义为：<span class="math inline">\(\nabla f=(\partial f / \partial x, \partial f / \partial y)\)</span>。假设 <span class="math inline">\(\Delta x\)</span>，<span class="math inline">\(\Delta y\)</span> 是两个极小的变化量，根据全微分的知识，可以得到： <span class="math display">\[
+f(x+\Delta x, y+\Delta y) \approx f(x, y)+\frac{\partial f}{\partial x}\Delta x + \frac{\partial f}{\partial y}\Delta y
+\]</span> 如果 <span class="math inline">\((\Delta x, \Delta y)\)</span> 是在等高线方向的增量，那么 <span class="math inline">\(f(x+\Delta x, y+\Delta y) \approx f(x, y)\)</span>，这意味着 <span class="math inline">\(\frac{\partial f}{\partial x}\Delta x + \frac{\partial f}{\partial y}\Delta y=0\)</span>，换句话说，向量 <span class="math inline">\(\nabla f\)</span> 和向量 <span class="math inline">\((\Delta x, \Delta y)\)</span> 的内积为 0。所以，梯度和函数的等高线是垂直的。</p>
+<h4 id="拉格朗日乘子法的几何认识">拉格朗日乘子法的几何认识</h4>
+<p>现在，我们来感性地认识一下，为什么拉格朗日认为相切才能找到最低点（只是感性认识，不添加任何数学推导）。</p>
+<div class="figure">
+<img src="/images/2017-7-27/orange-gradient.png" alt="orange-gradient">
+<p class="caption">orange-gradient</p>
+</div>
+<p>在橙点这个位置，由于两条曲线不相切，所以橙线的梯度（上图橙色箭头）和蓝线的切线（蓝色虚线）肯定不垂直。在这种情况下，蓝线的两个切线方向，必定有一个往函数高处走（与梯度的夹角小于 90 度），有一个往函数低处走（与梯度的夹角大于 90 度）。所以，在两条曲线相交时，我们肯定不在最低点或最高点的位置。</p>
+<div class="figure">
+<img src="/images/2017-7-27/black-gradient.png" alt="black-gradient">
+<p class="caption">black-gradient</p>
+</div>
+<p>那么，反过来想，如果两条曲线相切（上图），那么在切点这个位置，蓝线的切线和橙线的梯度是垂直的，这个时候，蓝线的切线方向都指向橙线的等高线方向。换句话说，在切点的位置沿蓝线移动很小的一步，都相当于在橙线的等高线上移动，这个时候，可以认为函数值已经趋于稳定了。所以，我们认为这个点的值“可能”是最低（高）的（之后解释为什么是“可能“。另外，个人觉得拉格朗日乘子法最好用反证法从不相切的点入手思考，从相切的点思考总有点别扭）。</p>
+<p>既然相切可以帮助我们找到最低点，那么接下来我们要研究的便是如何利用相切来找出最低点。</p>
+<p>相切，意味着在切点的位置，两条曲线的等高线方向是平行的，考虑到梯度与等高线垂直， 我们可以用两条曲线的梯度平行来求出切点位置（最低点）。</p>
+<p>因此，根据梯度平行，我们能够得到一个方程组：<span class="math inline">\(\nabla f = \lambda \nabla g\)</span>，其中 <span class="math inline">\(\lambda\)</span> 表示一个标量，因为我们虽然能保证两个梯度平行，但不能保证它们的长度一样（或者方向相同）。在高维函数中，<span class="math inline">\(\nabla f\)</span> 表示的是函数在各个自变量方向的偏导。对于上面的例子，我们可以求出函数 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span> 的偏导，再根据方程组： <span class="math display">\[
+\frac{\partial f}{\partial x}= \lambda \frac{\partial g}{\partial x} \\\\
+\frac{\partial f}{\partial y}=\lambda \frac{\partial g}{\partial y}   \\\\
+g(x,y)=0
+\]</span> 求出切点。由于总共有三个方程和三个未知数，一般都能找到解（也可能存在多个解或无解的情况，之后会简单讨论）。</p>
+<p>在实际求解时，人们会使用一个统一的拉格朗日函数：<span class="math inline">\(L(x,y,\lambda)=f(x,y)+\lambda g(x,y)\)</span>，令这个函数偏导为 0，我们可以得到： <span class="math display">\[
+\partial L/ \partial x=\frac{\partial f} {\partial x}- \lambda \frac{\partial g}{\partial x}=0   \\\\
+\partial L/ \partial y=\frac{\partial f}{\partial y}- \lambda \frac{\partial g}{\partial y}=0  \\\\
+\partial L/ \partial \lambda=g(x,y)=0
+\]</span> 结果和上面的方程组是一样的。</p>
+<h4 id="多个约束条件">多个约束条件</h4>
+<p>多个约束条件和单个约束条件是一样的。如果是多个约束条件，那么这些约束函数肯定是相交的，否则无解。多个约束条件一般会把变量约束到一个更低维的空间，例如，下图中，紫色球面和黄色平面将变量约束到黑色线的位置。</p>
+<div class="figure">
+<img src="/images/2017-7-27/LagrangeConstraints.jpg" alt="LagrangeConstraints">
+<p class="caption">LagrangeConstraints</p>
+</div>
+<p>求解过程和单个约束条件是一样的，我们定义一个新的拉格朗日函数： <span class="math display">\[
+L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda_j g_j(x_1,\dots,s_n)}
+\]</span> 然后同样令这个函数的导数 <span class="math inline">\(\nabla L=0\)</span>，最后可以得到 <span class="math inline">\(n+k\)</span> 个方程以及 <span class="math inline">\(n+k\)</span> 个未知数，一般也能求解出来。</p>
+<h3 id="总结">总结</h3>
+<p>根据拉格朗日乘子法的定义，这是一种寻找极值的策略，换句话说，该方法并不能保证找到的一定是最低点或者最高点。事实上，它只是一种寻找极值点的过程，而且，拉格朗日乘子法找到的切点可能不只一个（也就是上面的方程组可能找到多个解），例如下图：</p>
+<div class="figure">
+<img src="/images/2017-7-27/multiple-solution.jpg" alt="multiple-solution">
+<p class="caption">multiple-solution</p>
+</div>
+<p>图中相切的点有两个，而红点的函数值明显比黑点小。事实上，要想判断找到的点是极低点还是极高点，我们需要将切点代入原函数再进行判断。</p>
+<p>另外，在写作本文时，我仍然有一个疑惑没有解决：拉格朗日乘子法在哪些情况下无解（也就是上面的方程组 <span class="math inline">\(\nabla L\)</span> 无解）？换句话说，约束条件和函数没有切点时，我们要怎么求出最低点或最高点。这个问题留待之后想通再补上。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="external">wiki: Lagrange multiplier</a></li>
+<li><a href="http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html" target="_blank" rel="external">An Introduction to Lagrange Multipliers</a></li>
+<li><a href="https://danstronger.wordpress.com/2015/08/08/lagrange-multipliers/" target="_blank" rel="external">Understanding Lagrange Multipliers</a></li>
+<li><a href="https://www.zhihu.com/question/38586401/answer/134473412" target="_blank" rel="external">拉格朗日乘子法如何理解？</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/" title="拉格朗日乘子法">https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/优化理论/" rel="tag"># 优化理论</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" rel="next" title="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
+                <i class="fa fa-chevron-left"></i> 读书笔记：neuralnetworksanddeeplearning chapter3（2）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/" rel="prev" title="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
+                读书笔记：neuralnetworksanddeeplearning chapter3（3） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是拉格朗日乘子法"><span class="nav-number">1.</span> <span class="nav-text">什么是拉格朗日乘子法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉格朗日乘子法的原理"><span class="nav-number">2.</span> <span class="nav-text">拉格朗日乘子法的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一个约束条件"><span class="nav-number">2.1.</span> <span class="nav-text">一个约束条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度"><span class="nav-number">2.2.</span> <span class="nav-text">梯度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拉格朗日乘子法的几何认识"><span class="nav-number">2.3.</span> <span class="nav-text">拉格朗日乘子法的几何认识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多个约束条件"><span class="nav-number">2.4.</span> <span class="nav-text">多个约束条件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

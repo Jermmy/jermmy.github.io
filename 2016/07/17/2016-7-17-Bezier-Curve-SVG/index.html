@@ -1,0 +1,1096 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="SVG,计算机图形学," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="需求
+SVG 标准指令中的 C/c 可以用于构造三次贝塞尔曲线(cube bezier curve)，具体用法是：X0, Y0 C X1 Y1, X2 Y2, X3 Y3，这里面的 X、Y 用的是绝对坐标，它们代表三次贝塞尔曲线的控制点（ X0， Y0 和 X3、Y3 恰好是曲线前后端点，所以实际上只有两个控制点）。但我的目的是想对贝塞尔曲线做一次 wrap，而这些控制点并不一定就在曲线上，所以必">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用SVG中的控制点绘制贝塞尔曲线">
+<meta property="og:url" content="https://jermmy.github.io/2016/07/17/2016-7-17-Bezier-Curve-SVG/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="需求
+SVG 标准指令中的 C/c 可以用于构造三次贝塞尔曲线(cube bezier curve)，具体用法是：X0, Y0 C X1 Y1, X2 Y2, X3 Y3，这里面的 X、Y 用的是绝对坐标，它们代表三次贝塞尔曲线的控制点（ X0， Y0 和 X3、Y3 恰好是曲线前后端点，所以实际上只有两个控制点）。但我的目的是想对贝塞尔曲线做一次 wrap，而这些控制点并不一定就在曲线上，所以必">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/21154420-e9c48409b7d44b9baedc180352f6eb29.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/quad_bezier.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/21152048-9b5dee31b19349428c453b8bd5e20a3d.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/屏幕快照%202016-07-17%20下午4.57.48.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/屏幕快照%202016-07-17%20下午4.59.03.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/cube_bezier.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/quad_bezier_test.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/cube_bezier_test.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/屏幕快照%202016-07-17%20下午9.43.52.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-7-17/屏幕快照%202016-07-17%20下午10.03.15.png">
+<meta property="og:updated_time" content="2017-09-03T09:29:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用SVG中的控制点绘制贝塞尔曲线">
+<meta name="twitter:description" content="需求
+SVG 标准指令中的 C/c 可以用于构造三次贝塞尔曲线(cube bezier curve)，具体用法是：X0, Y0 C X1 Y1, X2 Y2, X3 Y3，这里面的 X、Y 用的是绝对坐标，它们代表三次贝塞尔曲线的控制点（ X0， Y0 和 X3、Y3 恰好是曲线前后端点，所以实际上只有两个控制点）。但我的目的是想对贝塞尔曲线做一次 wrap，而这些控制点并不一定就在曲线上，所以必">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2016-7-17/21154420-e9c48409b7d44b9baedc180352f6eb29.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2016/07/17/2016-7-17-Bezier-Curve-SVG/"/>
+
+
+
+
+
+  <title>利用SVG中的控制点绘制贝塞尔曲线 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2016/07/17/2016-7-17-Bezier-Curve-SVG/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                利用SVG中的控制点绘制贝塞尔曲线
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-17T00:00:00+08:00">
+                2016-07-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机图形学/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机图形学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/07/17/2016-7-17-Bezier-Curve-SVG/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/07/17/2016-7-17-Bezier-Curve-SVG/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2016/07/17/2016-7-17-Bezier-Curve-SVG/" class="leancloud_visitors" data-flag-title="利用SVG中的控制点绘制贝塞尔曲线">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="需求">需求</h3>
+<p>SVG 标准指令中的 C/c 可以用于构造三次贝塞尔曲线(cube bezier curve)，具体用法是：<code>X0, Y0 C X1 Y1, X2 Y2, X3 Y3</code>，这里面的 X、Y 用的是绝对坐标，它们代表三次贝塞尔曲线的控制点（ X0， Y0 和 X3、Y3 恰好是曲线前后端点，所以实际上只有两个控制点）。但我的目的是想对贝塞尔曲线做一次 wrap，而这些控制点并不一定就在曲线上，所以必须先把曲线求出来，再对曲线做 wrap 形变。</p>
+<a id="more"></a>
+<h3 id="准备条件">准备条件</h3>
+<p>首先，总得先知道贝塞尔曲线是什么吧~~，这里推荐一篇扫盲文章<a href="http://www.html-js.com/article/1628" target="_blank" rel="external">贝塞尔曲线扫盲</a>，重点要知道曲线中的那些比例关系。其次，既然我们是要从 SVG 的控制点来获得贝塞尔曲线，那总得知道 SVG 是什么以及它的标准语法，这里再推荐一篇深度好文<a href="http://www.zhangxinxu.com/wordpress/2014/06/deep-understand-svg-path-bezier-curves-command/" target="_blank" rel="external">深度掌握SVG路径path的贝塞尔曲线指令</a>，重点是要了解 SVG 中的 path 以及 C/c 相关的指令的用法，还有相对位置等一些概念。</p>
+<h3 id="解决方案">解决方案</h3>
+<p>好了，既然已经知道贝塞尔曲线以及 SVG 是什么东西了，那么想要自己绘制贝塞尔曲线（曲线要画的多好取决于 wrap 的要求），我们得先拿到控制点（本文只针对 SVG 中的 C/c 指令，也就是三次贝塞尔曲线）。思路就很清晰了：先解析 SVG 的 path，拿到控制点，然后根据控制点绘制曲线，done。</p>
+<h4 id="step1如何根据控制点绘制贝塞尔曲线">step1：如何根据控制点绘制贝塞尔曲线</h4>
+<p>先搞定这个大头~~。其实只要了解贝塞尔曲线的概念以及它是怎么画出来的，我发现这其实是个小头。我稍微看了下这篇文章<a href="http://www.cnblogs.com/hnfxs/p/3148483.html" target="_blank" rel="external">贝塞尔曲线原理(简单阐述)</a>，用仅存的一点高中向量知识就画出来了。这里把我看上文时的思考结果记录一下（以下贝塞尔曲线相关的图皆取自上文）。</p>
+<p>我们先看看二次贝塞尔曲线怎么画的（所谓二次就是除了前后端点外，只有一个控制点的情况）。</p>
+<div class="figure">
+<img src="/images/2016-7-17/21154420-e9c48409b7d44b9baedc180352f6eb29.gif" alt="21154420-e9c48409b7d44b9baedc180352f6eb29">
+<p class="caption">21154420-e9c48409b7d44b9baedc180352f6eb29</p>
+</div>
+<p>（注意，上面所标点中，右上角的数字不是幂指数，而表示第几次取点），对于二次贝塞尔曲线，我们的目标就是求出一连串的 $P_{0}^2 $，这些 <span class="math inline">\(P_{0}^2\)</span> 最终构成我们的贝塞尔曲线，当然，对于计算机这种离散化的工具，点要取得多密集取决于你自己的要求。下面，要灵活运用比例关系以及向量工具了： <span class="math display">\[
+\frac{|\overline {P_{0} P_{0}^1}|}{|\overline{P_{0}P_{1}}|}=\frac{|\overline {P_{1} P_{1}^1}|}{|\overline {P_{1}P_{2}}|}=\frac{|\overline {P_{0}^1 P_{0}^2}|}{|\overline {P_{0}^1P_{1}^1}|}=\frac{t}{1}     \ \ \     ( t\in [0, 1])
+\]</span> 上式中的 || 表示向量的模，因为我印象中向量好像是不能直接相比的，会涉及到方向问题，但在本例中，相比的向量方向都是一致的，所以我们可以把 || 去掉： <span class="math display">\[
+\frac{\overline {P_{0} P_{0}^1}}{\overline{P_{0}P_{1}}}=\frac{\overline {P_{1} P_{1}^1}}{\overline {P_{1}P_{2}}}=\frac{\overline {P_{0}^1 P_{0}^2}}{\overline {P_{0}^1P_{1}^1}}=\frac{t}{1}     \ \ \       (t\in [0, 1])
+\]</span> 然后改变一下分母（结合图像）： <span class="math display">\[
+\frac{\overline {P_{0} P_{0}^1}}{\overline{P_{0}^1P_{1}}}=\frac{\overline {P_{1} P_{1}^1}}{\overline {P_{1}^1P_{2}}}=\frac{\overline {P_{0}^1 P_{0}^2}}{\overline {P_{0}^2P_{1}^1}}=\frac{t}{1-t}   \ \ \         (t\in [0, 1])
+\]</span> 下一步，求出 <span class="math inline">\(\overline {p_{0}^1}\)</span>，由上式可得： <span class="math display">\[
+(1-t)\overline{P_{0}P_{0}^1}=t\overline{P_{0}^1P_{1}} \\\\
+(1-t)(\bar{P_{0}^1}-\bar{P_{1}})=t(\bar{P_{1}}-\bar{P_{0}})
+\]</span> 注意这一步开始将向量拆成两个向量相减的形式，这样后者中的向量我们可以直接用坐标表示了（比如：<span class="math inline">\(\bar P_{0}\)</span> 就表示 <span class="math inline">\(\bar P_{0}\)</span> 这个点本身的坐标）。将上式化简得到： <span class="math display">\[
+\overline {P_{0}^1} = (1-t)\overline{P_{0}}+t\overline{P_{1}}  \tag{1}
+\]</span> 同样的方法求解出 <span class="math inline">\(\overline{P_{1}^1}\)</span> 和 <span class="math inline">\(\overline{P_{0}^2}\)</span>： <span class="math display">\[
+\overline {P_{1}^1} = (1-t)\overline{P_1}+t\overline{P_2}  \tag{2}
+\]</span> <span class="math display">\[
+\overline{P_0^2}=(1-t)\overline{P_0^1}+t\overline{P_1^1}  \tag{3}
+\]</span></p>
+<p>将 (1)(2) 式代入 (3) 式并化简可得： <span class="math display">\[
+\overline{P_{0}^2}=(1-t)^2 \overline{P_{0}} + 2t(1-t) \overline{P_{1}} + t^2 \overline{P_{2}}
+\]</span> 如果耐心看到这一步，那么二次贝塞尔曲线就应该会画了，因为三个点的坐标已知，需要做的就是改变 t 的值来重复得到 <span class="math inline">\(\overline{P_{0}^2}\)</span> 的坐标，这个 t 的值在 [0,1] 之间变化，变化的间隔决定了曲线点的疏密程度，下面是计算二次贝塞尔曲线的代码片段，用了「CImg」库，t 的间隔取 0.01，参照上面的计算结果很快就明白了:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw_quad_bezier</span><span class="params">(CImg&lt;<span class="keyword">unsigned</span> <span class="keyword">char</span>&gt; &amp;img, Point p0, Point p1, Point p2)</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> x, y;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">float</span> t = <span class="number">0</span>; t &lt;= <span class="number">1</span>; t += <span class="number">0.001</span>) &#123;</div><div class="line">		x = (<span class="keyword">int</span>)((<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p0.x + <span class="number">2</span>*t*(<span class="number">1</span>-t)*p1.x + t*t*p2.x);</div><div class="line">		y = (<span class="keyword">int</span>)((<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p0.y + <span class="number">2</span>*t*(<span class="number">1</span>-t)*p1.y + t*t*p2.y);</div><div class="line">		draw_point(img, x, y);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>效果图如下（三个点的坐标分别取 (100,100)，(500,1000)，(1500,200) ）：</p>
+<div class="figure">
+<img src="/images/2016-7-17/quad_bezier.jpg" alt="quad_bezier">
+<p class="caption">quad_bezier</p>
+</div>
+<p>好了，二次的我们会求了，那三次的怎么求呢？道理是一样的，不然前面码那么多公式不就浪费了嘛^_^</p>
+<p>观察一下三次贝塞尔曲线的图：</p>
+<div class="figure">
+<img src="/images/2016-7-17/21152048-9b5dee31b19349428c453b8bd5e20a3d.gif" alt="21152048-9b5dee31b19349428c453b8bd5e20a3d">
+<p class="caption">21152048-9b5dee31b19349428c453b8bd5e20a3d</p>
+</div>
+<p>你会发现，原来它就是在原来二次曲线的三个控制点外围又套了一层，也就是说，我们要先通过三次贝塞尔曲线的四个控制点，求出绿色那一条线的三个端点，再把这三个端点代入之前求出来的二次曲线的公式即可。道理就是这么简单，所以我也懒得码公式了，直接上一幅我的草稿图（纯粹给自己以后看的=.=）：</p>
+<div class="figure">
+<img src="/images/2016-7-17/屏幕快照%202016-07-17%20下午4.57.48.png" alt="屏幕快照 2016-07-17 下午4.57.48">
+<p class="caption">屏幕快照 2016-07-17 下午4.57.48</p>
+</div>
+<div class="figure">
+<img src="/images/2016-7-17/屏幕快照%202016-07-17%20下午4.59.03.png" alt="屏幕快照 2016-07-17 下午4.59.03">
+<p class="caption">屏幕快照 2016-07-17 下午4.59.03</p>
+</div>
+<p>最后得出来的计算结果： <span class="math display">\[
+\overline{P_{0}^3}=(1-t)^3 \overline{P_{0}}+3t(1-t)^2 \overline{P_{1}}+3t^2(1-t) \overline{P_{2}}+t^3 \overline{P_{3}}
+\]</span> 来，照例给出代码片段:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw_cube_bezier</span><span class="params">(CImg&lt;<span class="keyword">unsigned</span> <span class="keyword">char</span>&gt; &amp;img, Point p0, Point p1, Point p2, Point p3)</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> x, y;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">float</span> t = <span class="number">0</span>; t &lt;= <span class="number">1</span>; t += <span class="number">0.001</span>) &#123;</div><div class="line">		x = (<span class="keyword">int</span>)((<span class="number">1</span>-t)*(<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p0.x + <span class="number">3</span>*t*(<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p1.x + </div><div class="line">                  <span class="number">3</span>*t*t*(<span class="number">1</span>-t)*p2.x + t*t*t*p3.x);</div><div class="line">		y = (<span class="keyword">int</span>)((<span class="number">1</span>-t)*(<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p0.y + <span class="number">3</span>*t*(<span class="number">1</span>-t)*(<span class="number">1</span>-t)*p1.y + </div><div class="line">                  <span class="number">3</span>*t*t*(<span class="number">1</span>-t)*p2.y + t*t*t*p3.y);</div><div class="line">		draw_point(img, x, y);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>效果图如下</p>
+<div class="figure">
+<img src="/images/2016-7-17/cube_bezier.jpg" alt="cube_bezier">
+<p class="caption">cube_bezier</p>
+</div>
+<p>这样一来，三次贝塞尔曲线的绘制部分基本结束了。不过，虽然我们的目标是绘制三次贝塞尔曲线，也就是输入四个点输出一条曲线的情况，可如果遇到输入的点退化成三个的情况，我们的方法是否适用呢？（鉴于我的项目，这里主要指四个控制点中有两个控制点相同的情况，也就是起码有三个点不同，而且输入的控制点数量一定是 4 个）。</p>
+<p>没有具体去证明，稍微假设我们上面得到的三次曲线的最终表达式中，<span class="math inline">\(\overline{P_{0}}\)</span> 和 <span class="math inline">\(\overline{P_{1}}\)</span> 相同，那么最终结果跟二次曲线的表达式还是有较大不同的，但实际操作时发现，这种不同在人眼可以忍受的误差范围内，下面是我尝试的一个例子：</p>
+<p>二次贝塞尔曲线，输入点分别为：(100,100), (500,1000), (1500,200)</p>
+<div class="figure">
+<img src="/images/2016-7-17/quad_bezier_test.jpg" alt="quad_bezier_test">
+<p class="caption">quad_bezier_test</p>
+</div>
+<p>三次贝塞尔曲线，输入点分别为：(100,100), (100,100), (500,1000), (1500,200)，即前两个点一样</p>
+<div class="figure">
+<img src="/images/2016-7-17/cube_bezier_test.jpg" alt="cube_bezier_test">
+<p class="caption">cube_bezier_test</p>
+</div>
+<p>可以看出形状上基本一样，也就是说，对于退化的情况，我们的算法基本可以得到一致的二次贝塞尔曲线。而且真实项目中，贝塞尔曲线的控制点都靠的比较近，因此人眼基本看不出区别，所以这里不再进一步细化算法。</p>
+<h4 id="step2-如何提取控制点">step2: 如何提取控制点</h4>
+<p>要提取的 svg 中的控制点位于 <code>path</code> 标签内，大致如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">width</span>=<span class="string">"450px"</span> <span class="attr">height</span>=<span class="string">"600px"</span> </span></div><div class="line"><span class="attr">viewBox</span>=<span class="string">"0 0 2550 3300"</span>&gt;</div><div class="line">  ......</div><div class="line">  <span class="tag">&lt;<span class="name">path</span> <span class="attr">class</span>=<span class="string">"fil0 str0"</span> <span class="attr">d</span>=<span class="string">"M205 922c0,0 49,496 50,613 2,117 22,298 36,344 14,45</span></span></div><div class="line">25,67 49,101 23,35 162,172 220,213 58,40 131,79 154,85 24,5 92,15 135,17 43,3 </div><div class="line">116,-4 156,-23 40,-19 236,-141 267,-175 30,-35 100,-96 123,-158 23,-62 31,-69</div><div class="line">39,-110 8,-40 13,-166 16,-183 4,-18 23,-199 25,-247 1,-48 24,-302 25,-363 1,-61</div><div class="line">-10,-271 -33,-358 -24,-88 -109,-205 -166,-245 -49,-34 -114,-77 -218,-95 -104,-19</div><div class="line">-212,-31 -340,-11 -129,20 -232,65 -297,117 -64,51 -160,149 -188,205 -28,55 -53,146</div><div class="line">-56,175 -3,28 3,99 3,99l0 -1z"/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>浏览器中显示的是一张人脸图：</p>
+<div class="figure">
+<img src="/images/2016-7-17/屏幕快照%202016-07-17%20下午9.43.52.png" alt="屏幕快照 2016-07-17 下午9.43.52">
+<p class="caption">屏幕快照 2016-07-17 下午9.43.52</p>
+</div>
+<p>当然我要提取的只是最外层的脸轮廓。</p>
+<p>虽然有些素材的路径不太一致，但大部分素材的格式还是很接近的，所以我的想法是用字符串分割的方式把绝大部分素材的控制点都提取出来，对于比较特殊的素材，要么放弃，要么手动修改 svg，或者微调一下算法都可以。然而就是这看似简单的一步让我颓废了一个下午。原因不是 svg 的解析，也不是字符串的切割，而是控制点的还原。注意到上面的 svg 中，贝塞尔曲线用的是 <code>c</code> 指令，也就是相对位置，但我之前的算法要求使用绝对位置。于是，我的做法是：每隔四个点取一段，其中每段的最后一个点作为下一段的起点，在取的过程中，根据相对位置重新计算出点的绝对位置。这里的坑就在计算绝对位置这一步。我看了 w3school 和 mozilla 上的教程，说的都是：相对于上一个点的坐标，根据相对位置计算出下一个点的坐标，于是我简单地写了一个循环</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; points.size(); i++) &#123;</div><div class="line">   points.get(i).x += points.get(i-<span class="number">1</span>).x;</div><div class="line">   points.get(i).y += points.get(i-<span class="number">1</span>).y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但结果中，我惊异地发现出现了坐标值为负数的情况，反复检查后，发现问题只可能出现在计算绝对位置这一步，然后就是不停地 goolging，连百度都用上了，但是居然没查到类似的问题（当然可能是我查问题的姿势不对，不过当时怎么就没想到去查 SVG 的官方资料呢，看来还是懒=。=）。然后我又怀疑是不是浏览器内部对点的坐标做了归一化处理，也就是对越界的点做了平移。于是就把我的计算结果扔到 chrome 里面，结果很欣慰的，脸消失了一部分，那问题只可能是坐标计算错了。第二天，我就在 StackOverflow 上发了处女帖，<a href="http://stackoverflow.com/questions/38417581/draw-bezier-curve-with-relative-path-in-svg" target="_blank" rel="external">Draw Bezier Curve with relative path in SVG</a>，吃顿饭的功夫就收到了答复。在这里不得不佩服国外程序员（也可能是天朝的？）的 manner，让我这种平时只找答案不回答的人即感动又内疚。原来，对于贝塞尔曲线而言，相对位置的坐标是以上一段曲线或直线的终点，也就是本段贝塞尔曲线的起点为标准的，所以应该把代码改为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> lastEndPoint = <span class="number">0</span>;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; points.size(); i++) &#123;</div><div class="line">    points.get(i).x += points.get(lastEndPoint).x;</div><div class="line">    points.get(i).y += points.get(lastEndPoint).y;</div><div class="line">    <span class="keyword">if</span> (i % <span class="number">3</span> == <span class="number">0</span>) &#123;</div><div class="line">       lastEndPoint = i;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后我终于成功地画出一张人脸（右边为浏览器中的对照结果）： <img src="/images/2016-7-17/屏幕快照%202016-07-17%20下午10.03.15.png" alt="屏幕快照 2016-07-17 下午10.03.15"></p>
+<p>仔细一看我发现，好像素材中的控制点也基本在贝塞尔曲线上啊，这样直接拿控制点做形变误差应该也不会差很多才对😂。然而都已经把曲线画出来了。。。。。。</p>
+<h3 id="参考">参考</h3>
+<p><a href="http://www.html-js.com/article/1628" target="_blank" rel="external">贝塞尔曲线扫盲</a></p>
+<p><a href="http://www.zhangxinxu.com/wordpress/2014/06/deep-understand-svg-path-bezier-curves-command/" target="_blank" rel="external">深度掌握SVG路径path的贝塞尔曲线指令</a></p>
+<p><a href="http://www.cnblogs.com/hnfxs/p/3148483.html" target="_blank" rel="external">贝塞尔曲线原理(简单阐述)</a></p>
+<p>还有一篇我提问的SO😢：<a href="http://stackoverflow.com/questions/38417581/draw-bezier-curve-with-relative-path-in-svg" target="_blank" rel="external">Draw Bezier Curve with relative path in SVG</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2016/07/17/2016-7-17-Bezier-Curve-SVG/" title="利用SVG中的控制点绘制贝塞尔曲线">https://jermmy.github.io/2016/07/17/2016-7-17-Bezier-Curve-SVG/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SVG/" rel="tag"># SVG</a>
+          
+            <a href="/tags/计算机图形学/" rel="tag"># 计算机图形学</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/11/2016-7-11-CV-绘制三角形/" rel="next" title="绘制三角形">
+                <i class="fa fa-chevron-left"></i> 绘制三角形
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/18/2016-7-18-CV-旋转平移缩放/" rel="prev" title="用双线性插值做旋转缩放操作">
+                用双线性插值做旋转缩放操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备条件"><span class="nav-number">2.</span> <span class="nav-text">准备条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1如何根据控制点绘制贝塞尔曲线"><span class="nav-number">3.1.</span> <span class="nav-text">step1：如何根据控制点绘制贝塞尔曲线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2-如何提取控制点"><span class="nav-number">3.2.</span> <span class="nav-text">step2: 如何提取控制点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

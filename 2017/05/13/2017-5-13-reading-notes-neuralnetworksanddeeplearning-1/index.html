@@ -1,0 +1,1102 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第一章 Using neural nets to recognize handwritten digits 整理而成的读书笔记，根据个人口味做了删减)
+对于人类来说，识别下面的数字易如反掌，但对计算机而言，却不是一个简单的任务。
+
+
+digits
+
+在我们的大脑中，有一块跟视觉相关的皮层 V1，这里面包含着数以百万计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter1">
+<meta property="og:url" content="https://jermmy.github.io/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第一章 Using neural nets to recognize handwritten digits 整理而成的读书笔记，根据个人口味做了删减)
+对于人类来说，识别下面的数字易如反掌，但对计算机而言，却不是一个简单的任务。
+
+
+digits
+
+在我们的大脑中，有一块跟视觉相关的皮层 V1，这里面包含着数以百万计">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/digits.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/tikz0.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/tikz1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/tikz8.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/sigmoid.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/step%20function.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/valley.png">
+<meta property="og:updated_time" content="2017-09-03T14:41:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter1">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第一章 Using neural nets to recognize handwritten digits 整理而成的读书笔记，根据个人口味做了删减)
+对于人类来说，识别下面的数字易如反掌，但对计算机而言，却不是一个简单的任务。
+
+
+digits
+
+在我们的大脑中，有一块跟视觉相关的皮层 V1，这里面包含着数以百万计">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-5-13/digits.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/"/>
+
+
+
+
+
+  <title>读书笔记：neuralnetworksanddeeplearning chapter1 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                读书笔记：neuralnetworksanddeeplearning chapter1
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-13T14:41:53+08:00">
+                2017-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter1">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第一章 <a href="http://neuralnetworksanddeeplearning.com/chap1.html" target="_blank" rel="external">Using neural nets to recognize handwritten digits</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
+<p>对于人类来说，识别下面的数字易如反掌，但对计算机而言，却不是一个简单的任务。</p>
+<div class="figure">
+<img src="/images/2017-5-13/digits.png" alt="digits">
+<p class="caption">digits</p>
+</div>
+<p>在我们的大脑中，有一块跟视觉相关的皮层 V1，这里面包含着数以百万计的神经元，而这些神经元之间的连接，更是达到了数以亿计。在漫长的进化过程中，大自然将人类的大脑训练成了一个「超级计算机」，使它可以轻易地读懂、看懂、听懂很多目前的计算机仍然难以处理的问题。在本章中，作者介绍了一种可以帮助计算机识别手写体的程序：神经网络「neural network」。</p>
+<a id="more"></a>
+<p>首先，我们从神经网络的几个基本概念讲起。</p>
+<h3 id="perceptrons">Perceptrons</h3>
+<p>Perceptrons，中文译为<strong>感知器</strong>，最早由科学家<a href="http://en.wikipedia.org/wiki/Frank_Rosenblatt" target="_blank" rel="external">Frank Rosenblatt</a>于上个世纪 50 至 60 年代提出。在现代神经网络中，Perceptrons 已经用得很少了（更多地使用 sigmoid neuron 等神经元模型）。但要了解 sigmoid neuron 怎么来的，就有必要先弄清楚 Perceptrons。</p>
+<p>举例来说，最简单的 Perceptrons 类似如下结构：</p>
+<div class="figure">
+<img src="/images/2017-5-13/tikz0.png" alt="tikz0">
+<p class="caption">tikz0</p>
+</div>
+<p>它接受三个输入 <span class="math inline">\(x_1\)</span>、<span class="math inline">\(x_2\)</span>、<span class="math inline">\(x_3\)</span>，输出 0 或者 1。为了衡量每个输入的重要程度，Rosenblatt 引入了权重的概念，假设 <span class="math inline">\(w_1\)</span>、<span class="math inline">\(w_2\)</span>、<span class="math inline">\(w_3\)</span> 分别对应 <span class="math inline">\(x_1\)</span>、<span class="math inline">\(x_2\)</span>、<span class="math inline">\(x_3\)</span>，那么，我们可以得到 Perceptrons 的输出为： <span class="math display">\[
+output=\begin{cases} 0 &amp;if \ \ \sum_{j}{w_j x_j} &lt;= threshold \\\\
+1 &amp;if \ \ \sum_{j}{w_j x_j} &gt; threshold
+ \end{cases}
+\]</span> 当然，Perceptrons 在处理较复杂的任务的时候，其结构也会更加复杂，比如：</p>
+<div class="figure">
+<img src="/images/2017-5-13/tikz1.png" alt="tikz1">
+<p class="caption">tikz1</p>
+</div>
+<p>在这个网络中，Perceptrons 的第一列称为第一层 (first layer)，这一层的感知器接受三个输入 (evidence) 来决定输出。Perceptrons 的第二层，则以第一层的输出结果作为输入来产生最后的输出，因此第二层可以认为是在处理比第一层更加复杂抽象的工作。</p>
+<p>为了简化数学表达，我们将 <span class="math inline">\(\sum\_{j}{w\_jx\_j}\)</span> 表示成 <span class="math inline">\(WX\)</span>，<span class="math inline">\(W\)</span>、<span class="math inline">\(X\)</span> 分别代表权重和输入的向量。同时，我们将阈值的负值 (-threshold) 表示成 bias，即 <span class="math inline">\(b = -threshold\)</span>。这样，Perceptrons 的输出可以重写为： <span class="math display">\[
+output=\begin{cases} 0 &amp;if \ \ WX+b &lt;= 0 \\\\ 1 &amp;if \ \ WX+b &gt; 0 \end{cases}.
+\]</span></p>
+<h3 id="sigmoid-neurons">Sigmoid neurons</h3>
+<p>现在，我们考虑一下如何训练 Perceptrons 的参数（W 和 b）。假设网络的参数发生了一点点<strong>微小</strong>的变化，为了训练过程的可控，网络的输出也应该发生<strong>微小</strong>的变化。</p>
+<div class="figure">
+<img src="/images/2017-5-13/tikz8.png" alt="tikz8">
+<p class="caption">tikz8</p>
+</div>
+<p>如果网络错误地将手写数字 <strong>8</strong> 分类为 <strong>9</strong>，那么我们希望在参数做一点点修改，网络的输出会更靠近 <strong>9</strong> 这个结果，只要数据量够多，这个修改的过程重复下去，最后网络的输出就会越来越正确，这样神经网络才能不断学习。</p>
+<p>然而，对于 Perceptrons 来说，参数的微调却可能导致结果由 <strong>0</strong> 变为 <strong>1</strong>，然后导致后面的网络层发生连锁反应。换句话说，Perceptrons 的性质导致它的训练过程是相当难控制的。</p>
+<p>为了克服这个问题，我们引入一种新的感知器 <strong>sigmoid neuron</strong>。它跟 Perceptrons 的结构一模一样，只是在输出结果时加上了一层 <strong>sigmoid 函数</strong>：<span class="math inline">\(\sigma(z)=\frac{1}{1+e^{(-z)}}\)</span>。这样，网络的输出就变成了： <span class="math display">\[
+output=\frac{1}{1+exp(WX+b)}
+\]</span> sigmoid 函数的图像如下：</p>
+<div class="figure">
+<img src="/images/2017-5-13/sigmoid.png" alt="sigmoid">
+<p class="caption">sigmoid</p>
+</div>
+<p>当 <span class="math inline">\(WX+b\)</span> 趋于 ∞ 的时候，函数值趋于 1，当 <span class="math inline">\(WX+b\)</span> 趋于 0 的时候，函数值趋于 0。在这种情况下，sigmoid neuron 就退化成 Perceptrons。</p>
+<p>sigmoid 函数也可以看作是对 step 函数的平滑，step 函数如下：</p>
+<div class="figure">
+<img src="/images/2017-5-13/step%20function.png" alt="step function">
+<p class="caption">step function</p>
+</div>
+<p>可以看出，Perceptrons neuron 的本质就是 step 函数。</p>
+<p>那么，为什么 sigmoid neuron 就比 Perceptrons 更容易训练呢？原因在于，sigmoid 函数是平滑、连续的，它不会发生 step 函数那种从 0 到 1 的突变。用数学的语言表达就是，参数微小的改变（<span class="math inline">\(\Delta w_j\)</span>、<span class="math inline">\(\Delta b\)</span>）只会引起 output 的微小改变：<span class="math inline">\(\Delta output \approx \sum_j{\frac{\partial output}{\partial w_j}\Delta w_j}+\frac{\partial output}{\partial b}\Delta b\)</span>。可以发现，<span class="math inline">\(\Delta output\)</span> 和 <span class="math inline">\(\Delta w_j\)</span>、<span class="math inline">\(\Delta b\)</span> 是一个线性关系，这使得网络的训练更加可控。</p>
+<p>事实上，正是 sigmoid 函数这种平滑的特性起了关键作用，而函数的具体形式则无关紧要。在本书后面的章节中，还会介绍其他函数来代替 sigmoid，这类函数有个学名叫<strong>激活函数 (activation function)</strong>。从数学上讲，函数平滑意味着函数在定义域内是可导的，而且导数有很好的数学特性（比如上面提到的线性关系），step 函数虽然分段可导，但它的导数值要么一直是 0，要么在突变点不可导，所以它不具备平滑性。</p>
+<h3 id="learning-with-gradient-descent">Learning with gradient descent</h3>
+<p>假设神经网络的输入是由图片像素组成的一维向量 $x $，输出是一个 one-hot 向量 <span class="math inline">\(\overline y = y(\overline x)\)</span>。为了量化神经网络的输出结果，我们定义一个代价函数： <span class="math display">\[
+C(w, b) = \frac{1}{2n}\sum_x||y(x)-a||^2    \tag{6}
+\]</span> 其中，<span class="math inline">\(w\)</span> 表示网络的权重参数，<span class="math inline">\(b\)</span> 表示 biases，<span class="math inline">\(n\)</span> 是样本数，<span class="math inline">\(a\)</span> 是网络的输出结果。我们称 <span class="math inline">\(C\)</span> 为<strong>二次代价函数</strong>，或者称为<strong>平方差(MSE)</strong>。当 <span class="math inline">\(y(x)\)</span> 和 <span class="math inline">\(a\)</span> 很接近的时候，<span class="math inline">\(C \approx 0\)</span>。因此，我们的训练算法就是为降低代价函数的值，而最常用的算法就是<strong>梯度下降(gradient descent)</strong>。</p>
+<p>其实我们在高中阶段就遇到过类似的问题：已知函数曲线过几个点，求出这条曲线的方程。不同的是，这里是用代价函数间接求函数参数，而且，这里不是要让函数穿过这些点，而是去拟合、逼近这些点。</p>
+<p>现在我们要思考一个问题，为什么要使用平方差作为代价函数？既然我们感兴趣的就是图片被正确分类的数量，那为什么不直接降低这个数量的值，而是绕个弯去降低一个二次代价函数？原因在于<strong>图片正确分类的数量</strong>这个函数不是一个平滑的函数，换句话说，<span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span> 的微小变化对这个函数的影响是不可控的，道理和上面的 sigmoid 函数一样。所以，我们采用这个上面的<strong>二次代价函数</strong>。</p>
+<p>事实上，还有其他平滑的函数可以作为代价函数，这里我们只简单介绍<strong>二次代价函数</strong>。</p>
+<p>讲到这里，我们提到了两次平滑函数：<strong>sigmoid</strong> 和 <strong>二次代价函数</strong>。其中，前者是神经网络的输出，后者是对神经网络结果的一种评估，是为了方便对网络参数进行训练。这里要求使用平滑函数是为了使训练的过程更加可控。虽然我们优化的时候是针对代价函数调整参数，但 sigmoid 函数会在代价函数中被使用，所以这两个函数都必须是平滑的。</p>
+<h4 id="gradient-descent">gradient descent</h4>
+<p>下面，我们先将这些函数抛在一边，研究一下<strong>梯度下降</strong>方法。</p>
+<p>假设我们要最小化一个函数 <span class="math inline">\(C(\overline v)\)</span>，其中 <span class="math inline">\(\overline v = v_1, v_2, …\)</span>。</p>
+<p>简单起见，我们假设参数是二维的，函数图像长这个样子：</p>
+<div class="figure">
+<img src="/images/2017-5-13/valley.png" alt="valley">
+<p class="caption">valley</p>
+</div>
+<p>想求这个函数在哪个点取的最小值，数学家们的方法是对函数求导（多个参数就求偏导），然后判断在每一维上的单调性，最后求出在每个维度上的最小值点。这种方法理论上一定可以求出这个函数的最低点，不过，实际上却很难执行，因为函数图像可能会非常复杂，维度可能很高（上图只是一个简单的例子）。</p>
+<p>所以，科学家们提出一种看似简单但实际上却屡试不爽的技巧：<strong>梯度下降</strong>。这种方法的思路是：不管函数图像是什么样的，反正我只往函数每一维度的梯度方向前进。所谓函数梯度，其实就是函数的导数方向：<span class="math inline">\(\nabla C=(\frac{\partial C}{\partial {v_1}}, \frac{\partial C}{\partial {v_2}})^T\)</span>。然后，我们让函数参数也往这个方向移动：<span class="math inline">\(v → v&#39; = v + \Delta v = v -\eta \nabla C\)</span>，其中，<span class="math inline">\(\eta\)</span> 称为学习率，<span class="math inline">\(\Delta v\)</span> 称为步长。这样，函数每次的偏移量为 <span class="math inline">\(\Delta C \approx \nabla C \Delta v = \frac{\partial C}{\partial v_1} \Delta v_1 + \frac{\partial C}{\partial v_2} \Delta v_2\)</span>。不管函数导数的值是正是负（函数图像向上还是向下），只要学习率适当，这个式子都能保证函数往最低点走，当然，如果学习率的取值过大，函数的下降可能会出现曲折抖动的情况。</p>
+<p>梯度下降也存在一些不足之处，比如，如果函数存在多个局部最低值，梯度下降可能会陷入局部最低点出不来。</p>
+<p>回到实际问题，现在我们将梯度下降应用到网络参数中： <span class="math display">\[
+w_k → w_{k}&#39; = w_k-\eta \frac{\partial C}{\partial w_k}
+\]</span> <span class="math display">\[
+b_l → b_{l}&#39; = b_l-\eta \frac{\partial C}{\partial b_l}
+\]</span></p>
+<p>通过不断迭代上面的过程，代价函数会不断下降，运气好的话就可能下降到全局最低点的位置。</p>
+<h4 id="stochastic-gradient-descent">stochastic gradient descent</h4>
+<p>不过，这里有个计算上的问题，我们之前的二次代价函数为：<span class="math inline">\(C(w,b)=\frac{1}{2n}\sum_x ||y(x)-a||^2\)</span>，因此，在计算导数的时候，需要将每个样本的导数值都加起来取平均，这在概率学上是有意义的（防止个别噪声样本的影响），但实际计算的时候，由于样本数量很大，这无疑会造成巨大的计算量。因此，有人又提出一种<strong>随机梯度下降(stochastic gradient descent)</strong>的方法来加快训练。这种方法每次只挑选少量的随机样本进行训练（当然，所有样本在一轮训练中都需要被挑选到）。</p>
+<p>具体来说，假设我们每次挑选 m 个随机样本进行训练，总样本数为 n，那么，只要 m 足够大，我们可以得到一个近似关系（大数定理？）： <span class="math display">\[
+\frac{\sum_{j=1}^{m}\Delta C_{X_{j}}}{m} \approx \frac{\sum_{x} \Delta C_x}{n} = \Delta C  \tag{18}
+\]</span> 然后，每次对参数的训练就变成： <span class="math display">\[
+w_k→w_{k}&#39;=w_k-\frac{\eta}{m} \sum_j \frac{\partial C}{\partial w_k} \tag{20}
+\]</span> <span class="math display">\[
+b_l→b_l&#39;=b_l-\frac{\eta}{m} \sum_j \frac{\partial C}{\partial b_l}  \tag{21}
+\]</span></p>
+<p>有时候，人们会忽略等式前面的<span class="math inline">\(\frac{1}{n}\)</span>或<span class="math inline">\(\frac{1}{m}\)</span>，只在单一的样本上进行训练。这种方法在样本事先不知道（例如，样本是实时产生的）的情况下比较有效。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap1.html" target="_blank" rel="external">Using neural nets to recognize handwritten digits</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/" title="读书笔记：neuralnetworksanddeeplearning chapter1">https://jermmy.github.io/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/10/2017-5-10-paper-notes-joint-embeddings-of-shapes-and-images-via-cnn-image-purification/" rel="next" title="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" rel="prev" title="读书笔记：neuralnetworksanddeeplearning chapter2">
+                读书笔记：neuralnetworksanddeeplearning chapter2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#perceptrons"><span class="nav-number">1.</span> <span class="nav-text">Perceptrons</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid-neurons"><span class="nav-number">2.</span> <span class="nav-text">Sigmoid neurons</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning-with-gradient-descent"><span class="nav-number">3.</span> <span class="nav-text">Learning with gradient descent</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gradient-descent"><span class="nav-number">3.1.</span> <span class="nav-text">gradient descent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stochastic-gradient-descent"><span class="nav-number">3.2.</span> <span class="nav-text">stochastic gradient descent</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

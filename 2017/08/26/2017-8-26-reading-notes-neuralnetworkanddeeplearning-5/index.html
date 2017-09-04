@@ -1,0 +1,1097 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
+在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
+<meta property="og:url" content="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
+在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/gradient.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_2_layers.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_3_layers.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_4_layers.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz37.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz38.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/sigma'.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz39.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz40.png">
+<meta property="og:updated_time" content="2017-09-03T15:03:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
+在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-8-26/gradient.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/"/>
+
+
+
+
+
+  <title>读书笔记：neuralnetworkanddeeplearning chapter5 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                读书笔记：neuralnetworkanddeeplearning chapter5
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-26T11:06:11+08:00">
+                2017-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworkanddeeplearning chapter5">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第五章<a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="external">Why are deep neural networks hard to train?</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
+<p>在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一两个隐藏层，而一旦网络层数增加，有很多问题将不可避免地暴露出来。今天，我们就来认识一个最蛋疼的问题：深度神经网络非常难训练。</p>
+<a id="more"></a>
+<h3 id="网络越深效果越好">网络越深效果越好</h3>
+<p>近几年的研究已经表明，网络的层数越深，模型的表达能力就越强。在图像识别中，网络的第一层学会如何识别边缘，第二层在第一层的基础上学会如何识别更复杂的形状，如三角形等，然后第三层又继续在第二层的基础上学会识别出更复杂的形状。如此往复，最后网络便学会识别出更高级的语义信息。这也是为什么深度学习近几年能取得突破的，因为深度神经网络的表达能力实在太强了。</p>
+<p>不过，在训练深度神经网络的过程中，人们也遇到一个严重的问题：当后面层的网络飞快训练时，前面层的网络却「僵住」了，参数不再更新；有时候，事情又刚好相反，前面层的网络训练飞快，后面层的网络却收敛了。</p>
+<p>通过本节的学习，我们将了解这一切背后的深层原因。</p>
+<h3 id="消失的梯度">消失的梯度</h3>
+<p>沿袭之前 MNIST 的例子，我们先做几组实验，来看看什么是梯度消失。</p>
+<p>这几组实验中，我们的网络结构分别如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div></pre></td></tr></table></figure>
+<p>这几个网络的唯一区别是，每一个网络都比前面的多了一个包含 30 个神经元的隐藏层。实验中，其他参数，包括训练数据完全一样。在 MNIST 数据集上，得出这四个实验的准确率分别为：96.48%，96.90%，96.57%，96.53%。</p>
+<p>看得出来，第二个网络训练的结果比第一个好一些，但当隐藏层继续增加时，效果反而下降了。这让我们很惊奇，不是说网络层数越深，效果越好吗？况且，即使中间的网络什么都没有学习到，也总不至于其负作用吧。</p>
+<p>为了进一步了解背后的原因，我们打算跟踪一下网络的参数，确认网络是否真的得到训练。</p>
+<p>简单起见，我们分析一下第二个网络 <code>([784, 30, 30, 10])</code> 中两个隐藏层的梯度。下图演示了当训练开始时，这两个层里面每个神经元的梯度值，为了方便，只摘取了前六个神经元：</p>
+<div class="figure">
+<img src="/images/2017-8-26/gradient.png" alt="gradient">
+<p class="caption">gradient</p>
+</div>
+<p>图中神经元上的柱状图表示梯度值 <span class="math inline">\(\partial C/ \partial b\)</span>，在 BP 的<a href="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/">四个公式</a>中，我们知道：<span class="math inline">\(\frac{\partial C}{\partial b_j^{l}}=\delta_j^l \tag{BP3}\)</span> <span class="math inline">\(\frac{\partial C}{\partial w_{jk}^{l}}=a_{k}^{l-1}\delta_{j}^{l} \tag{BP4}\)</span></p>
+<p>所以，柱状图表示的除了是偏差 bias 的梯度外，也多少可以反应权重 weights 的梯度。</p>
+<p>由于权重的初始化是随机的，所以每个神经元的梯度都有所不同，不过很明显的一点是，第 2 个隐藏层的梯度总体上比第 1 个隐藏层要大，而梯度越大，学习速度也相对的越快。</p>
+<p>为了探究这是否是偶然（也许这两层中后面的神经元会不同呢），我们决定用一个全局的梯度向量 <span class="math inline">\(\delta\)</span> 来比较这两个隐藏层参数的总体梯度情况。我们定义 <span class="math inline">\(\delta_j^l=\partial C/ \partial b_j^l\)</span>，所以你可以把 <span class="math inline">\(\delta\)</span> 看作是上图中所有神经元梯度的向量。我们用向量长度 <span class="math inline">\(||\delta^i||\)</span> 来代表每 i 个隐藏层的学习速度。</p>
+<p>当只有两个隐藏层时（即上图），<span class="math inline">\(||\delta^1||=0.07\)</span>、<span class="math inline">\(||\delta^2||=0.31\)</span>，这进一步验证了：第二个隐藏层的学习率高于第一个隐藏层。</p>
+<p>如果有三个隐藏层呢？结果是：<span class="math inline">\(||\delta^1||=0.012\)</span>、<span class="math inline">\(||\delta^2||=0.060\)</span>、<span class="math inline">\(||\delta^3||=0.283\)</span>。同样的，后面的隐藏层学习速度都比前面的要高一些。</p>
+<p>有人可能会说，以上的梯度都是在刚开始训练后某个时刻计算得到的，在网络训练过程中，这些梯度又是否会进一步提升呢？为了解答这个问题，我们计算出之后更多轮学习后的梯度，并绘制成下面的曲线图：</p>
+<center>
+<p><img src="/images/2017-8-26/training_speed_2_layers.png" width="500px"></p>
+</center>
+<center>
+<p><img src="/images/2017-8-26/training_speed_3_layers.png" width="500px"></p>
+</center>
+<center>
+<p><img src="/images/2017-8-26/training_speed_4_layers.png" width="500px"></p>
+</center>
+<p>显而易见地是，不管隐藏层有多少，后面层的学习速度都比前一层要高 5 到 10 倍，这样一来，第一个隐藏层的学习速度甚至只有最后一层的百分之一，当后面的参数正大踏步训练的时候，前面层的参数就基本停滞不前了。这种现象，就叫做<strong>梯度消失</strong>。梯度消失并不意味着网络已经趋于收敛，因为在实验中，我们特意在训练开始时计算出了梯度，对于一个参数随机初始化的网络，要想在刚开始时就让网络趋于收敛，这几乎是不可能的，因此我们认为<strong>梯度消失</strong>并不是网络收敛引起的。</p>
+<p>另外，随着研究深入，我们也会发现，有时候前面层的梯度虽然没有消失，但却变得很大，几乎是后面层的成百上千倍，导致出现了 NaN，简直「爆炸」了。对于这种情况，我们又称之为<strong>梯度爆炸</strong>。</p>
+<p>不管是梯度消失还是爆炸，都是我们不愿看到的。下面我们需要进一步研究这种现象产生的原因，并想办法解决它。</p>
+<h3 id="梯度消失的原因">梯度消失的原因</h3>
+<p>这一节，我们来探讨一下：为什么网络的梯度会消失？或者说，为什么深度神经网络的梯度会如此不稳定。</p>
+<p>简单起见，我们来分析一个只有一个神经元的网络：</p>
+<div class="figure">
+<img src="/images/2017-8-26/tikz37.png" alt="tikz37">
+<p class="caption">tikz37</p>
+</div>
+<p><span class="math inline">\(b\)</span> 和 <span class="math inline">\(w\)</span> 表示参数，<span class="math inline">\(C\)</span> 是代价函数，激活函数采用 sigmoid，每层网络的输出为 <span class="math inline">\(a_j=\sigma(z_j)\)</span>，<span class="math inline">\(z_j=w_ja_{j-1}+b_j\)</span>。</p>
+<p>下面，我们要求出 <span class="math inline">\(\partial C/\partial b_1\)</span>，看看是什么原因导致这个值很小。</p>
+<p>根据 BP 的公式可以推出：</p>
+<div class="figure">
+<img src="/images/2017-8-26/tikz38.png" alt="tikz38">
+<p class="caption">tikz38</p>
+</div>
+<p>这个公式看起来略微比较复杂，不急，我们来看看它是怎么来的。由于网络十分简单（只有一条链），所以我们准备从另一个更形象的角度来推出这个式子（BP 也是完全可以推出该式子的）。</p>
+<p>假设有一个增量 <span class="math inline">\(\Delta b_1\)</span> 出现，由于 <span class="math inline">\(a_1=\sigma(z_1)=\sigma(w_1a_0+b_1)\)</span>，可以推出：</p>
+<p><span class="math inline">\(\Delta a_1 \approx \frac{\partial \sigma((w_1\ a_0+b_1)}{\partial b_1} \Delta b_1=\sigma&#39;(z_1)\Delta b_1\)</span>（注意 <span class="math inline">\(\Delta a_1\)</span> 不是导数，而是由 <span class="math inline">\(\Delta b_1\)</span> 引起的增量，所以是斜率乘以 <span class="math inline">\(\Delta b_1\)</span>）。</p>
+<p>然后进一步的，<span class="math inline">\(\Delta a_1\)</span> 又会引起 <span class="math inline">\(z_2\)</span> 的变化，根据 <span class="math inline">\(z_2=w_2 a_1+b_2\)</span> 可以得出：</p>
+<p><span class="math inline">\(\Delta z_2 \approx \frac{\partial z_2}{\partial a_1}\Delta a_1=w_2 \Delta a_1\)</span>。</p>
+<p>将之前 <span class="math inline">\(\Delta a_1\)</span> 的公式代入上式就可以得到：</p>
+<p><span class="math inline">\(\Delta z_2 \approx \sigma&#39;(z_1)w_2 \Delta b_1\)</span>。</p>
+<p>可以看出，这个式子和我们最开始的式子已经很相似了。之后，我们依葫芦画瓢不断往后计算，就可以得到 <span class="math inline">\(C\)</span> 的增量：</p>
+<p><span class="math inline">\(\Delta C \approx \sigma&#39;(z_1)w_2 \sigma&#39;(z_2) \ldots \sigma&#39;(z_4) \frac{\partial C}{\partial a_4} \Delta b_1 \tag{120}\)</span></p>
+<p>除以 <span class="math inline">\(\Delta b_1\)</span> 后，就可以得到最开始的等式：</p>
+<p><span class="math inline">\(\frac{\partial C}{\partial b_1} = \sigma&#39;(z_1) w_2 \sigma&#39;(z_2) \ldots\sigma&#39;(z_4) \frac{\partial C}{\partial a_4}.\tag{121}\)</span></p>
+<h4 id="为什么梯度会消失">为什么梯度会消失</h4>
+<p>有了上面这个式子做铺垫，你是否已经猜出了梯度消失的原因。没错，就跟 <span class="math inline">\(0.9^n \approx 0\)</span> 道理一样。</p>
+<p>首先，我们回顾一下 <span class="math inline">\(\sigma&#39;()\)</span> 函数的图像：</p>
+<center>
+<p><img src="/images/2017-8-26/sigma'.png" width="500px"></p>
+</center>
+<p>这个函数最大值才 1/4。加上我们的参数 <span class="math inline">\(W\)</span> 是根据均值为 0，标准差为 1 的高斯分布初始化的，即 <span class="math inline">\(|w_j|&lt;1\)</span> ，所以<span class="math inline">\(|w_j \sigma&#39;(z_j)&lt;1/4|\)</span>。这些项累乘起来，最后的结果就会越来越小。再注意看下面这幅图，由于不同隐藏层的导数累乘的数量不同，因此对应的梯度也就有了高低之分。</p>
+<div class="figure">
+<img src="/images/2017-8-26/tikz39.png" alt="tikz39">
+<p class="caption">tikz39</p>
+</div>
+<p>以上的推导虽然不是很正式，但它已经足够阐明问题的根源。</p>
+<p>梯度爆炸的问题这里就不再赘述了，原理和梯度消失一样，当每一项的值都大于 1 时，累乘起来就会变得很大。</p>
+<p>记得在之前的<a href="http://jermmy.xyz/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" target="_blank" rel="external">学习笔记</a>的最后，我曾经提出一个问题：尽管交叉熵函数解决了网络学习速度下降的问题，但它针对的只是最后一层，对于前面的隐藏层，学习速度依然可能下降。作者之前之所以避而不谈这个问题，是因为之前针对的网络层数都很少，而本文中也已经显示地点出并分析了问题的根源。</p>
+<h3 id="复杂网络中的梯度同样不稳定">复杂网络中的梯度同样不稳定</h3>
+<p>上面的例子中我们只是用了一个简单的例子来解释原因，在更复杂的网络中，我们仍然可以用类似的方法解释梯度的不稳定现象。</p>
+<p>例如，对于下面这个复杂的网络：</p>
+<div class="figure">
+<img src="/images/2017-8-26/tikz40.png" alt="tikz40">
+<p class="caption">tikz40</p>
+</div>
+<p>我们可以借助 BP 公式推出： <span class="math display">\[
+\begin{eqnarray}
+  \delta^l = \Sigma&#39;(z^l) (w^{l+1})^T \Sigma&#39;(z^{l+1}) (w^{l+2})^T \ldots
+  \Sigma&#39;(z^L) \nabla_a C
+\tag{124}\end{eqnarray}
+\]</span> 这里面，<span class="math inline">\(\Sigma&#39;(z^l)\)</span> 是对角矩阵，矩阵对角线上的元素由 <span class="math inline">\(\sigma&#39;(z)\)</span> 的值构成。<span class="math inline">\(\nabla_a C\)</span> 则是由 <span class="math inline">\(C\)</span> 对 输出层求偏导后得来的向量。</p>
+<p>这个式子尽管许多，但形式上依然是一样的，最后矩阵相乘的累积效应依然会导致梯度消失或者爆炸。</p>
+<h3 id="深度学习的其他障碍">深度学习的其他障碍</h3>
+<p>虽然这一章中我们只是提到梯度不稳定的问题，但事实上，有很多研究显示：深度学习同样存在很多其他的障碍。</p>
+<p>比如：激活函数的选择会影响网络的学习（参见论文：<a href="http://jmlr.org/proceedings/papers/v9/glorot10a/glorot10a.pdf" target="_blank" rel="external">Understanding the difficulty of training deep feedforward neural networks</a>）。</p>
+<p>又比如：参数的初始化也会影响网络的训练（参见论文：<a href="http://www.cs.toronto.edu/~hinton/absps/momentum.pdf" target="_blank" rel="external">On the importance of initialization and momentum in deep learning</a>）。</p>
+<p>可见，关于深度神经网络的训练障碍，目前还是一个复杂的问题，需要更进一步的研究。在下一章中，我们将继续学习一些深度学习的方法，这些方法在某种程度上，可以克服深度神经网络的这些学习障碍。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="external">Why are deep neural networks hard to train?</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" title="读书笔记：neuralnetworkanddeeplearning chapter5">https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/25/2017-8-25-learn-tensorflow-shared-variables/" rel="next" title="TensorFlow学习笔记：共享变量">
+                <i class="fa fa-chevron-left"></i> TensorFlow学习笔记：共享变量
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/" rel="prev" title="论文笔记：Batch Normalization">
+                论文笔记：Batch Normalization <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络越深效果越好"><span class="nav-number">1.</span> <span class="nav-text">网络越深效果越好</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消失的梯度"><span class="nav-number">2.</span> <span class="nav-text">消失的梯度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度消失的原因"><span class="nav-number">3.</span> <span class="nav-text">梯度消失的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么梯度会消失"><span class="nav-number">3.1.</span> <span class="nav-text">为什么梯度会消失</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂网络中的梯度同样不稳定"><span class="nav-number">4.</span> <span class="nav-text">复杂网络中的梯度同样不稳定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度学习的其他障碍"><span class="nav-number">5.</span> <span class="nav-text">深度学习的其他障碍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

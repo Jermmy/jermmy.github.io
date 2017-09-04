@@ -1,0 +1,1037 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,面试," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章记录一下这学期找实习的各种面经，让自己有个前车之鉴。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面经(Android实习相关)">
+<meta property="og:url" content="https://jermmy.github.io/2016/05/18/2016-5-18-面经/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="这篇文章记录一下这学期找实习的各种面经，让自己有个前车之鉴。">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-5-18/2016-04-02%20下午7.37.50.png">
+<meta property="og:updated_time" content="2017-03-23T01:49:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面经(Android实习相关)">
+<meta name="twitter:description" content="这篇文章记录一下这学期找实习的各种面经，让自己有个前车之鉴。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2016-5-18/2016-04-02%20下午7.37.50.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2016/05/18/2016-5-18-面经/"/>
+
+
+
+
+
+  <title>面经(Android实习相关) | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2016/05/18/2016-5-18-面经/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                面经(Android实习相关)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-18T00:00:00+08:00">
+                2016-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">杂谈</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2016/05/18/2016-5-18-面经/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2016/05/18/2016-5-18-面经/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2016/05/18/2016-5-18-面经/" class="leancloud_visitors" data-flag-title="面经(Android实习相关)">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章记录一下这学期找实习的各种面经，让自己有个前车之鉴。</p>
+<a id="more"></a>
+<h3 id="cetv篇">CETV篇</h3>
+<p>「CETV」相信很多人都没听过，我也是找实习的时候才听说这家公司。去到公司面试的时候发现 hr 和面试官人都很好，还有一间自助餐厅，中午饭的时候喝了一点香槟。虽然说公司名气不大，但通过率据说比 BAT 华为等巨头还低，再加上这是人生第一次面试，就当作长长经验吧。</p>
+<p>我投的是 Android 岗。早上 10 点到的公司，当时被安排到一间放映厅听了几首蔡琴的歌，过了一段时间才有一位很体贴的 hr 安排我们去面试厅。网上说第一轮会是群面，但去到现场才发现其实是一个大厅，面试者在一旁的座椅上等待，面试官分了四十张桌子好像，跟社团面试没什么区别。</p>
+<h4 id="一面">一面</h4>
+<p>这一轮没跟我拿简历，也没让我自我介绍，直接对着我在官网填的资料开始问一些基础问题，我事后整理了一下，包括但不限于：Java HashMap 的实现思路、 Service 的使用（同一进程和不同进程之间，我提到一点 aidl，面试官说可以再好好深入研究）、设计模式（根据你熟悉的来，我现场写了设计者模式和单例，单例模式是有坑的，在多线程的时候，可惜我只是略懂，还问了观察者怎么解藕的，没压力）、Java 的垃圾回收、wait 和 sleep 的区别（没答好）、抽象类和接口的区别、继承和组合的区别。大概就这么多了，面完觉得还是很基础的，然后就幸运地被留下来吃午餐。</p>
+<h4 id="二面">二面</h4>
+<p>二面仗着中午喝了点香槟，居然大胆地问面试官要不要简历，他说好，然后就开始漏洞百出了T_T（这里奉劝大家，简历上的东西一定要有过深入理解，不懂或只知其然的最好不要写）。以下是按照记忆整理的几个问题（第一次面试所以整理得比较详细）：</p>
+<ol style="list-style-type: decimal">
+<li>Android 的四大组件是什么（一开始漫不经心答错了一个，后来纠正了）；</li>
+<li>不同 Activity 之间怎么传参（当时真的只记得 Intent，面试官不满意，我又说可以借助全局 Application，面试官冷漠地点点头，后来想想，广播也是常见的手段）</li>
+<li>如果有一个 jar 包，里面某个类有一个私有方法，我要怎么访问这个方法（我想到了可以通过 class 映射回这个方法，但面试官问还有其他方法吗，我就说反编译吧，他说不让反编译，还提示说可以在运行时刻想办法，我心里想那不就是class 吗，然后只能说不会了）</li>
+<li>画了一个正六边形，以及中心到顶点的距离，叫我写个函数求周长，我考虑了一下写出来了。他又问如果这是一个正 n 边形呢，我就说还是通过三角函数来求。他又放出大招，如果 n 趋于无穷，会是什么情况？我说那就是个圆了，他叫我证明，我开始现场推导极限公式，几分钟后发誓回去好好复习高数。</li>
+<li>接下来就是针对简历狂轰滥炸了。你这个XXX项目用 base64 来编码图片，能说说为什么要用 base64 吗？我说这样就只需要发送图片的像素内容，不用发送这个图片文件，节省流量。可你知道 base64 的编码过程吗，你这样不是更大了吗？我脸红，说可能考虑到后台与客户端之间转码的方便吧。＝＝</li>
+<li>你简历上说用 BitmapFactory 对图片做压缩防止 OOM，能说说过程吗？我庆幸昨晚突击了一下，就说是通过改变图片的宽高，以及压缩像素大小，从 ARGB_8888 变到 ARGB5555 来减小存储（其实是 RGB565，我记成了 ARGB5555 ），然后通过 Android 的 BitmapFactory 的参数来减小图片大小。面试官说原来是用 Android 的 api 啊。。。。</li>
+<li>你说你用到了 protobuf，能说说它的实现思路吗？我blabla一堆，主要是说它的二进制位比较紧凑，节约流量之类的。。。他又问，protobuf 有什么缺陷吗？可能是后台跟 Android 的数据模型都要先设计好吧。你对 protobuf 的数据格式了解多少？我记得有两种吧，required 和 optional，required 是一定要传过去，optional 可以不用。如果 required 不设参数会有什么问题？可能会编译出错吧。是编译出错还是运行出错？。。。。编译吧。。如果 optional 没有传参，后台拿出这个 optional 值会是什么，比方说数据类型是 int，后台拿出这个 optional 会是什么？这个。。。。我们一般都是严格约定好的，没考虑过这种问题。＝＝</li>
+<li>Android 子线程能修改UI线程的组件吗？为什么？不能，然后抛出什么线程不安全之类的。那子线程怎么修改？通过 Handler，Handler 可以 post 一个 runnable 到主线程，或者 sendMessage 然后 handleMessage 出来。handleMessage 是在主线程还是子线程执行？主线程。（这是我唯一答得好的问题，毕竟看过 Handler 源码）</li>
+<li>如果在主线程执行耗时操作会怎么样？可能会 ANR。。是可能吗，还是一定？。。一定。。那我如何定位ANR的代码呢？。。。这个，ANR 会抛异常吧。。。你确定会吗？。。。我也不太清楚，因为平时都不会把耗时操作放到主线程，所以。。。。。＝＝</li>
+<li>网络请求的时候，你一般会用什么方法跟后台交互？我一般是用 HttpClient 或 URLConnection 来传参和接收响应。服务器地址使用 IP 和域名有什么区别吗？域名的话还要经过 DNS。还有其他区别吗？。。。用 IP 容易暴露导致不安全吧。。。用域名难道不会？。。。好像也可以。。。如果给你一个域名，你要怎么查到它的 IP？。。。有很多网站都可以查的吧，或者 nslookup 这个东西。。。嗯，看来网络这一块你接触的比较少。</li>
+<li>get 跟 post 请求有什么区别？get 是把参数放在 url 里，post 是放在 http 请求的 body 里面。get 的 url 里面可以放多少参数？1024 字节或 2048 吧。。。</li>
+<li>你这里提到了 cookie 欺骗，能简单说一说吗？cookie 一般是服务器设置到浏览器中的数据，跟某个域名绑定。。。是域名吗？。。。额，可能是 url 吧，如果通过某种手段获取到一个用户的 cookie，然后我们可以改变 cookie 值直接在这个 url 下登录。。。。到这里已经有点晕了。</li>
+<li>你对设计模式了解多少？我常用的是观察者和单例。你能现场写个单例吗？我心想早上刚写过，很快写出来了，还跟他说多线程的时候可能会有坑，这里要加锁。怎么加？（踩坑了）如果已经实例化了，可以直接返回，否则就要加个锁，然后判断是否为空再实例化。synchronized 要锁住哪个对象？this 指针。this 指针可以吗？不行，还没实例化，这个类的 class 吧。class 真的可以吗？应该可以。。。＝＝。</li>
+<li>你对 Android 新版本有过了解吗？5.0 用了 ART，速度更快。ART 还有什么新特性吗？。。。不知道了。。6.0 加强了权限管理，涉及到隐私的权限编码的时候需要加更多判断。。。。</li>
+<li>如何让你的 app 在系统启动的时候被唤醒？我会加个系统启动的广播。可以吗？你的程序还没启动，这样有用吗？。。。。好吧，其实我也没深入研究过这类问题。。</li>
+</ol>
+<p>知道二面是压力面，没想到压力有点大，主要是第一次面试，太嫩了。。</p>
+<p>不过晚上的时候还是收到面试通过的消息，看来也不是传说中的那么严格嘛。不过我也没打算去这家公司（网上负面评价太多，虽然现场感觉挺好的），而且这家公司主要是硬件的，Android 方面并没听说有什么产品，于是最后的 hr 面被我放了鸽子。。。后来还打给我两次电话，一次我在路上没听到，一次是清明节在家，跟 hr 说有时间再约，然后，就没有然后了。感觉挺对不住他们的，毕竟招待那么好。</p>
+<h3 id="阿里巴巴篇">阿里巴巴篇</h3>
+<p>实话实说，阿里一开始是没准备投的，据说今年招的人不多，而且还远在杭州北京。后来俱乐部说有内推，虽然时间比较晚，但还是随便投了一下。等了大概两周后电话终于打来（是一个声音比较有磁性的大哥）。据说第一次只是预面，类似一面前的小面试。问的问题还都是比较常见的，比如 Java 的 final 关键字有什么作用，垃圾回收，项目里有没有用多线程相关的东西（这一块我说曾经用队列的方式封装过一个网络请求的工具类，他问我为什么不用 AsyncTask 而要自己写，我。。。。），Android 的事件分发机制。比较难的是一个实际应用的问题：给你一个 32 G 的本地文本文件，上面是很多空格隔开的敏感词，让你开发一个 app，用户输入一篇文章的 url 后，读取文章，判断文章里面是否有文本里的敏感词存在？乍一听我是有点懵逼的，想到很多面经里说要避免沉默，把你知道的慢慢讲出来，于是我开始挤牙膏式的把思路挤给对方。当时脑海里第一感觉是，那个 32 G 的文本文件可以像数据库一样做索引，然后将文章切词后逐个词地去索引里面查找。面试官又问索引要怎么做，32 G 的文件你要怎么处理？我意识到他其实想知道内存管理方面的东西（然而这一块我也不太会）。我想起操作系统 cache 那种思路，就跟他说可以先读进一部分文本字符串，然后用哈希函数对每个字符串编码作为索引（类似 hashmap 的思路），如果内存超过阈值了就把索引写进磁盘，这样相当于是一条输入流从文本中读取字符串，然后一条输出流将计算后的索引写到磁盘里（感觉这就是实现一个小的数据库引擎，慨叹一下学得跟屎一样的 DBMS ）。面试官当时也没怎么评价，或者说我当时晕掉了不知道他怎么评价的。问完这个之后又问了一道比较简单的算法题：给定两个数组 A、B，如何判断 A、B 中是否有相同的数，思路跟归排很像，然而我当时一片混乱讲了比较复杂的方法。之后问了下对我的评价，他说还是可以把项目的东西好好总结下的，然后还说我投的是无线事业部下的淘宝，实习得去杭州blablabla。</p>
+<h4 id="一面-1">一面</h4>
+<p>一面是在一个星期后打来的，当时正在图书馆，就问他能否另约时间（这个地方太安静，躲在厕所面试感觉不利于发挥），于是他说那就明天早上再打给我吧。第二天等到 12 点还没打来，我就先去吃午餐，然后吃到一半手机响了。。。我赶紧找个角落，心里暗自后悔再等几分钟能啃翔吗！！电话那边还是一个声音比较柔和的大哥哥。问的问题其实都异曲同工啦，偏基础：Intent 传数据会有哪些问题，Android 是如何启动 Activity 的，了解哪些 Android 线程安全的东西，equal, ==, hashcode 之间的联系，Activity 生命周期，有没有看过 Activity 的源码blablabla。中间有几个问题听不太清，一开始还理解错了，总之结果以不愉快收场。（明明在宿舍各种资料准备得妥妥的，啃翔！）</p>
+<p>大概十天后面试状态变成 rejectted＝＝。</p>
+<h3 id="腾讯篇">腾讯篇</h3>
+<p>内推的时候就向微信投了简历的，但一直没消息（说好的内推一定会给机会面试呢）。校招的时候其实没什么心思准备了（当时一门心思扑在计算机视觉里），然而居然有惊无险的走到 hr 面。笔试那天刚好清明节前，家里一堆亲戚，当时跟他们出去吃晚餐，回来的时候匆匆答完题，好像选择题都是数据结构操作系统这类的基础题（投的 Android 岗结果遇到几道 ios 的），然后三道大题好像，有一道是搜索，直接深搜就过了样例，一道简答题，关于游戏服务器的负载之类的，我想起之前看到的关于微信红包的技术文章水了一下，然后还有一道 Android 的编程题（下图），挺有意思，手写代码拍照交了。</p>
+<div class="figure">
+<img src="/images/2016-5-18/2016-04-02%20下午7.37.50.png">
+
+</div>
+<p>然而我接到面试通知的时间都比别人晚，感觉他们是不是按照笔试分数排先后的？</p>
+<h4 id="一面-2">一面</h4>
+<p>一面地点是一家酒店的房间，面试官一脸严肃。先是针对简历上的东西问一遍（还好我机智把一知半解的都删了，然而这样简历就只剩半张纸了）。还问了项目遇到哪些困难，怎么解决的。然后问你大学学过哪些课，我不小心把数据库讲了出来，然后就开始问数据库范式（😭一年前学的东西了，编都不会编，何况学得最差的一门），又问了 Http了解哪些内容，为什么 TCP 要三次握手，操作系统进程线程的区别，他们如何通信。然后就是 10 分钟手写快排，还问了时间复杂度怎么推出来的。</p>
+<h4 id="二面-1">二面</h4>
+<p>二面的面试官貌似是 SNG 的总监（我才知道我投的是 SNG ），一个操着东北口音的大叔，感觉比一面还严肃。。。他看了我的项目一两秒后就叫我把架构图画给他，我不知道什么叫架构图。。。就随便画了个流程图，他看了下，说我不是要这个，你跟我说下你们有没有用什么架构写代码吧，比如 mvc 之类的。我才明白架构图指这个。然而当初那个项目超级赶，并没有考虑这些，业务还有 UI 交互都是在 Activity 里面执行的，所以只能说没有。。他又问为什么不用数据库，我跟他说本地保存的信息不多，而且 sqlite 有内存泄漏的问题，他就问你怎么知道内存泄漏的，自己测过吗？我说没有自己测，师兄传授的经验。。。他又问为什么你要用 httpclient，不用 urlconnection，我说项目的网络框架是别人封装好的，至于为什么不用那个我也不清楚。他貌似有点失望了。然后开始问一些基础的，比如 jdk 和 jre 的区别，set 和 list 的区别，java 垃圾回收，TCP 为什么要三次握手（一面刚被问，然而我还是没答到点上）。之后问了一道爬楼梯（我跟他讲了递归怎么做，然而他叫我用递推求公式），广搜走迷宫（侧重广搜的思想），然后就问智商题了：质量体积外表均相同的铁球铅球如何分辨出来，我说可以根据敲击的声音，他说方法不太好。。最后的结论是 Java 基础还行，Android 比较弱，解决实际问题的能力不行。然后建议我说有些东西要自己深入去研究，不能老是听别人的结论。就在我以为挂了的时候，面试状态显示过了，不知道是不是他怕有人毁约故意留我当备胎。</p>
+<h4 id="hr面">HR面</h4>
+<p>话说等面试的时候居然有个看起来很文艺的妹子加我微信，之后一聊才知道对方是从福州大学过来的，在阿里数据挖掘比赛中拿过 top 10 的大神，本来有点小紧张的，跟她一聊就放松了些（先扬后抑，为之后的悲剧埋下伏笔）。hr 是个年轻的大姐姐，一见到我就说我们放轻松聊聊人生就可以了（都是骗人的套路😭）。问前面两位面试官怎么样啊？我说虽然比较严肃，但还是能引导我去回答（都是套路）。有没什么兴趣爱好啊？喜欢看小说，比如三体。hr 说她也在看三体，然后问你觉得哪里写得好，我一时激动blablabla讲了一堆，然后一直想等她接话题，但她一直点头若有所思的样子，我没办法又讲了一堆废话（其实应该适可而止的，此处踩雷）。最后她又问毕业最想去哪里工作，我嘴贱说了广州和杭州，hr 以极快的反应脱口而出：杭州？！那就是阿里咯！我急忙做一些弥补，然而已经是泼出去的水。。。</p>
+<p>然后到现在还是 hr 面状态，能挂在这一轮也算是不虚此行了（我没有哭）。</p>
+<h3 id="in-a-word">In a Word</h3>
+<p>春招就此打住了。总体感觉，Android 岗的要求不是很高，只要基本的东西（包括学校那些基本功课）都清楚，java 的底子好一点，然后有一点项目经验，对于实习生来说基本就 OK 了，要是能在某一方面深入研究过，拿 offer 是妥妥的（然而我到底是挂在 hr 手里还是总监手里至今还是个谜，想来想去，怪自己心猿意马，一方面有点厌倦 Android，对计算机视觉比较狂热，一方面又想着要是面试能过就直接实习逃离学校好了，在这种侥幸心理下根本没做什么准备）。之后应该是往 cv 方向发展了，Android 也会继续关注但肯定不是重点，毕竟不想局限在这个平台上。如果能在 Android 平台上做 cv 那最 happy 不过了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2016/05/18/2016-5-18-面经/" title="面经(Android实习相关)">https://jermmy.github.io/2016/05/18/2016-5-18-面经/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/03/2016-3-3-Android-Touch事件分发/" rel="next" title="Android Touch事件分发过程">
+                <i class="fa fa-chevron-left"></i> Android Touch事件分发过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/29/2016-6-29-Android-GridView选中效果/" rel="prev" title="Android-GridView设置选中状态">
+                Android-GridView设置选中状态 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#cetv篇"><span class="nav-number">1.</span> <span class="nav-text">CETV篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一面"><span class="nav-number">1.1.</span> <span class="nav-text">一面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二面"><span class="nav-number">1.2.</span> <span class="nav-text">二面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阿里巴巴篇"><span class="nav-number">2.</span> <span class="nav-text">阿里巴巴篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一面-1"><span class="nav-number">2.1.</span> <span class="nav-text">一面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#腾讯篇"><span class="nav-number">3.</span> <span class="nav-text">腾讯篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一面-2"><span class="nav-number">3.1.</span> <span class="nav-text">一面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二面-1"><span class="nav-number">3.2.</span> <span class="nav-text">二面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hr面"><span class="nav-number">3.3.</span> <span class="nav-text">HR面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#in-a-word"><span class="nav-number">4.</span> <span class="nav-text">In a Word</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

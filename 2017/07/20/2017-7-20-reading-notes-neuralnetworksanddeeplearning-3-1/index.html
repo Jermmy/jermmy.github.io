@@ -1,0 +1,1134 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
+这些方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+<meta property="og:url" content="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
+这些方法">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/tikz28.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation1.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation2.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/sigmoid.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/tikz29.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation3.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation4.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/softmax.gif">
+<meta property="og:updated_time" content="2017-09-03T14:49:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
+这些方法">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-20/tikz28.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/"/>
+
+
+
+
+
+  <title>读书笔记：neuralnetworksanddeeplearning chapter3（1） | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                读书笔记：neuralnetworksanddeeplearning chapter3（1）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-20T22:49:21+08:00">
+                2017-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+<p>上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。</p>
+<p>这些方法包括：</p>
+<ul>
+<li>更好的代价函数：<strong>交叉熵(cross-entropy)函数</strong></li>
+<li>四种正规化方法：<strong>L1</strong>、<strong>L2</strong>、<strong>dropout</strong>以及数据集的人工<strong>增广</strong></li>
+<li>一种更好的初始化权值的方法</li>
+<li>一系列选择 hyper-parameters 的启发策略</li>
+<li>其他一些小技巧</li>
+</ul>
+<a id="more"></a>
+<h3 id="交叉熵函数cross-entropy">交叉熵函数(cross-entropy)</h3>
+<p>实际生活中，我们都会有这样的经验：当遇到错误的时候，往往是我们学到东西最多的时候，而如果我们对自己的错误模糊不清，进步反而会变慢。</p>
+<p>同样地，我们希望神经网络能够从错误中更快地学习。那实际情况是怎样的呢？来看一个简单的例子。</p>
+<div class="figure">
+<img src="/images/2017-7-20/tikz28.png" alt="tikz28">
+<p class="caption">tikz28</p>
+</div>
+<p>这个例子只包含一个神经元，并且只有一个输入。我们会训练这个神经元，使得：当输入为 1 时，输出为 0。我们将权重和偏差分别初始化为 0.6 和 0.9。当输入为 1 时，网络输出为 0.82 (<span class="math inline">\(\frac{1}{1+e^{-1.5}} \approx 0.82\)</span>)。我们采用<strong>平方差函数</strong>来训练网络，并将学习率设为 0.15。</p>
+<p>这个网络其实已经退化成一个线性回归模型。下面用一个动画来演示网络的训练过程：</p>
+<div class="figure">
+<img src="/images/2017-7-20/saturation1.gif" alt="saturation1">
+<p class="caption">saturation1</p>
+</div>
+<p>从中我们可以看到，神经元快速地学习参数，最终输出 0.09 (已经很接近 0 了)。现在，我们将参数和偏差初始化为 2.0，网络的初始输出为 0.98 (跟我们想要的结果相差甚远)，学习率依然为 0.15。看看这一次网络会如何学习：</p>
+<div class="figure">
+<img src="/images/2017-7-20/saturation2.gif" alt="saturation2">
+<p class="caption">saturation2</p>
+</div>
+<p>虽然学习率和上次一样，但网络一开始学习的速度却很慢，在最开始的 150 次学习里，参数和偏差几乎没有改变，之后，学习速度突然提高，神经元的输出快速降到接近 0.0。这一点很令人差异，因为当神经元的输出严重错误时，学习的速度反而不是很快。</p>
+<p>下面我们需要了解问题发生的根源。神经元在训练的时候，学习速度除了受学习率影响外，还受偏导数 <span class="math inline">\(\partial C/ \partial w\)</span> 和 <span class="math inline">\(\partial C / \partial b\)</span> 影响。所以，学习速度很慢，也就是偏导数的值太小。根据 <span class="math display">\[
+C=\frac{(y-a)^2}{2}    \tag{54}
+\]</span> （其中，<span class="math inline">\(a=\sigma(z)\)</span>，<span class="math inline">\(z=wx+b\)</span>），我们可以求出： <span class="math display">\[
+\frac{\partial C}{\partial w} = (a-y)\sigma&#39;(z)x=a\sigma&#39;(z)   \tag{55}  
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial C}{\partial b} = (a-y)\sigma&#39;(z)x=a\sigma&#39;(z)   \tag{56}
+\]</span></p>
+<p>（上面两个式子中，已经将 x 和 y 的值替换为 1 和 0）。要想深入理解这两个式子，我们需要回顾一下 sigmoid 函数的内容，如下图：</p>
+<div class="figure">
+<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid">
+<p class="caption">sigmoid</p>
+</div>
+<p>从函数图像我们可以发现，当函数值接近于 1 或 0 时，函数导数趋于 0，从而导致 (55) 和 (56) 两个式子的值趋于 0。这也是为什么神经元一开始的学习速率会那么慢，而中间部分学习速度会突然提升。</p>
+<h4 id="引入交叉熵代价函数">引入交叉熵代价函数</h4>
+<p>要解决学习速度下降的问题，我们需要从两个偏导数上面做文章。要么换一个代价函数，要么更换 <span class="math inline">\(\sigma\)</span> 函数。这里，我们采用第一种做法，将代价函数更换为交叉熵函数(cross-entropy)。</p>
+<p>首先用一个例子来介绍交叉熵函数。</p>
+<p>假设我们有如下神经元：</p>
+<div class="figure">
+<img src="/images/2017-7-20/tikz29.png" alt="tikz29">
+<p class="caption">tikz29</p>
+</div>
+<p>则交叉熵函数被定义为（这里假定 y 是个概率值，在 0～1 之间，这样才能跟 a 相搭）： <span class="math display">\[
+C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
+\]</span> 当然，直觉上看不出这个函数能解决学习速率下降的问题，甚至看不出这可以成为一个代价函数。</p>
+<p>我们先解释为什么这个函数可以作为代价函数。首先，这个函数是非负的，即 <span class="math inline">\(C&gt;0\)</span>（注意 <span class="math inline">\(a\)</span> 的值在 0～1 之间）。其次，当神经元实际输出跟我们想要的结果接近时，交叉熵函数值会趋近 0。因此，交叉熵满足代价函数的基本条件。</p>
+<p>另外，交叉熵解决了学习速率下降的问题。我们将 <span class="math inline">\(a=\sigma(z)\)</span> 代入 (57) 式，并运用链式法则可以得到（这里的 <span class="math inline">\(w_j\)</span> 应该特指最后一层的参数，即 <span class="math inline">\(w_j^L\)</span>）： <span class="math display">\[
+\begin{eqnarray}
+  \frac{\partial C}{\partial w_j} &amp; = &amp; -\frac{1}{n} \sum_x \left(
+    \frac{y }{\sigma(z)} -\frac{(1-y)}{1-\sigma(z)} \right)
+  \frac{\partial \sigma}{\partial w_j} \tag{58}\\\\
+ &amp; = &amp; -\frac{1}{n} \sum_x \left( 
+    \frac{y}{\sigma(z)} 
+    -\frac{(1-y)}{1-\sigma(z)} \right)\sigma&#39;(z) x_j.
+\tag{59}\end{eqnarray}
+\]</span> 化简上式并将 <span class="math inline">\(\sigma(z)=\frac{1}{1+e^{-z}}\)</span> 代入后得到： <span class="math display">\[
+\frac{\partial C}{\partial w_j}=\frac{1}{n}\sum_x {x_j(\sigma(z)-y)}  \tag{61}
+\]</span> 这个表达式正是我们想要的！它表明，学习速率由 <span class="math inline">\(\sigma(z)-y\)</span> 控制，也就是说，当误差越大时，学习速率越快。而且避免了 <span class="math inline">\(\sigma&#39;()\)</span> 导致的学习速率下降的问题。</p>
+<p>类似地，我们可以计算出： <span class="math display">\[
+\frac{\partial C}{\partial b}=\frac{1}{n}\sum_x{(\sigma(z)-y)} \tag{62}
+\]</span> 现在，我们将交叉熵应用到之前的例子中，看看神经元的训练有什么变化。</p>
+<p>首先是权重和偏差的初始值为 0.6 和 0.9 的例子：</p>
+<div class="figure">
+<img src="/images/2017-7-20/saturation3.gif" alt="saturation3">
+<p class="caption">saturation3</p>
+</div>
+<p>可以看到网络的训练速度近乎完美。</p>
+<p>然后是权重和偏差初始值均为 2.0 的例子：</p>
+<div class="figure">
+<img src="/images/2017-7-20/saturation4.gif" alt="saturation4">
+<p class="caption">saturation4</p>
+</div>
+<p>这一次，正如我们期望的那样，神经元学习得非常快。</p>
+<p>这两次实验中，采用的学习率是 0.005。事实上，对于不同的代价函数，学习率要作出相应的调整。</p>
+<p>上面对交叉熵函数的讨论都只针对一个神经元，其实很容易将它延伸到多层神经元的网络结构。假设 <span class="math inline">\(y=y_1, y_2, \dots\)</span> 是想要的网络输出，而 <span class="math inline">\(a_1^L, a_2^L, \dots\)</span> 是网络的实际输出，则 cross-entropy 函数可以定义为： <span class="math display">\[
+C=-\frac{1}{n}\sum_x \sum_y {[y_j \ln a_j^L + (1-y_j) \ln(1-a_j^L)]}  \tag{63}
+\]</span> 好了，介绍了这么多，那我们什么时候用平方差函数，什么时候用交叉熵呢？作者给出的意见是，交叉熵几乎总是更好的选择，而原因也跟上文提到的一样，平方差函数容易在开始的时候遇到训练速率较慢的问题，而交叉熵则没有这种困扰。当然，这个问题出现的前提是平方差函数中用了 sigmoid 函数。</p>
+<h4 id="交叉熵到底是什么它是怎么来的">交叉熵到底是什么，它是怎么来的？</h4>
+<p>这一节中，我们想知道，第一个吃螃蟹的人是怎么想到交叉熵函数的。</p>
+<p>假设我们发现了学习速率下降的根源在于 <span class="math inline">\(\sigma&#39;(z)\)</span> 函数，我们要如何解决这个问题呢？当然，方法有很多，这里我们考虑这样的思路：是否能找一个新的代价函数，将 <span class="math inline">\(\sigma&#39;(z)\)</span> 这个项消掉？假如我们希望最终的偏导数满足下面的形式： <span class="math display">\[
+\frac{\partial C}{\partial w_j}=x_j (a-y) \tag{71}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial C}{\partial b}=(a-y) \tag{72}
+\]</span></p>
+<p>这两个偏导数能使神经网络在误差越大时，训练速度越快。</p>
+<p>回忆 BP 的四个公式，可以得到： <span class="math display">\[
+\frac{\partial C}{\partial b}=\frac{\partial C}{\partial a}\sigma&#39;(z) \tag{73}
+\]</span> 这里的 <span class="math inline">\(\sigma()\)</span> 函数采用的是 sigmoid，所以 <span class="math inline">\(\sigma&#39;(z)=\sigma(z)(1-\sigma(z))=a(1-a)\)</span>，将这个式子代入 (73) ，得到： <span class="math display">\[
+\frac{\partial C}{\partial b}=\frac{\partial C}{\partial a}a(1-a)
+\]</span> 跟我们最终的目标 (72) 式比较，需要满足： <span class="math display">\[
+\frac{\partial C}{\partial a}=\frac{a-y}{1(1-a)} \tag{75}
+\]</span> 对 (75) 进行积分后，便得到： <span class="math display">\[
+C=-\frac{1}{n}\sum_x{[y\ln a+(1-y)\ln(1-a)]}+constant \tag{77}
+\]</span> 至此，我们已经推出了交叉熵函数的形式。</p>
+<p>当然啦，交叉熵真正的来源是信息论，更具体的介绍超出了本教程的范畴，所以就不再深入了。</p>
+<h3 id="softmax">Softmax</h3>
+<p>前一节中，我们重点介绍了交叉熵如何解决训练速度下降的问题，这是从代价函数的角度思考问题。其实，我们还有另一种方法，那就是更换 <span class="math inline">\(\sigma()\)</span> 函数。这里要简单介绍一个新的 <span class="math inline">\(\sigma()\)</span> ：Softmax。</p>
+<p>Softmax 的功能和 sigmoid 类似，只不过前者的函数形式是这样的： <span class="math display">\[
+a_j^L=\frac{e^{z_j^L}}{\sum_k{e^{z_k^L}}} \tag{78}
+\]</span> ⚠️分母是所有输出神经元的总和。这意味着，经过 Softmax 函数后，所有神经元的输出会呈现出概率分布的样式。</p>
+<div class="figure">
+<img src="/images/2017-7-20/softmax.gif" alt="softmax">
+<p class="caption">softmax</p>
+</div>
+<p>当增大其中一个神经元输出时，其他神经元的输出值会变小，而且变小的总和等于前者增加的值。反之亦然。这是因为所有神经元的输出值总和始终为 1。</p>
+<p>另外，Softmax 的输出始终为正值。</p>
+<h4 id="softmax-解决学习速率下降的问题">Softmax 解决学习速率下降的问题</h4>
+<p>这一次，我们定义一个 <strong>log-likelihood</strong> 代价函数，通过它来了解 Softmax 如何缓解 <strong>learning slowdown</strong> 的问题。</p>
+<p><strong>log-likelihood</strong> 的函数形式为： <span class="math display">\[
+C \equiv -\ln a_y^L \tag{80}
+\]</span> 先解释一下 <span class="math inline">\(a_y^L\)</span>，比方说，在 MNIST 数据集中，我们要判断一张图片属于 10 类中的哪一类，那么，输出结果应该是一个 10 维的向量 <span class="math inline">\(a^L\)</span>，而真实结果则是数字 <span class="math inline">\(y\)</span>，比如 7。那么，<span class="math inline">\(a_y^L\)</span> 则表示 <span class="math inline">\(a_7^L\)</span> 这个项对应的概率值有多高。如果概率值（靠近 1）越高，证明猜测结果越正确，那么 <span class="math inline">\(C\)</span> 的值就越小，反之越大。</p>
+<p>有了代价函数后，我们照样求出偏导数： <span class="math display">\[
+\frac{\partial C}{\partial b_j^L}=a_j^L-y_j \tag{81}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial C}{\partial w_{jk}^L}=a_k^{L-1}(a_j^L-y_j)  \tag{82}
+\]</span></p>
+<p>这里不存在类似 sigmoid 导数那样使学习速率下降的情况。</p>
+<p>（写到这里的时候，我突然产生一个疑惑：不管是这里的 Softmax，还是的交叉熵，我们都只是对最后一层的导数和偏差求了偏导，但前面层的偏导数却没有计算，怎么能肯定前面层的偏导就不会遇到 <span class="math inline">\(\sigma&#39;()\)</span> 趋于 0 的问题呢？要知道，根据 BP 算法的公式，误差有这样的传递公式：<span class="math inline">\(\delta^l\)</span>=<span class="math inline">\(((W^{l+1})^T \delta^{l+1}) \odot \sigma&#39;(z^l)\)</span>，注意，这里依然会出现 <span class="math inline">\(\sigma&#39;()\)</span>，而前面层的权重和偏差的偏导数又是根据这个误差计算的，这样的话，前面层的学习速率下降的问题不还是没解决吗？这个问题先暂时放着，看看之后作者有没有解答。）</p>
+<p>写了这么多，我们又要问一个类似的问题：什么时候用 sigmoid 和 cross-entropy，什么时候用 softmax 和 log-likelihood。事实上，大部分情况下这两个选择都能带来不错的结果，当然，如果想要输出结果呈现概率分布的话，Softmax 无疑会更好。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" rel="next" title="读书笔记：neuralnetworksanddeeplearning chapter2">
+                <i class="fa fa-chevron-left"></i> 读书笔记：neuralnetworksanddeeplearning chapter2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" rel="prev" title="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
+                读书笔记：neuralnetworksanddeeplearning chapter3（2） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉熵函数cross-entropy"><span class="nav-number">1.</span> <span class="nav-text">交叉熵函数(cross-entropy)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入交叉熵代价函数"><span class="nav-number">1.1.</span> <span class="nav-text">引入交叉熵代价函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵到底是什么它是怎么来的"><span class="nav-number">1.2.</span> <span class="nav-text">交叉熵到底是什么，它是怎么来的？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">2.</span> <span class="nav-text">Softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax-解决学习速率下降的问题"><span class="nav-number">2.1.</span> <span class="nav-text">Softmax 解决学习速率下降的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1032 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="C++," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在成功将 mac 由 10.10 升级到 10.12 后，我发现除了新增一个并不怎么好用的 Siri 外，原来支持 NTFS 硬盘的驱动居然也成功失效了。我那块 500 GB 的东芝硬盘，虽不至于成砖，但一块只能读不能写的硬盘，实在让人欲哭无泪。巧的是，最近需要频繁地将一些数据文件( GB 级别)拷贝到其他电脑，而手头又仅剩一些小容量 U 盘。于是，我突然萌生了写一个文件分割器的想法，将大的压缩文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用C++写一个文件分割器">
+<meta property="og:url" content="https://jermmy.github.io/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="在成功将 mac 由 10.10 升级到 10.12 后，我发现除了新增一个并不怎么好用的 Siri 外，原来支持 NTFS 硬盘的驱动居然也成功失效了。我那块 500 GB 的东芝硬盘，虽不至于成砖，但一块只能读不能写的硬盘，实在让人欲哭无泪。巧的是，最近需要频繁地将一些数据文件( GB 级别)拷贝到其他电脑，而手头又仅剩一些小容量 U 盘。于是，我突然萌生了写一个文件分割器的想法，将大的压缩文">
+<meta property="og:updated_time" content="2017-06-04T15:27:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用C++写一个文件分割器">
+<meta name="twitter:description" content="在成功将 mac 由 10.10 升级到 10.12 后，我发现除了新增一个并不怎么好用的 Siri 外，原来支持 NTFS 硬盘的驱动居然也成功失效了。我那块 500 GB 的东芝硬盘，虽不至于成砖，但一块只能读不能写的硬盘，实在让人欲哭无泪。巧的是，最近需要频繁地将一些数据文件( GB 级别)拷贝到其他电脑，而手头又仅剩一些小容量 U 盘。于是，我突然萌生了写一个文件分割器的想法，将大的压缩文">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/"/>
+
+
+
+
+
+  <title>用C++写一个文件分割器 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                用C++写一个文件分割器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-18T15:48:21+08:00">
+                2017-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/" class="leancloud_visitors" data-flag-title="用C++写一个文件分割器">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在成功将 mac 由 10.10 升级到 10.12 后，我发现除了新增一个并不怎么好用的 Siri 外，原来支持 NTFS 硬盘的驱动居然也成功失效了。我那块 500 GB 的东芝硬盘，虽不至于成砖，但一块只能读不能写的硬盘，实在让人欲哭无泪。巧的是，最近需要频繁地将一些数据文件( GB 级别)拷贝到其他电脑，而手头又仅剩一些小容量 U 盘。于是，我突然萌生了写一个文件分割器的想法，将大的压缩文件分片后，再用这些小 U 盘搬到到其他电脑上去。</p>
+<p>有人会问，这样的软件明明网上有的是，何必自己写呢？没错，我就是这么无聊的人。</p>
+<a id="more"></a>
+<h3 id="需求分析">需求分析</h3>
+<p>其实也不用怎么分析，功能非常简单。我需要两个函数（分别用于分割和合成），分割函数的输入是：一个文件、分片数量，输出是：分片文件、一个配置文件（记录分片文件的顺序）；合成函数的输入是：配置文件，输出是：完整的数据文件（根据配置，程序会寻找分片文件用于合成）。</p>
+<p>基于此，其实要实现的是两个这样的函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 分割文件的函数，第三个参数指定配置文件名称</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">segment</span><span class="params">(<span class="built_in">string</span> file_name, <span class="keyword">int</span> segment_num, <span class="built_in">string</span> json_file)</span></span>;</div><div class="line"><span class="comment">// 合成文件的函数，参数为分割时生成的配置文件</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="built_in">string</span> json_file)</span></span>;</div></pre></td></tr></table></figure>
+<p>配置文件的格式，我使用了 <code>json</code>（其实用简单的字符串记录一下也是可以的）。</p>
+<p>另外，为了方便使用，最好再用一个类将两个方法封装一下。</p>
+<h3 id="难点分析">难点分析</h3>
+<p>这么小的程序会有难点？！其实还是有一丢丢，就是切割文件的时候，由于文件可能太大，因此不能一口气读入内存中，所以这里采用分块的方法，读一小块写一小块。当然啦，速度方面的优化，这里先不考虑了。</p>
+<h3 id="程序实现">程序实现</h3>
+<p>首先，我们把所有功能放在一个类<code>FileSegment</code>里面实现，对外只暴露上面的两个函数接口。</p>
+<h4 id="segment">segment</h4>
+<p>上面的难度分析已经指出，我们需要分块读取文件，然后分块写入。</p>
+<p>首先需要定义分块大小：<code>const int FileSegment::kBlockSize = 1024 * 1024;</code> ，这里设定一个块大小为1 MB。</p>
+<p>我们再定义两个辅助函数，用来分块读文件、写文件：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 从input流中读取size(默认大小kBlockSize)大小的字节到data里面</span></div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">read_file_in_block</span><span class="params">(<span class="keyword">char</span>* data, ifstream &amp;input, <span class="keyword">int</span> size=kBlockSize)</span> </span>&#123;</div><div class="line">    input.read(data, size);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 从data中将size(默认大小kBlockSize)大小的字节写入到output流</span></div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">write_file_in_block</span><span class="params">(<span class="keyword">char</span>* data, ofstream &amp;output, <span class="keyword">int</span> size=kBlockSize)</span> </span>&#123;</div><div class="line">    output.write(data, size);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这两个函数因为要经常用到，所以把它们作为内联函数使用。</p>
+<p>综合这两个辅助函数，我们定义另一个辅助函数，用于从输入文件中将大批量的数据写入到输出文件中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 将input流中读取input_size大小的字节内容，写入到output流中</span></div><div class="line"><span class="keyword">void</span> FileSegment::copy_file(ifstream &amp;input, ofstream &amp;output, <span class="keyword">size_t</span> input_size) &#123;</div><div class="line">	<span class="keyword">char</span>* data = <span class="keyword">new</span> <span class="keyword">char</span>[kBlockSize];</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> block = <span class="number">0</span>; block &lt; input_size / kBlockSize; block++) &#123;</div><div class="line">    	read_file_in_block(data, input);</div><div class="line">    	write_file_in_block(data, output);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 读取剩余的字节</span></div><div class="line">    <span class="keyword">size_t</span> left_size = input_size % kBlockSize;</div><div class="line">    <span class="keyword">if</span> (left_size != <span class="number">0</span>) &#123;</div><div class="line">    	read_file_in_block(data, input, left_size);</div><div class="line">    	write_file_in_block(data, output, left_size);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="keyword">delete</span> [] data;</div><div class="line">	data = <span class="literal">nullptr</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有了上面的辅助函数后，我们可以聚焦于<code>segment()</code>函数的核心代码部分了。</p>
+<p>我们只需要利用<code>copy_file()</code>函数，将源文件分片写入到几个分片文件中即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 分片文件名</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; segment_files;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; segment_num; i++) &#123;</div><div class="line">  segment_files.push_back(file_name + to_string(i+<span class="number">1</span>) + <span class="string">".tmp"</span>);</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"segment_file --- "</span> &lt;&lt; segment_files[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function">ifstream <span class="title">src_file_input</span><span class="params">(file_name)</span></span>;</div><div class="line"><span class="comment">// 输入文件大小</span></div><div class="line"><span class="keyword">size_t</span> src_file_size = file_size(src_file_input);</div><div class="line"><span class="comment">// 分片文件大小</span></div><div class="line"><span class="keyword">size_t</span> segment_size = src_file_size / segment_num;</div><div class="line"></div><div class="line"><span class="comment">// 分片输出文件</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; segment_num; i++) &#123;</div><div class="line">  <span class="function">ofstream <span class="title">segment_file_output</span><span class="params">(segment_files[i])</span></span>;</div><div class="line">  <span class="keyword">if</span> (i == segment_num<span class="number">-1</span>) &#123;  <span class="comment">// 最后一次，要将剩余文件片全部写入</span></div><div class="line">    <span class="keyword">size_t</span> left_size = src_file_size % segment_size;</div><div class="line">    copy_file(src_file_input, segment_file_output, segment_size + left_size);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    copy_file(src_file_input, segment_file_output, segment_size);</div><div class="line">  &#125;</div><div class="line">  segment_file_output.close();</div><div class="line">&#125;</div><div class="line"></div><div class="line">src_file_input.close();</div></pre></td></tr></table></figure>
+<p>另外，我们需要将分片文件的文件名和分割顺序等信息写入配置文件中，这里使用<code>json</code>格式，并用这个<a href="https://github.com/nlohmann/json" target="_blank" rel="external">第三方库</a>来操纵<code>json</code>对象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="built_in">string</span> FileSegment::kSegmentFileNum = <span class="string">"SegmentNum"</span>;</div><div class="line"><span class="keyword">const</span> <span class="built_in">string</span> FileSegment::kSourceFileName = <span class="string">"SourceFileName"</span>;</div><div class="line"><span class="keyword">const</span> <span class="built_in">string</span> FileSegment::kSegmentFiles = <span class="string">"SegmentFiles"</span>;</div><div class="line"></div><div class="line"><span class="function">ofstream <span class="title">json_output</span><span class="params">(json_file)</span></span>;</div><div class="line">json j;</div><div class="line">j[kSegmentFileNum] = segment_num;</div><div class="line">j[kSourceFileName] = file_name;</div><div class="line">j[kSegmentFiles] = segment_files;   <span class="comment">// 这里segment_files是vector对象</span></div><div class="line">json_output &lt;&lt; j;</div><div class="line">json_output.close();</div></pre></td></tr></table></figure>
+<p>下面给出<code>segment()</code>函数的完整代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> FileSegment::segment(<span class="built_in">string</span> file_name, <span class="keyword">int</span> segment_num, <span class="built_in">string</span> json_file) &#123;</div><div class="line"></div><div class="line">	<span class="comment">// 检查源文件是否存在</span></div><div class="line">    <span class="keyword">if</span> (!exist(file_name)) &#123;</div><div class="line">    	<span class="built_in">cout</span> &lt;&lt; <span class="string">"file ["</span> &lt;&lt; file_name &lt;&lt; <span class="string">"] doesn't exist!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    	<span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 检查分片数量是否大于0</span></div><div class="line">    <span class="keyword">if</span> (segment_num &lt;= <span class="number">0</span>) &#123;</div><div class="line">    	<span class="built_in">cout</span> &lt;&lt; <span class="string">"segment number should be greater than 0!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    	<span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 分片文件名</span></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; segment_files;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; segment_num; i++) &#123;</div><div class="line">    	segment_files.push_back(file_name + to_string(i+<span class="number">1</span>) + <span class="string">".tmp"</span>);</div><div class="line">    	<span class="built_in">cout</span> &lt;&lt; <span class="string">"segment_file --- "</span> &lt;&lt; segment_files[i] &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function">ifstream <span class="title">src_file_input</span><span class="params">(file_name)</span></span>;</div><div class="line">    <span class="comment">// 输入文件大小</span></div><div class="line">    <span class="keyword">size_t</span> src_file_size = file_size(src_file_input);</div><div class="line">    <span class="comment">// 分片文件大小</span></div><div class="line">    <span class="keyword">size_t</span> segment_size = src_file_size / segment_num;</div><div class="line"></div><div class="line">    <span class="comment">// 分片输出文件</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; segment_num; i++) &#123;</div><div class="line">    	<span class="function">ofstream <span class="title">segment_file_output</span><span class="params">(segment_files[i])</span></span>;</div><div class="line">    	<span class="keyword">if</span> (i == segment_num<span class="number">-1</span>) &#123;  <span class="comment">// 最后一次，要将剩余文件片全部写入</span></div><div class="line">    		<span class="keyword">size_t</span> left_size = src_file_size % segment_size;</div><div class="line">    		copy_file(src_file_input, segment_file_output, segment_size + left_size);</div><div class="line">    	&#125; <span class="keyword">else</span> &#123;</div><div class="line">    		copy_file(src_file_input, segment_file_output, segment_size);</div><div class="line">    	&#125;</div><div class="line">    	segment_file_output.close();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    src_file_input.close();</div><div class="line"></div><div class="line">	<span class="function">ofstream <span class="title">json_output</span><span class="params">(json_file)</span></span>;</div><div class="line">	json j;</div><div class="line">	j[kSegmentFileNum] = segment_num;</div><div class="line">	j[kSourceFileName] = file_name;</div><div class="line">	j[kSegmentFiles] = segment_files;</div><div class="line">    json_output &lt;&lt; j;</div><div class="line">	json_output.close();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="merge">merge</h4>
+<p>有了前面的辅助函数后，<code>merge()</code>函数的实现基本是依葫芦画瓢。首先需要从配置文件中读取出<code>json</code>对象，根据配置信息去合成文件：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">json j;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!exist(json_file)) &#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"json file ["</span> &lt;&lt; json_file &lt;&lt; <span class="string">"] doesn't exist!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function">ifstream <span class="title">json_input</span><span class="params">(json_file)</span></span>;</div><div class="line">json_input &gt;&gt; j;</div><div class="line"></div><div class="line"><span class="comment">// 源文件名</span></div><div class="line"><span class="built_in">string</span> src_file = j[kSourceFileName];</div><div class="line"></div><div class="line"><span class="comment">// 检查源文件是否已经存在</span></div><div class="line"><span class="keyword">if</span> (exist(src_file)) &#123;</div><div class="line">  src_file += <span class="string">".copy"</span>;</div><div class="line">&#125;</div><div class="line"><span class="function">ofstream <span class="title">result</span><span class="params">(src_file)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// 文件分片数量</span></div><div class="line"><span class="keyword">int</span> segment_num = j[kSegmentFileNum];</div><div class="line"><span class="comment">// 分片文件名</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; segment_files = j[kSegmentFiles];</div></pre></td></tr></table></figure>
+<p>之后，根据分片文件来合成大文件：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 合并文件</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> it = segment_files.begin(); it != segment_files.end(); it++) &#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"copy file ["</span> &lt;&lt; *it &lt;&lt; <span class="string">"]"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="function">ifstream <span class="title">seg_input</span><span class="params">(*it)</span></span>;</div><div class="line">  <span class="keyword">size_t</span> seg_input_size = file_size(seg_input);  <span class="comment">// 计算分片文件大小</span></div><div class="line">  copy_file(seg_input, result, seg_input_size);</div><div class="line">  seg_input.close();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来照例给出<code>merge()</code>函数完整实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> FileSegment::merge(<span class="built_in">string</span> json_file) &#123;</div><div class="line">	json j;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (!exist(json_file)) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"json file ["</span> &lt;&lt; json_file &lt;&lt; <span class="string">"] doesn't exist!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function">ifstream <span class="title">json_input</span><span class="params">(json_file)</span></span>;</div><div class="line">	json_input &gt;&gt; j;</div><div class="line"></div><div class="line">	<span class="comment">// 源文件名</span></div><div class="line">	<span class="built_in">string</span> src_file = j[kSourceFileName];</div><div class="line"></div><div class="line">    <span class="comment">// 检查源文件是否已经存在</span></div><div class="line">	<span class="keyword">if</span> (exist(src_file)) &#123;</div><div class="line">		src_file += <span class="string">".copy"</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="function">ofstream <span class="title">result</span><span class="params">(src_file)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 文件分片数量</span></div><div class="line">	<span class="keyword">int</span> segment_num = j[kSegmentFileNum];</div><div class="line">    <span class="comment">// 分片文件名</span></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; segment_files = j[kSegmentFiles];</div><div class="line"></div><div class="line">    <span class="comment">// 检查文件分片是否齐全</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = segment_files.begin(); it != segment_files.end(); ++it) &#123;</div><div class="line">    	<span class="keyword">if</span> (!exist(*it)) &#123;</div><div class="line">    		<span class="built_in">cout</span> &lt;&lt; <span class="string">"segment file ["</span> &lt;&lt; *it &lt;&lt; <span class="string">"] doesn't exist!"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    		<span class="keyword">return</span>; </div><div class="line">    	&#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 合并文件</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = segment_files.begin(); it != segment_files.end(); it++) &#123;</div><div class="line">    	<span class="built_in">cout</span> &lt;&lt; <span class="string">"copy file ["</span> &lt;&lt; *it &lt;&lt; <span class="string">"]"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    	<span class="function">ifstream <span class="title">seg_input</span><span class="params">(*it)</span></span>;</div><div class="line">    	<span class="keyword">size_t</span> seg_input_size = file_size(seg_input);</div><div class="line">    	copy_file(seg_input, result, seg_input_size);</div><div class="line">    	seg_input.close();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	json_input.close();</div><div class="line">	result.close();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><br\></br\></p>
+<h4 id="main">main</h4>
+<p>在<code>main()</code>中，直接实例化<code>FileSegment</code>类，通过<code>segment()</code>和<code>merge()</code>函数分割或者合成文件。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</div><div class="line">  FileSegment fs;</div><div class="line">  <span class="comment">// 分割data.zip文件，分为4片</span></div><div class="line">  fs.segment(<span class="string">"data.zip"</span>, <span class="number">4</span>, <span class="string">"config.json"</span>);</div><div class="line">  <span class="comment">// 根据config.json文件合成最终文件</span></div><div class="line">  fs.merge(<span class="string">"config.json"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，为了方便使用，我特意写了一个解析命令的类<code>InputParser</code>，然后，我们可以按照如下方式使用该程序：</p>
+<p><strong>分割文件</strong></p>
+<p><code>./main -s data.zip 4 config.json</code></p>
+<p><strong>合成文件</strong></p>
+<p><code>./main -m config.json</code></p>
+<p>完整工程代码，请看：https://github.com/Jermmy/file_segmentation</p>
+<h3 id="测试结果">测试结果</h3>
+<p>在我的 mac (双核，2.7 GHz Intel Core i5) 上，将一个 7.35 G 的 zip 文件分割为 10 片，所用时间为 37.7 s。</p>
+<p>同样的机器，将上面的 10 片文件合成原来的大文件，所用时间为 31.8 s。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/" title="用C++写一个文件分割器">https://jermmy.github.io/2017/03/18/2017-3-18-a-file-segmentation-in-c-plus-plus/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/14/2017-3-14-learning-cg-coordinate-transformation/" rel="next" title="坐标系统之间的转换">
+                <i class="fa fa-chevron-left"></i> 坐标系统之间的转换
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/19/2017-3-19-covariance-matrix/" rel="prev" title="协方差矩阵">
+                协方差矩阵 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求分析"><span class="nav-number">1.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#难点分析"><span class="nav-number">2.</span> <span class="nav-text">难点分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序实现"><span class="nav-number">3.</span> <span class="nav-text">程序实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#segment"><span class="nav-number">3.1.</span> <span class="nav-text">segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#merge"><span class="nav-number">3.2.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main"><span class="nav-number">3.3.</span> <span class="nav-text">main</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">4.</span> <span class="nav-text">测试结果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

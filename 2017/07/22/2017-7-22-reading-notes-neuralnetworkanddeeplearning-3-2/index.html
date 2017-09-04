@@ -1,0 +1,1159 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
+<meta property="og:url" content="https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/index.html">
+<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting2.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting3.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting4.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting_full.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/regularized1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/regularized2.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/regularized_full.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/tikz30.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/tikz31.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_log.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_5.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_rotated_5.png">
+<meta property="og:updated_time" content="2017-09-03T14:53:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
+上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-22/overfitting1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/"/>
+
+
+
+
+
+  <title>读书笔记：neuralnetworksanddeeplearning chapter3（2） | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="写的不是代码，是窝窝头">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                读书笔记：neuralnetworksanddeeplearning chapter3（2）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-22T16:33:47+08:00">
+                2017-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+             <span id="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+<p>上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的<strong>过拟合（overfitting）</strong>问题，以及解决的方法：<strong>正则化（regularization）</strong>。</p>
+<a id="more"></a>
+<h3 id="过拟合">过拟合</h3>
+<h4 id="过拟合现象">过拟合现象</h4>
+<p>在了解过拟合这个问题之前，我们先做个实验。</p>
+<p>假设我们使用一个有 30 个隐藏层，23860 个参数的网络来预测 MNIST 数据集。不过，我们只用数据集中的 1000 张图片进行训练。训练过程和以往一样，代价函数采用交叉熵函数，学习率 <span class="math inline">\(\eta = 0.5\)</span>，batch 大小为 10，并且训练 400 轮。</p>
+<p>下图是训练过程中 cost 的变化：</p>
+<center>
+<p><img src="/images/2017-7-22/overfitting1.png" width="520px"></p>
+</center>
+<p>可以看到，cost 是在逐渐变小的。不过这是否意味着网络被训练得越来越好呢？我们来看看每一轮的准确率情况：</p>
+<center>
+<p><img src="/images/2017-7-22/overfitting2.png" width="520px"></p>
+</center>
+<p>在大概 280 轮训练之前，网络的准确率确实在缓慢上升，但之后，我们看到，准确率基本没有大的改进，始终维持在 82.20 上下。这和 cost 下降的情况是背道而驰的。这种看似得到训练，其实结果很差的情况，就是<strong>过拟合（overfitting）</strong>。</p>
+<p>出现过拟合的原因在于，网络模型的泛化能力很差。也就是说，模型对训练数据的拟合程度非常好，但对未见过的新数据，就几乎没什么拟合能力了。</p>
+<p>要更进一步了解过拟合现象，我们再来看看其他实验。</p>
+<p>下图是训练过程中，在测试数据上的 cost（之前是训练数据上的）：</p>
+<center>
+<p><img src="/images/2017-7-22/overfitting3.png" width="520px"></p>
+</center>
+<p>图中，cost 在前 15 轮训练中逐渐改善，但之后却又开始上升。这是网络出现过拟合的信号之一。</p>
+<p>另一个过拟合的信号请看下图：</p>
+<center>
+<p><img src="/images/2017-7-22/overfitting4.png" width="520px"></p>
+</center>
+<p>这是训练集上的准确率。可以看出，网络的准确率一路上升直到 100%。有人可能会疑惑，准确率高不是好事吗？确实，准确率高是我们需要的，但必须是测试集上的准确率。而训练集上的高准确率，带来的结果未必是好事。它可能意味着，网络在训练数据上「钻了牛角尖」。它并不是学习出如何识别手写体数字，而是仅仅记住了训练数据长什么样。换句话说，它在训练数据上拟合太过了。</p>
+<p>过拟合在现代神经网络中是很常见的问题，因为网络参数巨大，一旦训练样本不够丰富，有些参数就可能没有训练到。为了有效地训练网络，我们需要学习能够减少过拟合的技巧。</p>
+<h4 id="交叉验证集">交叉验证集</h4>
+<p>在解决过拟合这个问题上，我们需要引入另一个数据集——交叉验证集（validation dataset）。</p>
+<p>交叉验证集可以认为是一种双保险措施。在解决过拟合时，我们会用到很多技巧，有些技巧本身就带有自己的参数（也就是我们说的<strong>超参数(hyper parameter)</strong>），如果只在测试集上试验，结果可能导致我们解决过拟合的措施有针对测试集的「嫌疑」，或者说，在测试集上过拟合了。因此，用一个新的交叉验证集来评估解决的效果，再在测试集上试验，可以让网络模型的泛化能力更强。</p>
+<h4 id="三个解决过拟合的小办法">三个解决过拟合的小办法</h4>
+<p>之所以称为小办法，即这种方法虽然有效，但要么作用很小，要么实践意义不大。</p>
+<h5 id="early-stop">early stop</h5>
+<p>检测过拟合有一个很明显的方法，就是跟踪测试集上的准确率。当准确率不再上升时，就停止训练（early stop）。当然，严格来讲，这不是过拟合的充要条件，可能训练集和测试集上的准确率都停止上升了。但这种策略仍然有助于缓解过拟合问题。</p>
+<p>不过，在实践中，我们通常是跟踪验证集上的准确率，而非测试集。</p>
+<h5 id="增加训练数据">增加训练数据</h5>
+<center>
+<p><img src="/images/2017-7-22/overfitting_full.png" width="520px"></p>
+</center>
+<p>上图是用所有训练数据进行训练时，训练集和测试集上准确率的变化情况。</p>
+<p>可以看出，相比之前只用 1000 个训练样本的情况，网络在训练集和测试集上的准确率只想差了 2.53%（之前是 17.73%）。也就是说，增加训练数据后，过拟合问题很大程度上缓解下来了。所以，增加训练数据也是解决过拟合的办法之一（而且是最简单有效的方法，所谓「算法好不如数据好」）。不过，增加数据不是简单地将数据拷贝复制，而是让数据的种类样式更加丰富。</p>
+<p>在真实情况中，训练数据是很难获取的，所以这种方法实践起来很困难。</p>
+<h5 id="减少模型参数">减少模型参数</h5>
+<p>减少模型参数本质上和增加训练数据是一样的，不过，对于神经网络而言，参数越多，效果一般会更好，所以这种方法不是逼不得已，我们一般不会采纳。</p>
+<h3 id="正则化">正则化</h3>
+<h4 id="l2-正则化">L2 正则化</h4>
+<p>正则化是解决过拟合常用的方法。在这一节中，我们将介绍最常用的正则化技巧：L2 正则化（weight decay）。</p>
+<p>L2 正则化是在代价函数中添加<strong>正则化项(regularization term)</strong>。比如，下面是正则化后的交叉熵函数： <span class="math display">\[
+C=-\frac{1}{n}\sum_{xj}{[y_j \ln a_j^L+(1-y_j)\ln(1-a_j^L)]}+\frac{\lambda}{2n}\sum_w{w^2} \tag{85}
+\]</span> 所谓正则化项，其实就是权值的平方和，前面的 <span class="math inline">\(\lambda / 2n\)</span> 是针对所有样本取均值，而 <span class="math inline">\(\lambda\)</span> 就是我们说的<strong>超参数</strong>。之后会讨论 <span class="math inline">\(\lambda\)</span> 的值该如何取。注意，正则项中并没有偏差，因为对偏差的正则化效果不明显，所以一般只对权值进行正则化。</p>
+<p>L2 正则化也可以用在其他代价函数中，比如平方差函数： <span class="math display">\[
+C=\frac{1}{2n}\sum_x{||t-a^L||^2}+\frac{\lambda}{2n}\sum_w{w^2} \tag{86}
+\]</span> 我们可以写出 L2 正则化的通式： <span class="math display">\[
+\begin{eqnarray}  C = C_0 + \frac{\lambda}{2n}\sum_w w^2,\tag{87}\end{eqnarray}
+\]</span> 其中，<span class="math inline">\(C_0\)</span> 是原先的代价函数。</p>
+<p>直观上，正则化的效果就是让学习的权值尽可能的小。可以说，正则化就是在最小化原代价函数和寻找小权值之间找折中。而两者之间的重要性由 <span class="math inline">\(\lambda\)</span> 控制。当 <span class="math inline">\(\lambda\)</span> 大时，网络会尽可能减小权重，反之，则尽可能减小原先的代价函数。</p>
+<p>我们先通过一些实验看看这种正则化的效果。</p>
+<p>添加正则化项后，梯度下降的偏导数会发生一点变化： <span class="math display">\[
+\begin{eqnarray} 
+  \frac{\partial C}{\partial w} &amp; = &amp; \frac{\partial C_0}{\partial w} + 
+  \frac{\lambda}{n} w \tag{88}\\\\
+  \frac{\partial C}{\partial b} &amp; = &amp; \frac{\partial C_0}{\partial b}.
+\tag{89}\end{eqnarray}
+\]</span> 其中，<span class="math inline">\(\partial C_0/\partial w\)</span> 和 <span class="math inline">\(\partial C_0/\partial b\)</span> 可以通过 BP 算法计算，因此，新的偏导数很容易计算： <span class="math display">\[
+\begin{eqnarray} 
+  w &amp; \rightarrow &amp; w-\eta \frac{\partial C_0}{\partial
+    w}-\frac{\eta \lambda}{n} w \tag{91}\\\\
+  &amp; = &amp; \left(1-\frac{\eta \lambda}{n}\right) w -\eta \frac{\partial
+    C_0}{\partial w}. 
+\tag{92}\end{eqnarray} \\
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+b &amp; \rightarrow &amp; b -\eta \frac{\partial C_0}{\partial b}.
+\tag{90}\end{eqnarray}
+\]</span></p>
+<p>在批训练时，梯度下降公式变为： <span class="math display">\[
+\begin{eqnarray} 
+  w \rightarrow \left(1-\frac{\eta \lambda}{n}\right) w -\frac{\eta}{m}
+  \sum_x \frac{\partial C_x}{\partial w}, 
+\tag{93}\end{eqnarray}
+\]</span> <strong>（注意，式子前半部分除的是训练数据大小 n，后半部分是批训练的 m）</strong></p>
+<p>现在，在 1000 个训练样本的例子中，我们加入正则化项（<span class="math inline">\(\lambda\)</span> 设为0.1，其他参数和之前一样），并看看训练的结果如何：</p>
+<center>
+<p><img src="/images/2017-7-22/regularized1.png" width="520px"></p>
+</center>
+<center>
+<p><img src="/images/2017-7-22/regularized2.png" width="520px"></p>
+</center>
+<p>可以看出，准确率较之前的 82.27% 有了明显的提高，也就是说，正则化确实在一定程度上抑制了过拟合。</p>
+<p>现在，我们用所有的 50000 张图片训练，看看正则化能否起作用（这里我们设置 <span class="math inline">\(\lambda\)</span> 为 5.0，因为 n 由原来的 1000 变为 50000，如果 <span class="math inline">\(\lambda\)</span> 的值和之前一样，那么 <span class="math inline">\(\frac{\eta \lambda}{n}\)</span> 的值就会小很大，weight decay 的效果就会大打折扣）。</p>
+<center>
+<p><img src="/images/2017-7-22/regularized_full.png" width="520px"></p>
+</center>
+<p>可以看到，准确率上升到 96.49%，而且测试集准确率和训练集准确率之间的差距也进一步缩小了。</p>
+<h4 id="为什么正则化能减小过拟合">为什么正则化能减小过拟合</h4>
+<p>这个问题可以用<strong>奥卡姆剃刀(Occam’s Razor)</strong>来解释。奥卡姆剃刀的思想是，如果两个模型都能拟合数据，那么我们优先选择简单的模型。</p>
+<p>正则化给神经网络带来的影响是：权值 (绝对值) 会更小。权值小的好处是，当输入发生微小的变化时，网络的结果不会发生大的波动，相反地，如果权值 (绝对值) 过大，那么一点点变化也会产生很大的响应（包括噪声）。从这一点来看，我们可以认为正则化的网络是比较简单的模型。</p>
+<p>当然，简单的模型也未必是真正有用的，更关键的是要看模型的泛化能力是否足够好。关于正则化，人们一直没法找出系统科学的解释。由于神经网络中，正则化的效果往往不错，因此大部分情况下，我们都会对网络进行正则化。</p>
+<h4 id="其他正则化技巧">其他正则化技巧</h4>
+<h5 id="l1-正则化">L1 正则化</h5>
+<p>L1 正则化的形式和 L2 很像，只不过正则化项略有区别： <span class="math display">\[
+C=C_0+\frac{\lambda}{n}\sum_w{|w|}   \tag{95}
+\]</span> 下面来看看 L1 正则化对网络产生的影响。</p>
+<p>首先，我们对 (95) 式求偏导： <span class="math display">\[
+\begin{eqnarray}  \frac{\partial C}{\partial
+    w} = \frac{\partial C_0}{\partial w} + \frac{\lambda}{n} \, {\rm
+    sgn}(w),
+\tag{96}\end{eqnarray}
+\]</span> 其中，<span class="math inline">\({\rm sgn}(w)\)</span> 表示 <span class="math inline">\(w\)</span> 的符号，如果 <span class="math inline">\(w\)</span> 为正，则为 +1，否则为 -1。</p>
+<p>这样，梯度下降的公式就变成： <span class="math display">\[
+w \rightarrow w&#39;=w-\frac{\eta \lambda}{n}{\rm sgn}(w)-\eta \frac{\partial C_0}{\partial w}  \tag{97}
+\]</span> 对比 L2 的公式 (93)，我们发现，两个式子都有缩小 weight 的功能，这跟之前分析正则化能起作用的原因是一致的。只不过 weight 缩小的方式不一样。在 L1 中，正则化项让 weight 以一个固定的常数向 0 靠近（weight 是正是负都一样），而 L2 中weight 减小的量跟 weight 本身存在一个比例关系（也就是说，weight 越小，这个量也越小）。所以，当 weight 的绝对值很大时，L2 对 weight 的抑制作用比 L1 大。</p>
+<p>在上式中，存在一个缺陷：当 <span class="math inline">\(w=0\)</span> 时，<span class="math inline">\(|w|\)</span> 是没法求导的。这个时候，我们只需要简单地令 <span class="math inline">\({\rm sgn}(w)=0\)</span> 即可。</p>
+<h5 id="dropout">dropout</h5>
+<p>dropout 和 L1、L2 存在很大区别，它不会修改代价函数，相反地，它修改的是网络的结构。</p>
+<p>假设我们要训练如下的网络：</p>
+<center>
+<p><img src="/images/2017-7-22/tikz30.png"></p>
+</center>
+<p>在梯度下降时，dropout 会随机删除隐藏层中一半的神经元，如下（虚线表示删除的神经元）：</p>
+<center>
+<p><img src="/images/2017-7-22/tikz31.png"></p>
+</center>
+<p>让网络在这种「残缺」的状态下训练。</p>
+<p>当开始下一轮 batch 训练时，我们先恢复完整的网络，然后继续随机删除隐藏层中一半的神经元，再训练网络。如此循环直到训练结束。</p>
+<p>当要使用网络预测的时候，我们会恢复所有的神经元。由于训练时只有一半的神经元启动，因此每个神经元的权值等价于完整网络的两倍，所以，真正使用网络预测时，我们要取隐藏层的权值的一半。</p>
+<p>dropout 的思想可以这么理解：假设我们按照标准模式 (没有 dropout) 训练很多相同结构的网络，由于每个网络的初始化不同，训练时的批训练数据也会存在差异，因此每个网络的输出都会存在差别。最后我们取所有网络的结果的均值作为最终结果（类似随机森林的投票机制）。例如，我们训练了 5 个网络，有 3 个网络将数字分类为「3」，那么我们就可以认为结果是「3」，因为另外两个网络可能出错了。这种平均的策略很强大，因为不同的网络可能在不同程度上出现了过拟合，而平均取值可以缓解一定程度的过拟合现象。dropout 每次训练时会 drop 一些神经元，这就像在训练不同的网络，dropout 的过程就像在平均很多网络的结果，因此最终起到减小 overfitfing 的作用。</p>
+<h5 id="人工扩展训练数据">人工扩展训练数据</h5>
+<p>除了 dropout，扩展训练数据也是缓解过拟合的有效策略。</p>
+<p>为了解训练数据集对结果的影响，我们准备做几组实验。每组实验的训练集大小不同，训练的轮数和正则化的参数 <span class="math inline">\(\lambda\)</span> 也会做相应调整，其他参数则保持不变。</p>
+<center>
+<p><img src="/images/2017-7-22/more_data.png" width="520px"></p>
+</center>
+<p>正如图中所示，训练数据量的增加有助于提高分类的准确率。图中的结果看似网络已经趋于收敛，但换成对数坐标后，这种效果就更加明显了：</p>
+<center>
+<p><img src="/images/2017-7-22/more_data_log.png" width="520px"></p>
+</center>
+<p>因此，如果我们能将数据集扩大到几十万几百万，准确率应当能够持续上升。</p>
+<p>获得更多训练数据是很困难的，不过好在我们有其他技巧达到类似的作用，那就是人工扩展数据。</p>
+<p>例如，我们有一张 MNIST 的训练图片：</p>
+<center>
+<p><img src="/images/2017-7-22/more_data_5.png" width="120px"></p>
+</center>
+<p>旋转 15º 后，我们就得到另一张样本图片：</p>
+<center>
+<p><img src="/images/2017-7-22/more_data_rotated_5.png" width="120px"></p>
+</center>
+<p>这两张图片肉眼都可以看出是「5」，但在像素级别上，它们差别很大，因此不失为不错的训练样本。重复这种做法（旋转平移等等操作），我们可以获得数倍于原训练数据集大小的样本。</p>
+<p>这种做法效果明显，在很多实验中都取得成功。而且，这种思想不仅仅局限于图片识别，在其他任务（如：语音识别）中，这种做法同样奏效。</p>
+<p>另外，数据量也可以弥补机器学习算法的不足。假设在相同数据规模下，算法 A 要好于算法 B，但如果为算法 B 提供更多数据，后者的效果往往会超过前者。而且，即使两者数据规模一样，但算法 B 的数据比 A 的更加丰富，B 也可能超过 A，这就是所谓<strong>好的算法不如好的数据</strong>。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" title="读书笔记：neuralnetworksanddeeplearning chapter3（2）">https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" rel="next" title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+                <i class="fa fa-chevron-left"></i> 读书笔记：neuralnetworksanddeeplearning chapter3（1）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/27/2017-7-27-understand-lagrange-multiplier/" rel="prev" title="拉格朗日乘子法">
+                拉格朗日乘子法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.devtang.com/" title="唐巧" target="_blank">唐巧</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hukai.me/" title="胡凯" target="_blank">胡凯</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://p.codekk.com/" title="codeKK" target="_blank">codeKK</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.trinea.cn/" title="Trinea" target="_blank">Trinea</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://droidyue.com/" title="技术小黑屋" target="_blank">技术小黑屋</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://android-developers.blogspot.com/" title="安卓官方博客" target="_blank">安卓官方博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#过拟合"><span class="nav-number">1.</span> <span class="nav-text">过拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#过拟合现象"><span class="nav-number">1.1.</span> <span class="nav-text">过拟合现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉验证集"><span class="nav-number">1.2.</span> <span class="nav-text">交叉验证集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三个解决过拟合的小办法"><span class="nav-number">1.3.</span> <span class="nav-text">三个解决过拟合的小办法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#early-stop"><span class="nav-number">1.3.1.</span> <span class="nav-text">early stop</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#增加训练数据"><span class="nav-number">1.3.2.</span> <span class="nav-text">增加训练数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#减少模型参数"><span class="nav-number">1.3.3.</span> <span class="nav-text">减少模型参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化"><span class="nav-number">2.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#l2-正则化"><span class="nav-number">2.1.</span> <span class="nav-text">L2 正则化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么正则化能减小过拟合"><span class="nav-number">2.2.</span> <span class="nav-text">为什么正则化能减小过拟合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他正则化技巧"><span class="nav-number">2.3.</span> <span class="nav-text">其他正则化技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#l1-正则化"><span class="nav-number">2.3.1.</span> <span class="nav-text">L1 正则化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dropout"><span class="nav-number">2.3.2.</span> <span class="nav-text">dropout</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#人工扩展训练数据"><span class="nav-number">2.3.3.</span> <span class="nav-text">人工扩展训练数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
