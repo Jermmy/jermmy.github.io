@@ -102,13 +102,13 @@ This is an array object represents a multidimensional array of fixed-size items�
 <meta property="og:type" content="article">
 <meta property="og:title" content="numpy常用接口">
 <meta property="og:url" content="https://jermmy.github.io/2017/01/04/2017-1-4-numpy常用接口/index.html">
-<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
 <meta property="og:description" content="numpy.ndarray
 
 numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)
 
 This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
-<meta property="og:updated_time" content="2017-08-16T03:07:04.000Z">
+<meta property="og:updated_time" content="2017-09-06T13:13:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="numpy常用接口">
 <meta name="twitter:description" content="numpy.ndarray
@@ -149,7 +149,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 
 
 
-  <title>numpy常用接口 | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>numpy常用接口 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -194,7 +194,7 @@ This is an array object represents a multidimensional array of fixed-size items�
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -296,7 +296,7 @@ This is an array object represents a multidimensional array of fixed-size items�
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="写的不是代码，是窝窝头">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
     </span>
 
     
@@ -465,6 +465,16 @@ This is an array object represents a multidimensional array of fixed-size items�
 </ol>
 <p>out: ndarray. Permuted sequence or array range.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>permutation = np.random.permutation(np.array((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>permutation</div><div class="line">array([<span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">1</span>])</div></pre></td></tr></table></figure>
+<h4 id="numpy-生成序列中的随机子序列">numpy 生成序列中的随机子序列</h4>
+<p>可以借助 <code>numpy.random.choice</code> 接口。</p>
+<p>例如，要从 0 ～ 5 的数字中随机挑出 3 个数字，可以这样写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>)  <span class="comment"># 等概率随机挑选</span></div><div class="line">array([<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>])</div></pre></td></tr></table></figure>
+<p>还可以根据不同的概率挑选：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])  <span class="comment"># 3 的概率最大，为0.6</span></div><div class="line">array([<span class="number">3</span>, <span class="number">3</span>, <span class="number">0</span>])</div></pre></td></tr></table></figure>
+<p>可以设置不放回地挑选：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, replace=<span class="keyword">False</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])</div><div class="line">array([<span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>])    <span class="comment"># 数字不会重复</span></div></pre></td></tr></table></figure>
+<p>当然，除了数字外，我们可以对其他类型的列表进行随机挑选：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>aa_milne_arr = [<span class="string">'pooh'</span>, <span class="string">'rabbit'</span>, <span class="string">'piglet'</span>, <span class="string">'Christopher'</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(aa_milne_arr, <span class="number">5</span>, p=[<span class="number">0.5</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.3</span>])</div><div class="line">array([<span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'Christopher'</span>, <span class="string">'piglet'</span>],</div><div class="line">      dtype=<span class="string">'|S11'</span>)</div></pre></td></tr></table></figure>
 <h3 id="numpy.argmax">numpy.argmax</h3>
 <blockquote>
 <p>numpy.argmax(a, axis=None, out=None)</p>
@@ -736,7 +746,7 @@ This is an array object represents a multidimensional array of fixed-size items�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.ndarray"><span class="nav-number">1.</span> <span class="nav-text">numpy.ndarray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.array"><span class="nav-number">2.</span> <span class="nav-text">numpy.array</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.allclose"><span class="nav-number">3.</span> <span class="nav-text">numpy.allclose()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.arange"><span class="nav-number">4.</span> <span class="nav-text">numpy.arange()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.asmatrix"><span class="nav-number">5.</span> <span class="nav-text">numpy.asmatrix()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.random.permutation"><span class="nav-number">6.</span> <span class="nav-text">numpy.random.permutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.argmax"><span class="nav-number">7.</span> <span class="nav-text">numpy.argmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.where"><span class="nav-number">8.</span> <span class="nav-text">numpy.where</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.ndarray"><span class="nav-number">1.</span> <span class="nav-text">numpy.ndarray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.array"><span class="nav-number">2.</span> <span class="nav-text">numpy.array</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.allclose"><span class="nav-number">3.</span> <span class="nav-text">numpy.allclose()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.arange"><span class="nav-number">4.</span> <span class="nav-text">numpy.arange()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.asmatrix"><span class="nav-number">5.</span> <span class="nav-text">numpy.asmatrix()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.random.permutation"><span class="nav-number">6.</span> <span class="nav-text">numpy.random.permutation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#numpy-生成序列中的随机子序列"><span class="nav-number">6.1.</span> <span class="nav-text">numpy 生成序列中的随机子序列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.argmax"><span class="nav-number">7.</span> <span class="nav-text">numpy.argmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numpy.where"><span class="nav-number">8.</span> <span class="nav-text">numpy.where</span></a></li></ol></div>
             
 
           </div>

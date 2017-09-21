@@ -101,7 +101,7 @@ bag-of-feature">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅析 Bag of Feature">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/28/2017-4-28-understand-bag-of-feature/index.html">
-<meta property="og:site_name" content="写的不是代码，是窝窝头">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
 <meta property="og:description" content="Bag of Feature 是一种图像分类方法，它借鉴了文本分类的思路（Bag of Words），从图像抽象出很多具有代表性的「关键词」，形成一个字典，再统计每张图片中出现的「关键词」数量，来决定图片的类别归属。
 
 
@@ -110,7 +110,7 @@ bag-of-feature">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/bag-of-words.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/visual%20vocabulary.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/code-word.png">
-<meta property="og:updated_time" content="2017-09-03T14:06:12.000Z">
+<meta property="og:updated_time" content="2017-09-10T14:18:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅析 Bag of Feature">
 <meta name="twitter:description" content="Bag of Feature 是一种图像分类方法，它借鉴了文本分类的思路（Bag of Words），从图像抽象出很多具有代表性的「关键词」，形成一个字典，再统计每张图片中出现的「关键词」数量，来决定图片的类别归属。
@@ -151,7 +151,7 @@ bag-of-feature">
 
 
 
-  <title>浅析 Bag of Feature | 写的不是代码，是窝窝头</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>浅析 Bag of Feature | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -196,7 +196,7 @@ bag-of-feature">
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">写的不是代码，是窝窝头</span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -298,7 +298,7 @@ bag-of-feature">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="写的不是代码，是窝窝头">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
     </span>
 
     
@@ -454,7 +454,7 @@ bag-of-feature">
 <h4 id="tf-idf">TF-IDF</h4>
 <p>对 TF-IDF 的了解，我参考了吴军的《数学之美》一书。下面的解释，基本也是 copy 了书上的内容。</p>
 <p>TF-IDF 最早是在文献检索领域中被提出的，下面我们就用一个文本检索的例子来了解 TF-IDF。</p>
-<p>假设我们要检索关于「原子能的应用」的文章，最简单的做法就是将查询分解为「原子能」、「的」、「应用」，然后统计每篇文章中这三个词出现的频率。比如，如果一篇文章的总次数是 1000 ，其中「原子能」、「的」、「应用」分别出现了 2 次、35 次和 5 次，那么它们的词频就分别是 0.002、0.035、0.005。将这三个数相加，总和 0.042 就是该文章关于「原子能的应用」的「词频」。一般来说，词频越高，文章的相关性就越强。TF-IDF 中的 TF 也就是词频（Term Frequency）的意思。</p>
+<p>假设我们要检索关于「原子能的应用」的文章，最简单的做法就是将查询分解为「原子能」、「的」、「应用」，然后统计每篇文章中这三个词出现的频率。比如，如果一篇文章的总词数是 1000 ，其中「原子能」、「的」、「应用」分别出现了 2 次、35 次和 5 次，那么它们的词频就分别是 0.002、0.035、0.005。将这三个数相加，总和 0.042 就是该文章关于「原子能的应用」的「词频」。一般来说，词频越高，文章的相关性就越强。TF-IDF 中的 TF 也就是词频（Term Frequency）的意思。</p>
 <p>但这种方法有一个明显的漏洞，就是一些跟主题不相关的词可能占据较大的比重。比如上面例子中的「的」一词，占据了总词频的 80% 以上，而这个词对主题的检索几乎没有作用。这种词我们称为「停止词（Stop Word）」，表明在度量相关性时不考虑它们的频率。忽略「的」之后，我们的词频变为 0.007，其中「原子能」贡献了 0.002，「应用」贡献了 0.007。</p>
 <p>除此以外，这个优化后的结果还存在另一点不足。在汉语中，「应用」是个很通用的词，「原子能」是专业性很强的词，而后者对主题的检索比前者作用更大。</p>
 <p>综合以上两点不足，我们需要对每一个词给一个权重。而且这个权重必须满足以下两个条件：</p>
