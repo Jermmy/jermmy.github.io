@@ -94,38 +94,38 @@
 
 
 
-<meta name="description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失（梯度爆炸同理）。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
+<meta name="description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
 
 
 sigmoid
 
 如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。
-之前">
+之前的笔记虽然">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Batch Normalization">
 <meta property="og:url" content="https://jermmy.github.io/2017/09/02/2017-9-2-paper-notes-batch-normalization/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失（梯度爆炸同理）。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
+<meta property="og:description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
 
 
 sigmoid
 
 如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。
-之前">
+之前的笔记虽然">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/sigmoid.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20algorithm.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20algorithm%20all.png">
-<meta property="og:updated_time" content="2017-09-03T15:07:49.000Z">
+<meta property="og:updated_time" content="2017-09-25T08:44:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Batch Normalization">
-<meta name="twitter:description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失（梯度爆炸同理）。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
+<meta name="twitter:description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：
 
 
 sigmoid
 
 如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。
-之前">
+之前的笔记虽然">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-20/sigmoid.jpg">
 
 
@@ -402,7 +402,7 @@ sigmoid
       
 
       
-        <p>在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失（梯度爆炸同理）。关于这个问题的根源，我在上一篇文章的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：</p>
+        <p>在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：</p>
 <div class="figure">
 <img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid">
 <p class="caption">sigmoid</p>
@@ -536,6 +536,10 @@ y=\frac{\gamma}{\sqrt{Var[x]+\epsilon}}x+(\beta - \frac{\gamma E[x]}{\sqrt{Var[x
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/" rel="prev" title="论文笔记：Deep Residual Learning">
+                论文笔记：Deep Residual Learning <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -608,7 +612,7 @@ y=\frac{\gamma}{\sqrt{Var[x]+\epsilon}}x+(\beta - \frac{\gamma E[x]}{\sqrt{Var[x
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-count">64</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
