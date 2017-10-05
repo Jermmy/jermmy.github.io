@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
 <meta property="og:description" content="概念
 协方差（Covariance）在概率论和统计学中用于衡量两个变量的总体误差。而方差是协方差的一种特殊情况，即当两个变量是相同的情况。 这个解释摘自维基百科，看起来很是抽象，不好理解。其实简单来讲，协方差就是衡量两个变量相关性的变量。当协方差为正时，两个变量呈正相关关系（同增同减）；当协方差为负时，两个变量呈负相关关系（一增一减）。 而协方差矩阵，只是将所有变量的协方差关系用矩阵的形式表现出来">
-<meta property="og:updated_time" content="2017-09-03T13:21:41.000Z">
+<meta property="og:updated_time" content="2017-10-05T15:03:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="协方差矩阵">
 <meta name="twitter:description" content="概念
@@ -383,7 +383,8 @@
 
       
         <h3 id="概念">概念</h3>
-<p>协方差（Covariance）在概率论和统计学中用于衡量两个变量的总体误差。而方差是协方差的一种特殊情况，即当两个变量是相同的情况。 这个解释摘自维基百科，看起来很是抽象，不好理解。其实简单来讲，协方差就是衡量两个变量相关性的变量。当协方差为正时，两个变量呈正相关关系（同增同减）；当协方差为负时，两个变量呈负相关关系（一增一减）。 而协方差矩阵，只是将所有变量的协方差关系用矩阵的形式表现出来而已。通过矩阵这一工具，可以更方便地进行数学运算。 <a id="more"></a> ### 数学定义 回想概率统计里面关于方差的数学定义： <span class="math display">\[
+<p>协方差（Covariance）在概率论和统计学中用于衡量两个变量的总体误差。而方差是协方差的一种特殊情况，即当两个变量是相同的情况。 这个解释摘自维基百科，看起来很是抽象，不好理解。其实简单来讲，协方差就是衡量两个变量相关性的变量。当协方差为正时，两个变量呈正相关关系（同增同减）；当协方差为负时，两个变量呈负相关关系（一增一减）。 而协方差矩阵，只是将所有变量的协方差关系用矩阵的形式表现出来而已。通过矩阵这一工具，可以更方便地进行数学运算。 <a id="more"></a> ### 数学定义</p>
+<p>回想概率统计里面关于方差的数学定义： <span class="math display">\[
 Var(X)=\frac{\sum_{i=1}^n{(x_i-\overline x)(x_i-\overline x)}}{n-1}
 \]</span> 协方差的数学定义异曲同工： <span class="math display">\[
 Cov(X,Y)=\frac{\sum_{i=1}^n{(x_i-\overline x)(y_i-\overline y)}}{n-1}
