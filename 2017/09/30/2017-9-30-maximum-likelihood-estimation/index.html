@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="TensorFlow,深度学习," />
+  <meta name="keywords" content="概率统计,机器学习," />
 
 
 
@@ -94,18 +94,19 @@
 
 
 
-<meta name="description" content="最近跟着 Udacity 上的深度学习课程学了一丢丢 TensorFlow，这里记录一下用 TensorFlow搭建简单 CNN 网络的代码模板。">
+<meta name="description" content="在讨论最大似然估计之前，我们先来解决这样一个问题：有一枚不规则的硬币，要计算出它正面朝上的概率。为此，我们做了 10 次实验，得到这样的结果：[1, 0, 1, 0, 0, 0, 0, 0, 0, 1]（1 代表正面朝上，0 代表反面朝上）。现在，要根据实验得到的结果来估计正面朝上的概率，即模型的参数 \(p\)（\(0 \le p \le 1\)）。
+当然，对于投硬币这种问题，由于模型很简单，我">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TensorFlow学习笔记：搭建CNN模型">
-<meta property="og:url" content="https://jermmy.github.io/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/index.html">
+<meta property="og:title" content="最大似然估计">
+<meta property="og:url" content="https://jermmy.github.io/2017/09/30/2017-9-30-maximum-likelihood-estimation/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="最近跟着 Udacity 上的深度学习课程学了一丢丢 TensorFlow，这里记录一下用 TensorFlow搭建简单 CNN 网络的代码模板。">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-2-16/conv.png">
-<meta property="og:updated_time" content="2017-04-22T07:47:20.000Z">
+<meta property="og:description" content="在讨论最大似然估计之前，我们先来解决这样一个问题：有一枚不规则的硬币，要计算出它正面朝上的概率。为此，我们做了 10 次实验，得到这样的结果：[1, 0, 1, 0, 0, 0, 0, 0, 0, 1]（1 代表正面朝上，0 代表反面朝上）。现在，要根据实验得到的结果来估计正面朝上的概率，即模型的参数 \(p\)（\(0 \le p \le 1\)）。
+当然，对于投硬币这种问题，由于模型很简单，我">
+<meta property="og:updated_time" content="2017-10-05T07:42:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TensorFlow学习笔记：搭建CNN模型">
-<meta name="twitter:description" content="最近跟着 Udacity 上的深度学习课程学了一丢丢 TensorFlow，这里记录一下用 TensorFlow搭建简单 CNN 网络的代码模板。">
-<meta name="twitter:image" content="https://jermmy.github.io/images/2017-2-16/conv.png">
+<meta name="twitter:title" content="最大似然估计">
+<meta name="twitter:description" content="在讨论最大似然估计之前，我们先来解决这样一个问题：有一枚不规则的硬币，要计算出它正面朝上的概率。为此，我们做了 10 次实验，得到这样的结果：[1, 0, 1, 0, 0, 0, 0, 0, 0, 1]（1 代表正面朝上，0 代表反面朝上）。现在，要根据实验得到的结果来估计正面朝上的概率，即模型的参数 \(p\)（\(0 \le p \le 1\)）。
+当然，对于投硬币这种问题，由于模型很简单，我">
 
 
 
@@ -133,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="https://jermmy.github.io/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/"/>
+  <link rel="canonical" href="https://jermmy.github.io/2017/09/30/2017-9-30-maximum-likelihood-estimation/"/>
 
 
 
 
 
-  <title>TensorFlow学习笔记：搭建CNN模型 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>最大似然估计 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -277,7 +278,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/09/30/2017-9-30-maximum-likelihood-estimation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jermmy">
@@ -298,7 +299,7 @@
             
             
               
-                TensorFlow学习笔记：搭建CNN模型
+                最大似然估计
               
             
           </h1>
@@ -313,8 +314,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-16T23:18:54+08:00">
-                2017-02-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T13:54:29+08:00">
+                2017-09-30
               </time>
             
 
@@ -336,8 +337,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TensorFlow/" itemprop="url" rel="index">
-                    <span itemprop="name">TensorFlow</span>
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
 
@@ -353,7 +354,7 @@
 
           
           
-             <span id="/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/" class="leancloud_visitors" data-flag-title="TensorFlow学习笔记：搭建CNN模型">
+             <span id="/2017/09/30/2017-9-30-maximum-likelihood-estimation/" class="leancloud_visitors" data-flag-title="最大似然估计">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -381,16 +382,35 @@
       
 
       
-        <p>最近跟着 Udacity 上的<a href="https://cn.udacity.com/course/deep-learning--ud730" target="_blank" rel="external">深度学习课程</a>学了一丢丢 TensorFlow，这里记录一下用 TensorFlow搭建简单 CNN 网络的代码模板。</p>
+        <p>在讨论最大似然估计之前，我们先来解决这样一个问题：有一枚不规则的硬币，要计算出它正面朝上的概率。为此，我们做了 10 次实验，得到这样的结果：[1, 0, 1, 0, 0, 0, 0, 0, 0, 1]（1 代表正面朝上，0 代表反面朝上）。现在，要根据实验得到的结果来估计正面朝上的概率，即模型的参数 <span class="math inline">\(p\)</span>（<span class="math inline">\(0 \le p \le 1\)</span>）。</p>
+<p>当然，对于投硬币这种问题，由于模型很简单，我们可以用大量实验来近似最终结果，不过，如果事件模型复杂一些，做大量的实验就显得不太现实。这个时候，用最大似然估计的思想，则可以通过较少的实验得出一个相对好的结果。本文就从这个简单的例子出发，对最大似然估计做一次简单的描述。</p>
 <a id="more"></a>
-<h3 id="python代码">python代码</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line">pickle_file = <span class="string">'notMNIST.pickle'</span></div><div class="line"></div><div class="line"><span class="keyword">with</span> open(pickle_file, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</div><div class="line">    save = pickle.load(f)</div><div class="line">    train_dataset = save[<span class="string">'train_dataset'</span>]</div><div class="line">    train_labels = save[<span class="string">'train_labels'</span>]</div><div class="line">    valid_dataset = save[<span class="string">'valid_dataset'</span>]</div><div class="line">    valid_labels = save[<span class="string">'valid_labels'</span>]</div><div class="line">    test_dataset = save[<span class="string">'test_dataset'</span>]</div><div class="line">    test_labels = save[<span class="string">'test_labels'</span>]</div><div class="line">    <span class="keyword">del</span> save  <span class="comment"># hint to help gc free up memory</span></div><div class="line">    print(<span class="string">'Training set'</span>, train_dataset.shape, train_labels.shape)</div><div class="line">    print(<span class="string">'Validation set'</span>, valid_dataset.shape, valid_labels.shape)</div><div class="line">    print(<span class="string">'Test set'</span>, test_dataset.shape, test_labels.shape)</div><div class="line">   </div><div class="line"></div><div class="line">image_size = <span class="number">28</span></div><div class="line">num_labels = <span class="number">10</span></div><div class="line">num_channels = <span class="number">1</span>  <span class="comment"># grayscale</span></div><div class="line"></div><div class="line">batch_size = <span class="number">16</span></div><div class="line">patch_size = <span class="number">5</span></div><div class="line">depth = <span class="number">16</span></div><div class="line">num_hidden = <span class="number">64</span></div><div class="line"></div><div class="line">graph = tf.Graph()</div><div class="line"></div><div class="line"><span class="keyword">with</span> graph.as_default():</div><div class="line">    <span class="comment"># Input data.</span></div><div class="line">    tf_train_dataset = tf.placeholder(</div><div class="line">        tf.float32, shape=(batch_size, image_size, image_size, num_channels))</div><div class="line">    tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))</div><div class="line">    tf_valid_dataset = tf.constant(valid_dataset)</div><div class="line">    tf_test_dataset = tf.constant(test_dataset)</div><div class="line"></div><div class="line">    <span class="comment"># Variables.</span></div><div class="line">    layer1_weights = tf.Variable(tf.truncated_normal([patch_size, patch_size, num_channels, depth], stddev=<span class="number">0.1</span>))</div><div class="line">    layer1_biases = tf.Variable(tf.zeros([depth]))</div><div class="line"></div><div class="line">    layer2_weights = tf.Variable(tf.truncated_normal([patch_size, patch_size, depth, depth], stddev=<span class="number">0.1</span>))</div><div class="line">    layer2_biases = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[depth]))</div><div class="line"></div><div class="line">    layer3_weights = tf.Variable(</div><div class="line">        tf.truncated_normal([image_size // <span class="number">4</span> * image_size // <span class="number">4</span> * depth, num_hidden], stddev=<span class="number">0.1</span>))</div><div class="line">    layer3_biases = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[num_hidden]))</div><div class="line"></div><div class="line">    layer4_weights = tf.Variable(tf.truncated_normal([num_hidden, num_labels], stddev=<span class="number">0.1</span>))</div><div class="line">    layer4_biases = tf.Variable(tf.constant(<span class="number">1.0</span>, shape=[num_labels]))</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment"># Model.</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">model</span><span class="params">(data)</span>:</span></div><div class="line">        conv1 = tf.nn.relu(tf.nn.conv2d(data, layer1_weights, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>) + layer1_biases)</div><div class="line">        pool1 = tf.nn.max_pool(conv1, ksize=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</div><div class="line"></div><div class="line">        conv2 = tf.nn.relu(tf.nn.conv2d(pool1, layer2_weights, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>) + layer2_biases)</div><div class="line">        pool2 = tf.nn.max_pool(conv2, ksize=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</div><div class="line"></div><div class="line">        shape = pool2.get_shape().as_list()</div><div class="line">        reshape = tf.reshape(pool2, [shape[<span class="number">0</span>], shape[<span class="number">1</span>] * shape[<span class="number">2</span>] * shape[<span class="number">3</span>]])</div><div class="line">        fc1 = tf.nn.relu(tf.matmul(reshape, layer3_weights) + layer3_biases)</div><div class="line">        <span class="keyword">return</span> tf.matmul(fc1, layer4_weights) + layer4_biases</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment"># Training computation.</span></div><div class="line">    logits = model(tf_train_dataset)</div><div class="line">    loss = tf.reduce_mean(</div><div class="line">        tf.nn.softmax_cross_entropy_with_logits(logits, tf_train_labels))</div><div class="line"></div><div class="line">    <span class="comment"># Optimizer.</span></div><div class="line">    optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.05</span>).minimize(loss)</div><div class="line"></div><div class="line">    <span class="comment"># Predictions for the training, validation, and test data.</span></div><div class="line">    train_prediction = tf.nn.softmax(logits)</div><div class="line">    valid_prediction = tf.nn.softmax(model(tf_valid_dataset))</div><div class="line">    test_prediction = tf.nn.softmax(model(tf_test_dataset))</div><div class="line"></div><div class="line">num_steps = <span class="number">1001</span></div><div class="line"></div><div class="line"><span class="keyword">with</span> tf.Session(graph=graph) <span class="keyword">as</span> session:</div><div class="line">    tf.initialize_all_variables().run()</div><div class="line">    print(<span class="string">'Initialized'</span>)</div><div class="line">    <span class="keyword">for</span> step <span class="keyword">in</span> range(num_steps):</div><div class="line">        offset = (step * batch_size) % (train_labels.shape[<span class="number">0</span>] - batch_size)</div><div class="line">        batch_data = train_dataset[offset:(offset + batch_size), :, :, :]</div><div class="line">        batch_labels = train_labels[offset:(offset + batch_size), :]</div><div class="line">        feed_dict = &#123;tf_train_dataset: batch_data, tf_train_labels: batch_labels&#125;</div><div class="line">        _, l, predictions = session.run(</div><div class="line">            [optimizer, loss, train_prediction], feed_dict=feed_dict)</div><div class="line">        <span class="keyword">if</span> (step % <span class="number">50</span> == <span class="number">0</span>):</div><div class="line">            print(<span class="string">'Minibatch loss at step %d: %f'</span> % (step, l))</div><div class="line">            print(<span class="string">'Minibatch accuracy: %.1f%%'</span> % accuracy(predictions, batch_labels))</div><div class="line">            print(<span class="string">'Validation accuracy: %.1f%%'</span> % accuracy(</div><div class="line">                valid_prediction.eval(), valid_labels))</div><div class="line">    print(<span class="string">'Max pool Test accuracy: %.1f%%'</span> % accuracy(test_prediction.eval(), test_labels))</div></pre></td></tr></table></figure>
-<h3 id="卷积网络结构">卷积网络结构</h3>
-<div class="figure">
-<img src="/images/2017-2-16/conv.png" alt="conv">
-<p class="caption">conv</p>
-</div>
-<p><br\></br\></p>
+<h3 id="基本思想">基本思想</h3>
+<p>似然（likelihood），就是可能性的意思。所谓最大似然估计，顾名思义，就是根据最大的可能性对参数进行估计。那么什么是最大的可能性呢？对于上面那个投硬币的例子，扔 10 次硬币最可能出现的结果会是什么？最大似然估计认为，最可能出现的结果就是：[1, 0, 1, 0, 0, 0, 0, 0, 0, 1]。有人可能会纳闷，这不就是我们实验的结果吗？不错，最大似然估计有点类似于人类「先入为主」的思维。投 10 次硬币可能出现的情况有那么多，为什么偏偏我们的实验结果就是这样的呢？这是否意味着，这个结果出现的概率是最大的？</p>
+<p>再举个例子（该例子改编自<a href="http://blog.csdn.net/zouxy09/article/details/8537620" target="_blank" rel="external">文末链接</a>）：两位猎人 A 和 B 一起外出打猎，一只野兔从两人面前窜过，两人同时开枪，结果 A 猎人射杀了野兔。如果要推测谁的枪法准，你是不是会「先入为主」地认为 A 猎人的枪法好？因为射杀兔子的可能情况有那么多种（可能是 B 射杀，也可能是 A、B 同时射杀），但偏偏发生的却是 A 射杀了兔子，那我们当然会倾向于认为 A 的枪法好一些。这种「先入为主」的思想，其实就是最大似然法的思想。简单地说，就是按照最可能的情况来评估事件。当然，这种思想多少存在误判的情况（比如，A 这次能射杀兔子纯属偶然），但随着实验次数增多，结果也会更加准确（如果两人多次狩猎，B 偶尔得手，但 A 频频得手，那 A 枪法好的可能性就更大了）。</p>
+<p>回到硬币那个例子，同样的道理，我们认为，出现结果 [1, 0, 1, 0, 0, 0, 0, 0, 0, 1] 的可能性比其他结果要大。</p>
+<h3 id="最大似然估计的求解方法">最大似然估计的求解方法</h3>
+<p>我们先把实验的结果用数学式子表达出来：<span class="math inline">\(f(x_1, x_2, \cdots , x_{10}; p)=p(1-p)p\cdots p=p^3(1-p)^7\)</span>。</p>
+<p>现在要用最大似然估计的思想求出这里的 <span class="math inline">\(p\)</span>。前面说过了，<span class="math inline">\(f(x_1, x_2, \cdots , x_{10}; p)\)</span> 出现的可能性是最大的，也就是说，<span class="math inline">\(p^3(1-p)^7\)</span> 的值要满足最大。这样一来，问题就简单多了，只要根据函数 <span class="math inline">\(h(p)=p^3(1-p)^7\)</span> 的单调性，找出使得 <span class="math inline">\(h(p)\)</span> 的值最大的 <span class="math inline">\(p\)</span> 即可。为了计算的方便，我们往往会引入对数，即 <span class="math inline">\(\ln {h(p)}=\ln{p^3(1-p)^7}\)</span>，这个函数单调性和 <span class="math inline">\(h(p)\)</span> 是一致的，因此只需要求出 <span class="math inline">\(\ln{h(p)}\)</span> 的最大值即可。最大值一般来说出现在导数为 0 的时候，因此，令 <span class="math inline">\(\frac{d \ln{h(p)}}{dp}=\frac{3}{p}-\frac{7}{1-p}=0\)</span>，解得 <span class="math inline">\(p=\frac{3}{10}\)</span>。</p>
+<p>换句话说，当 <span class="math inline">\(p=\frac{3}{10}\)</span> 时，<span class="math inline">\(f(x_1, x_2, \cdots , x_{10}; p)\)</span> 出现的可能性最大。因此，我们估计出来的模型参数就是 <span class="math inline">\(p=\frac{3}{10}\)</span>。这个结果也符合我们的预期（10 次实验中有 3 次正面朝上）。事实上，投硬币这个简单的模型并没法完全体现出最大似然估计的威力，而且，可以证明，在这个例子中，用最大似然估计得出来的结果永远都是 <span class="math inline">\(\frac{x}{n}\)</span> （其中，n 是实验次数，x 是正面朝上的次数）。不过，在其他一些更复杂的模型中，用最大似然法来估计参数，往往是最方便有效的。</p>
+<p>下面，我们总结一下最大似然估计的一般步骤（改自<a href="http://blog.csdn.net/zouxy09/article/details/8537620" target="_blank" rel="external">文末链接</a>）：</p>
+<ol style="list-style-type: decimal">
+<li>写出似然函数；（即上文中的 <span class="math inline">\(f(x_1, x_2, \cdots , x_{10}; p)\)</span>）</li>
+<li>对似然函数取对数；（因为似然函数往往是众多概率相乘的形式，对数可以方便运算）</li>
+<li>求导数，令导数为 0，得到似然方程；</li>
+<li>解方程，得到参数。</li>
+</ol>
+<h3 id="总结">总结</h3>
+<p>最大似然法是在已知实验结果的基础上，估计模型参数的方法。它的基本思想是，假设实验结果出现的可能性最大，并依此反推出参数。</p>
+<p>表述成数学语言如下：</p>
+<p>假设我们观察到一些实验结果：<span class="math inline">\(x_1, x_2, \dots, x_n\)</span>，要估计出模型参数 <span class="math inline">\(\theta_1, \theta_2, \dots, \theta_m\)</span>。根据最大似然法，要让似然函数 <span class="math inline">\(f(x_1, x_2, \dots, x_n; \theta_1, \theta_2, \dots, \theta_m)\)</span> 满足： <span class="math display">\[
+f(x_1, x_2, \dots, x_n; \hat \theta_1, \hat \theta_2, \dots, \hat \theta_m)\ge f(x_1, x_2, \dots, x_n; \theta_1, \theta_2, \dots, \theta_m)
+\]</span> 这里的 <span class="math inline">\(\hat \theta_1, \hat \theta_2, \dots, \hat \theta_m\)</span> 就是使得实验结果出现的可能性最大的参数，也是最大似然法估计出来的参数。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://blog.csdn.net/zouxy09/article/details/8537620" target="_blank" rel="external">从最大似然到EM算法浅解</a></li>
+<li><a href="https://book.douban.com/subject/1262481/" target="_blank" rel="external">概率与统计</a></li>
+</ul>
 
       
     </div>
@@ -419,7 +439,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/" title="TensorFlow学习笔记：搭建CNN模型">https://jermmy.github.io/2017/02/16/2017-2-16-learn-tensorflow-build-cnn-model/</a>
+      <a href="https://jermmy.github.io/2017/09/30/2017-9-30-maximum-likelihood-estimation/" title="最大似然估计">https://jermmy.github.io/2017/09/30/2017-9-30-maximum-likelihood-estimation/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -435,9 +455,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+            <a href="/tags/概率统计/" rel="tag"># 概率统计</a>
           
-            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
           
         </div>
       
@@ -450,8 +470,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/07/2017-1-7-Bilateral-Filter/" rel="next" title="Bilateral Filter">
-                <i class="fa fa-chevron-left"></i> Bilateral Filter
+              <a href="/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/" rel="next" title="论文笔记：Deep Residual Learning">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Deep Residual Learning
               </a>
             
           </div>
@@ -459,10 +479,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/14/2017-3-14-learning-cg-coordinate-transformation/" rel="prev" title="坐标系统之间的转换">
-                坐标系统之间的转换 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -618,7 +634,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#python代码"><span class="nav-number">1.</span> <span class="nav-text">python代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积网络结构"><span class="nav-number">2.</span> <span class="nav-text">卷积网络结构</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本思想"><span class="nav-number">1.</span> <span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大似然估计的求解方法"><span class="nav-number">2.</span> <span class="nav-text">最大似然估计的求解方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
