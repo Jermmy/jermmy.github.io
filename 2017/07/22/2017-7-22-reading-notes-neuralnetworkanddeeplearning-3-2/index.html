@@ -116,7 +116,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_log.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_5.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/more_data_rotated_5.png">
-<meta property="og:updated_time" content="2017-09-03T14:53:14.000Z">
+<meta property="og:updated_time" content="2017-10-06T10:14:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
@@ -459,13 +459,13 @@ C=\frac{1}{2n}\sum_x{||t-a^L||^2}+\frac{\lambda}{2n}\sum_w{w^2} \tag{86}
 <p>添加正则化项后，梯度下降的偏导数会发生一点变化： <span class="math display">\[
 \begin{eqnarray} 
   \frac{\partial C}{\partial w} &amp; = &amp; \frac{\partial C_0}{\partial w} + 
-  \frac{\lambda}{n} w \tag{88}\\\\
+  \frac{\lambda}{n} w \tag{88}\\
   \frac{\partial C}{\partial b} &amp; = &amp; \frac{\partial C_0}{\partial b}.
 \tag{89}\end{eqnarray}
 \]</span> 其中，<span class="math inline">\(\partial C_0/\partial w\)</span> 和 <span class="math inline">\(\partial C_0/\partial b\)</span> 可以通过 BP 算法计算，因此，新的偏导数很容易计算： <span class="math display">\[
 \begin{eqnarray} 
   w &amp; \rightarrow &amp; w-\eta \frac{\partial C_0}{\partial
-    w}-\frac{\eta \lambda}{n} w \tag{91}\\\\
+    w}-\frac{\eta \lambda}{n} w \tag{91}\\
   &amp; = &amp; \left(1-\frac{\eta \lambda}{n}\right) w -\eta \frac{\partial
     C_0}{\partial w}. 
 \tag{92}\end{eqnarray} \\
