@@ -108,7 +108,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-y-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-z-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/3d-angle-rotation.png">
-<meta property="og:updated_time" content="2017-09-03T13:47:25.000Z">
+<meta property="og:updated_time" content="2017-10-18T09:17:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3D中的旋转变换">
 <meta name="twitter:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。
@@ -407,7 +407,9 @@
 <p>3D 中的旋转本质上可以分为下面三类情况： 1. 绕 x / y / z 轴旋转； 2. 绕通过原点的直线旋转； 3. 绕不通过原点的直线旋转。</p>
 <p>可能有同学不理解为什么要分这么多情况讨论，其实这是一个将复杂的问题简单化的过程。在旋转 2D 空间中的物体时，我们也只是计算出绕原点旋转的公式，然后将旋转点平移到跟原点重合，再根据公式旋转物体，最后再平移回去。其实完全可以计算出一个绕任意轴旋转的通用公式，但那样会导致计算量更大。</p>
 <h3 id="绕-x-y-z-轴旋转">绕 x / y / z 轴旋转</h3>
-<p>这是最简单的旋转情况，只要把 2D 中的旋转延伸到 3D 空间就可以了。 #### 绕 x 轴旋转 <img src="/images/2017-3-28/rotate-x-axis.png" alt="rotate-x-axis"> 上图是一个绕 x 轴旋转的图示。假设我们需要从点(<span class="math inline">\(x, y, z\)</span>)绕 x 轴旋转 <span class="math inline">\(\theta\)</span> 角到点 (<span class="math inline">\(x^,, y^,, z^,\)</span>)，那么，旋转过程中，x 的坐标值始终都是固定不变的，因此，我们可以把它当作是在<span class="math inline">\(x=x^,\)</span>这个平面上进行旋转，从而退化成一个 2D 旋转的问题。 上图右边的两个矩阵，上面那个是 2D 旋转矩阵，而底下那个只是把该矩阵延伸到 3D 空间而已（为了将平移也纳入矩阵运算，3D 的变换都是采用齐次坐标）。因为 x 轴是旋转轴，因此实际上是在 yoz 平面上做 2D 旋转。只要你知道 2D 空间那个旋转矩阵怎么计算，3D 的变换只是依葫芦画瓢而已。</p>
+<p>这是最简单的旋转情况，只要把 2D 中的旋转延伸到 3D 空间就可以了。</p>
+<h4 id="绕-x-轴旋转">绕 x 轴旋转</h4>
+<p><img src="/images/2017-3-28/rotate-x-axis.png" alt="rotate-x-axis"> 上图是一个绕 x 轴旋转的图示。假设我们需要从点(<span class="math inline">\(x, y, z\)</span>)绕 x 轴旋转 <span class="math inline">\(\theta\)</span> 角到点 (<span class="math inline">\(x^,, y^,, z^,\)</span>)，那么，旋转过程中，x 的坐标值始终都是固定不变的，因此，我们可以把它当作是在<span class="math inline">\(x=x^,\)</span>这个平面上进行旋转，从而退化成一个 2D 旋转的问题。 上图右边的两个矩阵，上面那个是 2D 旋转矩阵，而底下那个只是把该矩阵延伸到 3D 空间而已（为了将平移也纳入矩阵运算，3D 的变换都是采用齐次坐标）。因为 x 轴是旋转轴，因此实际上是在 yoz 平面上做 2D 旋转。只要你知道 2D 空间那个旋转矩阵怎么计算，3D 的变换只是依葫芦画瓢而已。</p>
 <h4 id="绕-y-轴旋转">绕 y 轴旋转</h4>
 <p>同理，这里不再赘述。 <img src="/images/2017-3-28/rotate-y-axis.png" alt="rotate-y-axis"></p>
 <h4 id="绕-z-轴旋转">绕 z 轴旋转</h4>
@@ -669,7 +671,7 @@ R(\theta)=T(x_1, y_1, z_1)R_z^T(\psi)R_y^T(\phi)R_z(\theta)R_y(\phi)R_z(\psi)T(-
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转的要素"><span class="nav-number">1.</span> <span class="nav-text">旋转的要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转的几种情况"><span class="nav-number">2.</span> <span class="nav-text">旋转的几种情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕-x-y-z-轴旋转"><span class="nav-number">3.</span> <span class="nav-text">绕 x / y / z 轴旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#绕-y-轴旋转"><span class="nav-number">3.1.</span> <span class="nav-text">绕 y 轴旋转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#绕-z-轴旋转"><span class="nav-number">3.2.</span> <span class="nav-text">绕 z 轴旋转</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕通过原点的直线旋转"><span class="nav-number">4.</span> <span class="nav-text">绕通过原点的直线旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕不通过原点的直线旋转"><span class="nav-number">5.</span> <span class="nav-text">绕不通过原点的直线旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转的要素"><span class="nav-number">1.</span> <span class="nav-text">旋转的要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转的几种情况"><span class="nav-number">2.</span> <span class="nav-text">旋转的几种情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕-x-y-z-轴旋转"><span class="nav-number">3.</span> <span class="nav-text">绕 x / y / z 轴旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#绕-x-轴旋转"><span class="nav-number">3.1.</span> <span class="nav-text">绕 x 轴旋转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#绕-y-轴旋转"><span class="nav-number">3.2.</span> <span class="nav-text">绕 y 轴旋转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#绕-z-轴旋转"><span class="nav-number">3.3.</span> <span class="nav-text">绕 z 轴旋转</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕通过原点的直线旋转"><span class="nav-number">4.</span> <span class="nav-text">绕通过原点的直线旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绕不通过原点的直线旋转"><span class="nav-number">5.</span> <span class="nav-text">绕不通过原点的直线旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
