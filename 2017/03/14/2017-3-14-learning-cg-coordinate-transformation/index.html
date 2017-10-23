@@ -108,7 +108,7 @@
 （⚠️阅读本文需要有线性代数基础。）
 坐标变换原理
 首先，我们需要运用一点线性代数的知识，了解不同坐标系统变换的原理。 由于本文针对的是三维坐标，所以讨论的空间是 \(R^3\) 空间。">
-<meta property="og:updated_time" content="2017-09-03T13:14:20.000Z">
+<meta property="og:updated_time" content="2017-10-18T10:23:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="坐标系统之间的转换">
 <meta name="twitter:description" content="概要
@@ -433,7 +433,9 @@
 <p>OpenGL 的坐标系统有六种： 1. Object (or model) coordinates 2. World coordinates 3. Eye (or camera) coordinates 4. Clip coordinates 5. Normalized device coordinates 6. Window (or screen) coordinates</p>
 <p>模型坐标系 (Object coordinates) 是每个模型在制作时特有的，如果要把模型放入世界，就需要将所有模型的坐标系转换成世界坐标系 (World coordinates)。世界中的场景需要通过相机被人眼观察，需要将世界坐标系转换成相机坐标系 (Eye coordinates)。从模型坐标系，到世界坐标系，再到相机坐标系的变换，通常称为 model-view transformation，通过 model-view matrix 来实现。 前三种坐标系统通常是由用户指定的，而后三种坐标系统一般都是在 OpenGL 管道中，由程序自己实现的。 而 OpenGL 中坐标系统转换的原理，其实就是上面所讲的那些，只不过在使用时，我们可以使用一些 API 来简化不少工作。</p>
 <h3 id="参考">参考</h3>
-<p>Interactive Computer Graphics - A Top-Down Approach 6e By Edward Angel and Dave Shreiner (Pearson, 2012)</p>
+<ul>
+<li>Interactive Computer Graphics - A Top-Down Approach 6e By Edward Angel and Dave Shreiner (Pearson, 2012)</li>
+</ul>
 
       
     </div>

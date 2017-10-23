@@ -101,7 +101,7 @@ e^{j\pi x}=\cos{\pi x}+j\sin{\pi x}
 f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
 <meta property="og:type" content="article">
 <meta property="og:title" content="图像中的傅立叶变换（一）">
-<meta property="og:url" content="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image/index.html">
+<meta property="og:url" content="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image-1/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
 <meta property="og:description" content="关于傅立叶变换，知乎上已经有一篇很好的教程，因此，这篇文章不打算细讲傅立叶的物理含义，只是想从图像的角度谈一谈傅立叶变换的本质和作用。
 本文假设读者已经熟知欧拉公式： \[
@@ -110,7 +110,7 @@ e^{j\pi x}=\cos{\pi x}+j\sin{\pi x}
 f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-5/image.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-5/fourier.png">
-<meta property="og:updated_time" content="2017-10-16T15:22:28.000Z">
+<meta property="og:updated_time" content="2017-10-23T08:08:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="图像中的傅立叶变换（一）">
 <meta name="twitter:description" content="关于傅立叶变换，知乎上已经有一篇很好的教程，因此，这篇文章不打算细讲傅立叶的物理含义，只是想从图像的角度谈一谈傅立叶变换的本质和作用。
@@ -146,7 +146,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
 
 
 
-  <link rel="canonical" href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image/"/>
+  <link rel="canonical" href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image-1/"/>
 
 
 
@@ -300,7 +300,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image/">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jermmy">
@@ -376,7 +376,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
 
           
           
-             <span id="/2017/10/05/2017-10-5-fourier-transform-in-image/" class="leancloud_visitors" data-flag-title="图像中的傅立叶变换（一）">
+             <span id="/2017/10/05/2017-10-5-fourier-transform-in-image-1/" class="leancloud_visitors" data-flag-title="图像中的傅立叶变换（一）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -485,10 +485,9 @@ F(u)=\frac{1}{N}\sum_{x=0}^{N-1}f(x)e^{-j2\pi ux/N} , \ \ u=0,1,...,N-1
 \]</span> 公式中的 <span class="math inline">\(f(x)\)</span> 指的就是图片中 x 位置的像素值，这也说明，傅立叶变换是综合计算图像像素的整体灰度变化后得到的。如果图像中高频信息比较大（即图像灰度变化很剧烈），则对于频率高的基底向量（<span class="math inline">\(u\)</span> 的值比较大），其对应的权重 <span class="math inline">\(F(u)\)</span> 的值也会比较大，反之亦然。</p>
 <h3 id="傅立叶逆变换">傅立叶逆变换</h3>
 <p>所谓傅立叶逆变换，就是在得到一堆傅立叶变换的参数 <span class="math inline">\(F(u)\)</span> 后，如何反推回去，得到空间域的图像。</p>
-<p>其实非常简单，前面说了，傅立叶变换就是把时空域下的图像信号 <span class="math inline">\(f(x)\)</span> 重新用频率域的基底来表示，换句话说：<span class="math inline">\(f(x)=\sum_{n=-\infty}^{\infty}{c_ne^{j\omega_n x}}\)</span>。而上一步中，我们已经求出了频率域中这些基底向量 <span class="math inline">\(e^{j\omega_n x}\)</span> 的线性组合系数 <span class="math inline">\(c_n\)</span>，因此，傅立叶逆变换就是把傅立叶基底向量的系数再累加起来： <span class="math display">\[
+<p>其实非常简单，前面说了，傅立叶变换就是把时空域下的图像信号 <span class="math inline">\(f(x)\)</span> 重新用频率域的基底来表示。现在，频率域基底向量的系数 <span class="math inline">\(F(u,v)\)</span> 已经有了，把它们组合起来就可以得到原来的信号：<span class="math inline">\(f(x)=\sum_{n=-\infty}^{\infty}{c_ne^{j\omega_n x}}\)</span>。因此，傅立叶逆变换就是把傅立叶基底向量的系数再累加起来： <span class="math display">\[
 f(x)=\sum_{u=0}^{N-1}F(u)e^{j2\pi ux/N}, \ \ x=0,1,...,N-1
-\]</span> 傅立叶变换和逆变换的形式极其相似，为了防止有些同学在比较两个公式的时候又一脸懵逼，我还是要唠叨一下：<span class="math inline">\(f(x)\)</span>，也就是逆变换的公式，是直接根据高数书中的傅立叶公式得来的。。。。。。</p>
-<h3 id="二维傅立叶">二维傅立叶</h3>
+\]</span> ### 二维傅立叶</p>
 <p>二维傅立叶其实就是在一维的基础上，继续向另一个方向扩展而已，相当于一个二重积分： <span class="math display">\[
 \begin{eqnarray}
 F(u, v)&amp;=&amp;\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x, y)e^{-j2\pi ux/M}e^{-j2\pi vy/N} \\
@@ -528,7 +527,7 @@ f(x,y)=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}F(u,v)e^{j2\pi ux/M}e^{j2\pi vy/N}
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image/" title="图像中的傅立叶变换（一）">https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image/</a>
+      <a href="https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image-1/" title="图像中的傅立叶变换（一）">https://jermmy.github.io/2017/10/05/2017-10-5-fourier-transform-in-image-1/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -721,7 +720,7 @@ f(x,y)=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}F(u,v)e^{j2\pi ux/M}e^{j2\pi vy/N}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像的表示"><span class="nav-number">1.</span> <span class="nav-text">图像的表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶变换"><span class="nav-number">2.</span> <span class="nav-text">傅立叶变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶逆变换"><span class="nav-number">3.</span> <span class="nav-text">傅立叶逆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二维傅立叶"><span class="nav-number">4.</span> <span class="nav-text">二维傅立叶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像的表示"><span class="nav-number">1.</span> <span class="nav-text">图像的表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶变换"><span class="nav-number">2.</span> <span class="nav-text">傅立叶变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶逆变换"><span class="nav-number">3.</span> <span class="nav-text">傅立叶逆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
