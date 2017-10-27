@@ -105,7 +105,7 @@
 
 上个学期花了半年的时间做了这个应用，程序总体来说不大，而且中间还有大量的时间花在技术调研以及试错上，但实际有效开发时间也有两个月之久，因此值得总结的东西还是挺多。由于我主要开发 Android 端，所以这里的总结也只是针对 Android。至于算法方面，就先略过了。">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-1/weiman.png">
-<meta property="og:updated_time" content="2017-10-23T08:12:15.000Z">
+<meta property="og:updated_time" content="2017-10-23T08:21:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="微漫项目总结">
 <meta name="twitter:description" content="weiman
@@ -413,7 +413,7 @@
 <h4 id="单例模式的内存泄漏问题">单例模式的内存泄漏问题</h4>
 <p>这个主要是在单例类中传入 <code>Context</code> 引起的，解决办法是将传入的 <code>Activity</code> 换成 <code>Application</code>。</p>
 <h4 id="svg-文件的存储">SVG 文件的存储</h4>
-<p>五官素材都是以 SVG 文件的形式存在，文件数目比较多，每个文件大小大概在 1k ～ 2k。我考虑了两张方案，一种是直接以文件形式存放，再在数据库存放素材文件路径；另一种方案是将文件内容以 BLOB 格式写入。通过开多线程读取多个 SVG 素材并统计读取时间，最后我发现存数据库 BLOB 的方案效率较高，所以选择 BLOB 的方式存储。当然，由于素材数量很多，需要先压缩再存入数据库。而关于压缩算法，我从众多常用的压缩策略中，选择了压缩比更大的 Deflate 算法，时间上虽然开销略大，但总体还能接受（渲染头像的时候可以在 1～2s 内出现）。这里提供当时参考的链接http://www.importnew.com/14410.html。</p>
+<p>五官素材都是以 SVG 文件的形式存在，文件数目比较多，每个文件大小大概在 1k ～ 2k。我考虑了两张方案，一种是直接以文件形式存放，再在数据库存放素材文件路径；另一种方案是将文件内容以 BLOB 格式写入。通过开多线程读取多个 SVG 素材并统计读取时间，最后我发现存数据库 BLOB 的方案效率较高，所以选择 BLOB 的方式存储。当然，由于素材数量很多，需要先压缩再存入数据库。而关于压缩算法，我从众多常用的压缩策略中，选择了压缩比更大的 Deflate 算法，时间上虽然开销略大，但总体还能接受（渲染头像的时候可以在 1～2s 内出现）。这是当时参考的链接 <a href="http://www.importnew.com/14410.html" class="uri" target="_blank" rel="external">http://www.importnew.com/14410.html</a>。</p>
 <h4 id="javajs通信">Java、JS通信</h4>
 <p>这个应用里面用到 JS 的地方主要集中在 WebView 渲染部分。虽然也只是简单调用 JS 的函数，并传一些参数什么的，但为了统一我还是用一个类来管理这些函数。后来需要导出 SVG 素材的时候，需要通过 JS 获得 HTML 中 SVG 标签的内容，这一步比较耗时，还需要给 JS 注册回调函数。这时我才意识到，随着交互的东西越来越多，一个通用的交互框架将变得十分必要。当然，后来由于项目进展受阻，也就不了了之了。</p>
 <h4 id="webview的各种小问题">WebView的各种小问题</h4>
@@ -572,7 +572,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-count">66</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

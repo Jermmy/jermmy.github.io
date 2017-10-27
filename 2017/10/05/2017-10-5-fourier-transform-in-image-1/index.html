@@ -110,7 +110,7 @@ e^{j\pi x}=\cos{\pi x}+j\sin{\pi x}
 f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-5/image.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-5/fourier.png">
-<meta property="og:updated_time" content="2017-10-23T08:08:36.000Z">
+<meta property="og:updated_time" content="2017-10-25T16:27:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="图像中的傅立叶变换（一）">
 <meta name="twitter:description" content="关于傅立叶变换，知乎上已经有一篇很好的教程，因此，这篇文章不打算细讲傅立叶的物理含义，只是想从图像的角度谈一谈傅立叶变换的本质和作用。
@@ -479,15 +479,16 @@ f(x)&amp;=&amp;a_0+\sum_{n-1}^{\infty}{(\frac{a_n-jb_n}{2})e^{j\omega_n x}+\sum_
 \end{eqnarray}
 \]</span> 码了这么多公式后，我们终于得到了一个关于三角函数的线性组合的形式。再经过傅立叶变换后，函数 <span class="math inline">\(f(x)\)</span> 就变成了一个向量的形式：<span class="math inline">\({[\dots, c_{-n}, \dots, c_0, c_1, c_2, \dots, c_n, \dots]}\)</span>。这里的 <span class="math inline">\(c_n\)</span> 就是我们通常说的傅立叶变换，而公式中的 <span class="math inline">\(e^{j\omega_nx}\)</span> 就是傅立叶变换的基底。</p>
 <p>接下来，我们想知道，对于一张图片而言，这个 <span class="math inline">\(c_n\)</span> 该怎么求。</p>
-<p>我们先考虑一维的情况（你可以想象成一个宽度为 <span class="math inline">\(N\)</span>，高度为 1 的图片）。在公式中，<span class="math inline">\(c_n=\frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}{f(x)e^{-j\omega_n x}}\ dx\)</span>，这是对连续函数而言的，但计算机中的图像信号是离散的，因此，我们要把积分符号换成求和符号。另外，周期用图像的宽度代替。这样，我们就得到图像中的傅立叶变换：<span class="math inline">\(c_n=\frac{1}{N}\sum_{x=0}^{N-1}f(x)e^{j\omega_n x}\)</span>。</p>
-<p>然后，有同学会问，这样的 <span class="math inline">\(c_n\)</span> 有多少个呢？在我们前面推导的公式中，<span class="math inline">\(c_n\)</span> 有无穷多个，这时符合傅立叶的前提假设的：无穷多个三角函数的叠加才能构成原来的信号。但是，计算机只能表示有穷的信息，因此，我们势必得做取舍。好在，实际情况中，当 <span class="math inline">\(n\)</span> 的值越来越大时，<span class="math inline">\(c_n\)</span> 的值会渐渐趋于 0，因为图片中的高频分量往往比较小，所以这一部分高频的三角函数的系数 <span class="math inline">\(c_n\)</span> 的值也会很小（公式中，频率 <span class="math inline">\(\omega_n=\frac{2n\pi}{N}\)</span>，<span class="math inline">\(n\)</span> 越大也就表明频率越大）。实际操作中，我们会取 <span class="math inline">\(N\)</span> 个 <span class="math inline">\(c_n\)</span>，其中 <span class="math inline">\(N\)</span> 就是图像信号的周期。因此，我们最终得到图像中的傅立叶变换： <span class="math display">\[
+<p>我们先考虑一维的情况（你可以想象成一个宽度为 <span class="math inline">\(N\)</span>，高度为 1 的图片）。在公式中，<span class="math inline">\(c_n=\frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}{f(x)e^{-j\omega_n x}}\ dx\)</span>，这是对连续函数而言的，但计算机中的图像信号是离散的，因此，我们要把积分符号换成求和符号。另外，周期用图像的宽度代替。这样，我们就得到图像中的傅立叶变换：<span class="math inline">\(c_n=\frac{1}{N}\sum_{x=0}^{N-1}f(x)e^{-j\omega_n x}\)</span>。</p>
+<p>然后，有同学会问，这样的 <span class="math inline">\(c_n\)</span> 有多少个呢？在我们前面推导的公式中，<span class="math inline">\(c_n\)</span> 有无穷多个，这时符合傅立叶的前提假设的：无穷多个三角函数的叠加才能构成原来的信号。但是，计算机只能表示有穷的信息，因此，我们需要进行采样。好在，实际情况中，当 <span class="math inline">\(n\)</span> 的值越来越大时，<span class="math inline">\(c_n\)</span> 的值会渐渐趋于 0，因为图片中的高频分量往往比较小，所以这一部分高频的三角函数的系数 <span class="math inline">\(c_n\)</span> 的值也会很小（公式中，频率 <span class="math inline">\(\omega_n=\frac{2n\pi}{N}\)</span>，<span class="math inline">\(n\)</span> 越大也就表明频率越大）。实际操作中，我们会取 <span class="math inline">\(N\)</span> 个 <span class="math inline">\(c_n\)</span>，其中 <span class="math inline">\(N\)</span> 就是图像信号的周期。因此，我们最终得到图像中的傅立叶变换： <span class="math display">\[
 F(u)=\frac{1}{N}\sum_{x=0}^{N-1}f(x)e^{-j2\pi ux/N} , \ \ u=0,1,...,N-1
 \]</span> 公式中的 <span class="math inline">\(f(x)\)</span> 指的就是图片中 x 位置的像素值，这也说明，傅立叶变换是综合计算图像像素的整体灰度变化后得到的。如果图像中高频信息比较大（即图像灰度变化很剧烈），则对于频率高的基底向量（<span class="math inline">\(u\)</span> 的值比较大），其对应的权重 <span class="math inline">\(F(u)\)</span> 的值也会比较大，反之亦然。</p>
 <h3 id="傅立叶逆变换">傅立叶逆变换</h3>
 <p>所谓傅立叶逆变换，就是在得到一堆傅立叶变换的参数 <span class="math inline">\(F(u)\)</span> 后，如何反推回去，得到空间域的图像。</p>
 <p>其实非常简单，前面说了，傅立叶变换就是把时空域下的图像信号 <span class="math inline">\(f(x)\)</span> 重新用频率域的基底来表示。现在，频率域基底向量的系数 <span class="math inline">\(F(u,v)\)</span> 已经有了，把它们组合起来就可以得到原来的信号：<span class="math inline">\(f(x)=\sum_{n=-\infty}^{\infty}{c_ne^{j\omega_n x}}\)</span>。因此，傅立叶逆变换就是把傅立叶基底向量的系数再累加起来： <span class="math display">\[
 f(x)=\sum_{u=0}^{N-1}F(u)e^{j2\pi ux/N}, \ \ x=0,1,...,N-1
-\]</span> ### 二维傅立叶</p>
+\]</span></p>
+<h3 id="二维傅立叶">二维傅立叶</h3>
 <p>二维傅立叶其实就是在一维的基础上，继续向另一个方向扩展而已，相当于一个二重积分： <span class="math display">\[
 \begin{eqnarray}
 F(u, v)&amp;=&amp;\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x, y)e^{-j2\pi ux/M}e^{-j2\pi vy/N} \\
@@ -566,6 +567,10 @@ f(x,y)=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}F(u,v)e^{j2\pi ux/M}e^{j2\pi vy/N}
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/10/10/2017-10-10-fourier-transform-in-image-2/" rel="prev" title="图像中的傅立叶变换（二）">
+                图像中的傅立叶变换（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -638,7 +643,7 @@ f(x,y)=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}F(u,v)e^{j2\pi ux/M}e^{j2\pi vy/N}
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-count">66</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -720,7 +725,7 @@ f(x,y)=\sum_{u=0}^{M-1}\sum_{v=0}^{N-1}F(u,v)e^{j2\pi ux/M}e^{j2\pi vy/N}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像的表示"><span class="nav-number">1.</span> <span class="nav-text">图像的表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶变换"><span class="nav-number">2.</span> <span class="nav-text">傅立叶变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶逆变换"><span class="nav-number">3.</span> <span class="nav-text">傅立叶逆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像的表示"><span class="nav-number">1.</span> <span class="nav-text">图像的表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶变换"><span class="nav-number">2.</span> <span class="nav-text">傅立叶变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#傅立叶逆变换"><span class="nav-number">3.</span> <span class="nav-text">傅立叶逆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二维傅立叶"><span class="nav-number">4.</span> <span class="nav-text">二维傅立叶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
