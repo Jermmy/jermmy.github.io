@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="机器学习,线性代数," />
 
 
 
@@ -94,15 +94,25 @@
 
 
 
-<meta name="description" content="In me the tiger sniffs the rose.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jermmy's Lazy Blog">
-<meta property="og:url" content="https://jermmy.github.io/categories/机器学习/index.html">
+<meta name="description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
+N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
+\] 拓展到高维时，就变成： \[
+N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多维高斯分布">
+<meta property="og:url" content="https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="In me the tiger sniffs the rose.">
+<meta property="og:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
+N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
+\] 拓展到高维时，就变成： \[
+N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta property="og:updated_time" content="2017-10-29T02:24:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jermmy's Lazy Blog">
-<meta name="twitter:description" content="In me the tiger sniffs the rose.">
+<meta name="twitter:title" content="多维高斯分布">
+<meta name="twitter:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
+N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
+\] 拓展到高维时，就变成： \[
+N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
 
 
 
@@ -130,13 +140,13 @@
 
 
 
-  <link rel="canonical" href="https://jermmy.github.io/categories/机器学习/"/>
+  <link rel="canonical" href="https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/"/>
 
 
 
 
 
-  <title>分类: 机器学习 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>多维高斯分布 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -180,7 +190,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -274,187 +284,261 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        机器学习
-        <small>分类</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/10/28/2017-10-28-mutil-modal-gaussian/" itemprop="url">
-              
-                <span itemprop="name">多维高斯分布</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-10-28T11:20:47+08:00"
-              content="2017-10-28" >
-          10-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/30/2017-9-30-maximum-likelihood-estimation/" itemprop="url">
-              
-                <span itemprop="name">最大似然估计</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-30T13:54:29+08:00"
-              content="2017-09-30" >
-          09-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/19/2017-4-19-how-to-label-images/" itemprop="url">
-              
-                <span itemprop="name">如何「优雅」地标数据</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-19T20:56:02+08:00"
-              content="2017-04-19" >
-          04-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/13/2017-4-13-decision-tree/" itemprop="url">
-              
-                <span itemprop="name">决策树生成算法</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-13T12:10:03+08:00"
-              content="2017-04-13" >
-          04-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/12/2017-4-12-bagging-boosting-bootstrap/" itemprop="url">
-              
-                <span itemprop="name">Bagging, Boosting, Bootstrap</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-12T10:19:08+08:00"
-              content="2017-04-12" >
-          04-12
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/25/2017-3-25-understand-PCA/" itemprop="url">
-              
-                <span itemprop="name">PCA算法浅析</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-25T09:27:35+08:00"
-              content="2017-03-25" >
-          03-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </section>
 
   
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                多维高斯分布
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-28T11:20:47+08:00">
+                2017-10-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/28/2017-10-28-mutil-modal-gaussian/" class="leancloud_visitors" data-flag-title="多维高斯分布">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>高中的时候我们便学过一维正态（高斯）分布的公式： <span class="math display">\[
+N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
+\]</span> 拓展到高维时，就变成： <span class="math display">\[
+N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/2}}exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)]
+\]</span> 其中，<span class="math inline">\(\overline x\)</span> 表示维度为 D 的向量，<span class="math inline">\(\overline u\)</span> 则是这些向量的平均值，<span class="math inline">\(\Sigma\)</span> 表示所有向量 <span class="math inline">\(\overline x\)</span> 的协方差矩阵。</p>
+<p>本文只是想简单探讨一下，上面这个高维的公式是怎么来的。</p>
+<a id="more"></a>
+<h3 id="二维的情况">二维的情况</h3>
+<p>为了简单起见，本文假设所有变量都是相互独立的。即对于概率分布函数 <span class="math inline">\(f(x_0,x_1,…,x_n)\)</span> 而言，有 <span class="math inline">\(f(x_0,x_1,…,x_n)=f(x_0)f(x_1)f(x_n)\)</span> 成立。</p>
+<p>现在，我们用一个二维的例子推出上面的公式。</p>
+<p>假设有很多变量 <span class="math inline">\(\overline x=\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}\)</span>，它们的均值为 <span class="math inline">\(\overline u=\begin{bmatrix} u_1 \\ u_2 \end{bmatrix}\)</span>，方差为 <span class="math inline">\(\overline \sigma=\begin{bmatrix} \sigma_1 \\ \sigma_2 \end{bmatrix}\)</span>。</p>
+<p>由于 <span class="math inline">\(x_1\)</span>，<span class="math inline">\(x_2\)</span> 是相互独立的，所以，<span class="math inline">\(\overline x\)</span> 的高斯分布函数可以表示为： <span class="math display">\[
+\begin{eqnarray}
+f(\overline x) &amp;=&amp; f(x_1,x_2) \\
+&amp;=&amp; f(x_1)f(x_2) \\
+&amp;=&amp; \frac{1}{\sqrt{2\pi \sigma_1^2}}exp(-\frac{1}{2}(\frac{x_1-u_1}{\sigma_1})^2) \times \frac{1}{\sqrt{2\pi \sigma_2^2}}exp(-\frac{1}{2}(\frac{x_2-u_2}{\sigma_2})^2) \\
+&amp;=&amp;\frac{1}{(2\pi)^{2/2}(\sigma_1^2 \sigma_2^2)^{1/2}}exp(-\frac{1}{2}[(\frac{x_1-u_1}{\sigma_1})^2+(\frac{x_2-u_2}{\sigma_2})^2])
+\end{eqnarray}
+\]</span> 接下来，为了推出文章开篇的高维公式，我们要想办法得到协方差矩阵 <span class="math inline">\(\Sigma\)</span>。</p>
+<p>对于二维的向量 <span class="math inline">\(\overline x\)</span> 而言，其协方差矩阵为： <span class="math display">\[
+\begin{eqnarray}
+\Sigma&amp;=&amp;\begin{bmatrix}
+\sigma_{11} &amp; \sigma_{12} \\
+\sigma_{12} &amp; \sigma_{22}
+\end{bmatrix} \\
+&amp;=&amp;\begin{bmatrix}
+\sigma_1^2 &amp; \sigma_{12} \\
+\sigma_{21} &amp; \sigma_{2}^2
+\end{bmatrix} \\
+\end{eqnarray}
+\]</span> (不熟悉协方差矩阵的请查找其他资料或翻看我之前的<a href="https://jermmy.github.io/2017/03/19/2017-3-19-covariance-matrix/">文章</a>)</p>
+<p>由于 <span class="math inline">\(x_1\)</span>，<span class="math inline">\(x_2\)</span> 是相互独立的，所以 <span class="math inline">\(\sigma_{12}=\sigma_{21}=0\)</span>。这样，<span class="math inline">\(\Sigma\)</span> 退化成 <span class="math inline">\(\begin{bmatrix} \sigma_1^2 &amp; 0 \\ 0 &amp; \sigma_{2}^2 \end{bmatrix}\)</span>。</p>
+<p>则 <span class="math inline">\(\Sigma\)</span> 的行列式 <span class="math inline">\(|\Sigma|=\sigma_1^2 \sigma_2^2\)</span>，代入公式 (4) 就可以得到： <span class="math display">\[
+f(\overline x)=\frac{1}{(2\pi)^{2/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}[(\frac{x_1-u_1}{\sigma_1})^2+(\frac{x_2-u_2}{\sigma_2})^2])
+\]</span> 这样一来，我们已经推出了公式的左半部分，下面，开始处理右面的 <span class="math inline">\(exp\)</span> 函数。</p>
+<p>原始的高维高斯函数的 <span class="math inline">\(exp\)</span> 函数为：<span class="math inline">\(exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)]\)</span>，根据前面算出来的 <span class="math inline">\(\Sigma\)</span>，我们可以求出它的逆：<span class="math inline">\(\Sigma^{-1}=\frac{1}{\sigma_1^2 \sigma_2^2} \begin{bmatrix} \sigma_2^2 &amp; 0 \\ 0 &amp; \sigma_1^2 \end{bmatrix}\)</span>。</p>
+<p>接下来根据这个二维的例子，将原始的 <span class="math inline">\(exp()\)</span> 展开： <span class="math display">\[
+\begin{eqnarray}
+exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)] &amp;=&amp; exp[-\frac{1}{2} \begin{bmatrix} x_1-u_1  \ \ \  x_2-u_2 \end{bmatrix} \frac{1}{\sigma_1^2 \sigma_2^2} \begin{bmatrix} \sigma_2^2 &amp; 0 \\ 0 &amp; \sigma_1^2 \end{bmatrix}  \begin{bmatrix} x_1-u_1 \\  x_2-u_2 \end{bmatrix}] \\
+&amp;=&amp;exp[-\frac{1}{2} \begin{bmatrix} x_1-u_1  \ \ \  x_2-u_2 \end{bmatrix} \frac{1}{\sigma_1^2 \sigma_2^2} \begin{bmatrix} \sigma_2^2(x_1-u_1) \\ \sigma_1^2(x_2-u_2) \end{bmatrix}] \\
+&amp;=&amp;exp[-\frac{1}{2\sigma_1^2 \sigma_2^2}[\sigma_2^2(x_1-u_1)^2+\sigma_1^2(x_2-u_2)^2]] \\
+&amp;=&amp;exp[-\frac{1}{2}[\frac{(x_1-u_1)^2}{\sigma_1^2}+\frac{(x_2-u_2)^2}{\sigma_2^2}]]
+\end{eqnarray}
+\]</span> 展开到最后，发现推出了公式 (4)。说明原公式 <span class="math inline">\(N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/2}}exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)]\)</span> 是成立的。你也可以将上面展开的过程逆着推回去，一样可以从例子中的公式 (4) 推出多维高斯公式。</p>
+<h3 id="总结">总结</h3>
+<p>本文只是从一个简单的二维例子出发，来说明多维高斯公式的来源。在 PRML 的书中，推导的过程更加全面，也复杂了许多，想深入学习多维高斯模型的还是参考教材为准。</p>
+<p>重新对比一维和多维的公式： <span class="math display">\[
+N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
+\]</span></p>
+<p><span class="math display">\[
+N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/2}}exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)]
+\]</span></p>
+<p>其实二者是等价的。一维中，我们针对的是一个数，多维时，则是针对一个个向量求分布。如果向量退化成一维，则多维公式中的 <span class="math inline">\(D=1\)</span>，<span class="math inline">\(\Sigma=\sigma^2\)</span>，<span class="math inline">\(\Sigma^{-1}=\frac{1}{\sigma^2}\)</span>，这时多维公式就退化成一维的公式。所以，在多维的公式中，我们可以把 <span class="math inline">\(\Sigma\)</span> 当作是样本向量的标准差。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://jermmy.github.io/2017/03/19/2017-3-19-covariance-matrix/">协方差矩阵</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/" title="多维高斯分布">https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/线性代数/" rel="tag"># 线性代数</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/10/2017-10-10-fourier-transform-in-image-2/" rel="next" title="图像中的傅立叶变换（二）">
+                <i class="fa fa-chevron-left"></i> 图像中的傅立叶变换（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -462,6 +546,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
 
         </div>
         
@@ -481,8 +571,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
@@ -569,6 +668,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二维的情况"><span class="nav-number">1.</span> <span class="nav-text">二维的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -682,6 +797,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
 
   
 
