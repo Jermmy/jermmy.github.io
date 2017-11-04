@@ -1,0 +1,1036 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习,NLP," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
+先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="word2vec概述">
+<meta property="og:url" content="https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/index.html">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
+先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/training_data_cbow.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/CBOW_network.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/network_matrix.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/CBOW_multiple_network.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/multiple_input.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/word2vec_weight_matrix_lookup_table.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/training_data.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/skip-grams-network.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/skip.png">
+<meta property="og:updated_time" content="2017-11-04T08:30:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="word2vec概述">
+<meta name="twitter:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
+先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-11-3/training_data_cbow.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/"/>
+
+
+
+
+
+  <title>word2vec概述 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                word2vec概述
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T16:28:37+08:00">
+                2017-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/11/03/2017-11-3-word2vec-introduction/" class="leancloud_visitors" data-flag-title="word2vec概述">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。</p>
+<p>先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。</p>
+<a id="more"></a>
+<h3 id="什么是word2vec">什么是Word2Vec</h3>
+<p>Word2Vec，顾名思义，就是把一个 word 变成一个 vector。其实，早在 Word2Vec 出来之前，就已经有很多人思考这个问题了。而用的最多的方法大概是 tf-idf 这类基于频率的方法。不过这类方法有什么问题呢？一个很明显的缺陷是，这些方法得到的向量是没有语义的，比如说，对于「苹果」、「香蕉」、「可乐」这三个词来说，「苹果」和「香蕉」表示的向量应该比「可乐」更加相似，这种相似有很多衡量方法（比如「欧式距离」或「余弦相似性」），但用频率的方法是很难体现这种相似性的。而 Word2Vec 就是为了解决这种问题诞生的。</p>
+<p>Word2Vec 是 Google 的 Tomas Mikolov 及其团队于 2013 年创造的，正如之前提到的，这个模型是为了让 word 生成的向量能体现语义信息。它是一种基于预测的模型。</p>
+<h3 id="基本思想">基本思想</h3>
+<p>在了解 Word2Vec 的基本思想之前，我们先思考一个问题：什么是词的语义？这是一个很难回答的问题，因此，我们降低一下难度：如何判断两个词的语义是相似的？好吧，这依然不好回答。那么，我们继续简单点想：两个语义相似的词会有什么特点呢？它们可能词性相同（比如都是名词或形容词），可能在句子中出现的位置很类似等等。</p>
+<p>比如，我们看一个例子：「The quick brown fox jumps over the lazy dog.」。现在，我们聚焦到「fox」这个词，如果要把它换成其他词，要怎么做呢？一个最简单的方法是，我们去搜索其他句子，看其他句子中是否也有「brown __ jumps”」这样的格式出现，如果出现了，则下划线代表的词很可能是可以替换「fox」的。而根据常识，会出现在形容词之后和动词之前的词，一般来说是个名词，因此，我们这种替换的思路也是有一定道理的，起码一个名词和「fox」之间的相似性，相比动词或副词会更大一些。这里的<strong>替换</strong>其实就包含一点语义，只有两个词语义相似，才能相互替换。当然，这种相似显得稍微粗糙了一点（毕竟不同的名词或动词之间也是相差万别），但是，如果语料库足够丰富，我们还是可以进一步学习出不同名词之间的差别的。比如，对于这样的句子：「The man plays basketball.”」 ，如果要替换「man」这个词，我们发现，由于有「plays basketball」的限制，就不是什么名词都可以派上用场了。同样地，我们扫描其他句子，找出有类似结构「The __ plays basketball」的句子，然后将下划线的词和「man」做对比，这时，我们会发现，这样的词更多的会是一个表示人类的名词，而不在是「cat」等其他名词。因此，只要语料库够大，我们对相似度的判断粒度也会更细。</p>
+<p>好了，以上这个例子，其实就是 Word2Vec 的基本思想了。</p>
+<p>Word2Vec 主要就是利用上下文信息，或者更具体一点，与一个词前后相邻的若干个词，来提取出这个词的特征向量。</p>
+<h3 id="方法">方法</h3>
+<p>为了利用这种上下文信息，Word2Vec 采用了两种具体的实现方法，分别是 CBOW 和 Skip-grams。这两种方法本质上是一样的，都是利用句子中相邻的词，训练一个神经网络。它们各有优劣，因此各自实现的 Word2Vec 的效果也各有千秋。</p>
+<blockquote>
+<p>需要注意的是，由于语料库是没有任何标记的，因此这种方法是一种无监督学习的方法，而我们训练的这个网络，最终并不是想用它来输出特征，而是将网络的参数作为文本的特征（类似 auto-encoder）。</p>
+</blockquote>
+<p>下面，我分别简单介绍一下 CBOW 和 Skip-grams。</p>
+<h4 id="cbowcontinuous-bag-of-words">CBOW(Continuous Bag of Words)</h4>
+<p>CBOW 采用<strong>给定上下文信息来预测一个词</strong>的战术来训练神经网络。</p>
+<p>用一个例子来说明 CBOW 的过程。假设现在我们的语料库只有一句话：“The quick brown fox jumps over the lazy dog”。算法中有一个参数 <code>window</code>，表示依赖的上下文数量，如果 <code>window</code> 设为 1，则只依赖左右一个单词，比如，对于「fox」这个词，对应的上下文就是「brown」和「jumps」，一般来说，这个值越大，准确性越高，计算量也会越大。现在，我们把 <code>window</code> 设为 2，这样，对于上面的句子，可以分解成下面这些训练的样本对：</p>
+<center>
+<p><img src="/images/2017-11-3/training_data_cbow.png" width="600px"></p>
+</center>
+<p>当然，文本是没法直接用于训练的，通常，我们还需要把这些训练的文本向量化。这一步向量化可以采用多种方法，比如直接用 one-hot 向量来表示。这样一来，训练对就变成了向量对，我们输入网络的是左边的向量，输出的则是右边的向量。</p>
+<p>在正式训练之前，有必要先讲一下 CBOW 的网络结构。</p>
+<center>
+<p><img src="/images/2017-11-3/CBOW_network.png" width="500px"></p>
+</center>
+<p>如上图所示，CBOW 的网络结构其实非常简单，Input layer 是训练对中左边的向量。Hidder layer 则是 Input layer 线性组合而成的，换句话说，中间的隐藏层没有激活函数。需要注意的是，Output layer 并不直接就是输出向量，而是经过 Softmax 函数后得到的向量，我们知道，Softmax 得到的向量表示一连串的概率分布，因此，网络要学习的任务，就是让概率最大的位置，对应到输出向量 one-hot 中值为 1 的位置。</p>
+<p>再具体一点，假设我们语料库中的词的数目是 <span class="math inline">\(V\)</span>，隐藏层的神经元数目是 <span class="math inline">\(N\)</span>，那么，输入向量就是一个 <span class="math inline">\([V \times 1]\)</span> 的向量，输入层与隐藏层之间有一个 <span class="math inline">\([N \times V]\)</span> 的权重矩阵，隐藏层是一个 <span class="math inline">\([N \times 1]\)</span> 的向量，隐藏层和输出层之间有一个 <span class="math inline">\([V \times N]\)</span> 的向量，输出层是一个 <span class="math inline">\([V \times 1]\)</span> 的向量。</p>
+<center>
+<p><img src="/images/2017-11-3/network_matrix.png" width="500px"></p>
+</center>
+<p>对于代价函数而言，由于我们最后的激活层是 Softmax，因此对应的一般用 <span class="math inline">\(log-likelihood\)</span> 函数作为 cost function：<span class="math inline">\(-\log{(p())}\)</span>，其中 <span class="math inline">\(p()\)</span> 指的就是 Softmax 函数，它的具体形式这里就不展开了。</p>
+<p>好了，讲完 CBOW 的网络结构后，接下来要看看如何用那些 training samples 来训练网络了。</p>
+<p>首先要强调一下，CBOW 的目的是要用 context 的内容来预测单词，如果只是简单地把训练样本对「喂」给上面所示的神经网络，那么我们用到的上下文信息只有一个相邻的单词而已。为了更好地利用 context 的内容，CBOW 实际上会把所有的邻居单词都输入到网络中。比如，对于例子中的第二个样本对 <span class="math inline">\([(the, quick), (brown, quick), (fox, quick)]\)</span>，我们是这样输入到网络中的：</p>
+<center>
+<p><img src="/images/2017-11-3/CBOW_multiple_network.png" width="300px"></p>
+</center>
+<center>
+<p><img src="/images/2017-11-3/multiple_input.png" width="500px"></p>
+</center>
+<p>隐藏层那里，我们把三个输入向量前向后得到的隐藏层向量平均了一下，得到最终的隐藏层，之后的步骤和单个输入的情况是一致的。</p>
+<p>这样不断训练优化参数后，最后得到的网络就可以根据输入的上下文信息，猜出对应的单词是哪个了。而我们要的 vector 向量其实就是<strong>隐藏层和输出层之间的权重矩阵 Hidden-Ouput Matrix</strong>。这是一个 <span class="math inline">\(V \times N\)</span> 的矩阵，矩阵的每一行代表的就是一个词的 vector，这个 vector 的维度是 <span class="math inline">\(N\)</span>，刚好就是我们定义的隐藏层神经元的数目。你也可以把这个矩阵当作一个词典</p>
+<center>
+<p><img src="/images/2017-11-3/word2vec_weight_matrix_lookup_table.png" width="500px"></p>
+</center>
+<p>根据输出层对应的 one-hot 编码，在词典对应的行中找到特征向量即可。比如，如果要找「fox」的特征，由于它的 one-hot 为：<span class="math inline">\([0, 0, 0, 1, 0, 0, 0, 0, 0]\)</span>，因此，词典中第四行对应的向量就是「fox」的特征向量。</p>
+<p>好了，我们已经把最简单版本的 CBOW 讲完了，它最主要的思想，其实就是把上下文的向量平均一下（上面例子中的 <span class="math inline">\(Average\ Activation\)</span>），再用这个向量去预测出输出向量（即在 <span class="math inline">\(Hidden-Output\ Matrix\)</span> 中 match 一个特定的行向量，使得到的概率值最大）。因此，我们可以认为，一个词最终得到的向量，其实是它所有上下文向量的平均效果。比如，对于「Apple」这个词来说，由于它既可以是一种水果，也可以是一个公司，因此，「Apple」这个词对应的向量可能会在水果和公司这些词向量的聚类集合之间。</p>
+<h4 id="skip-grams">Skip-grams</h4>
+<p>与 CBOW 相反，Skip-grams 采用<strong>给定一个词来预测上下文</strong>的战术来训练神经网络。</p>
+<p>假如还是之前的例子 “The quick brown fox jumps over the lazy dog”。同样将 <code>window</code> 的值设为 2，这次我们会分解出下面这些训练的样本对：</p>
+<center>
+<p><img src="/images/2017-11-3/training_data.png" width="600px"></p>
+</center>
+<p>和 CBOW 很类似，只不过训练样本中，输入和输出对调了位置。</p>
+<p>Skip-grams 的网络结构和 CBOW 是一样的，只不过训练的时候，我们输入的是一个向量，而输出则对应多个向量：</p>
+<center>
+<p><img src="/images/2017-11-3/skip-grams-network.png" width="300px"></p>
+</center>
+<p>我们再次用矩阵的形式看看这个过程（这里偷个懒，我就直接盗参考链接的图了）：</p>
+<div class="figure">
+<img src="/images/2017-11-3/skip.png" alt="skip-grams">
+<p class="caption">skip-grams</p>
+</div>
+<p>这个图里只包括了隐藏层到输出层的部分，前面输出层到隐藏层的部分和一般的网络是一样的。</p>
+<p>注意到，我们这里同样将隐藏层的神经元数目设为 4。</p>
+<p>在 Output 的时候，根据输入单词对应的上下文单词数量，我们对应的要输出相同数量的向量，上图中，输出的向量个数是 2。当然，在一次前向中，这两个输出向量是相同的，不过，我们要的其实是用于反向传播的误差。比如，这两个输出向量对应的词是不同的，因此，对应的 Target 向量（也就是 one-hot）也是不同的，这样，用各自对应的 Target 向量减去 Softmax 得到的向量，我们可以得到两个不同的误差，然后，把这两个误差加起来作为总的误差，再反向传播回去。</p>
+<p>这个过程和 CBOW 有相似之处，在 CBOW 中，我们平均的是上下文向量的隐藏层，而 Skip-grams 平均的是上下文向量的误差。所以，我们可以简单地想，Skip-grams 其实也是在平均上下文向量，并依此得到我们要的词向量。</p>
+<p>对应的，Skip-grams 的词典是输入层和隐藏层之间的权重矩阵，和 CBOW 完全反着来。</p>
+<h3 id="总结">总结</h3>
+<p>写到最后，我发现这篇文章其实主要是在讲 CBOW 和 Skip-grams 的思想，稍稍有点偏题了。</p>
+<p>其实，重要的还是这两个方法中用到的基于上下文预测语义的思想，这一点和 Word2Vec 是一致的。当然啦，由于我并没有很深入地去了解这两个算法，所以也只能草草讲一下大概的思路，有一些具体的优化策略和实现方法都没有提及，比如，如何改进 one-hot 这种很耗内存的表示方法，如何减少网络参数等，这些内容也是算法的精髓。不过，如果已经知道算法的总体战略思想，对于这些具体的战术，多看几篇文章应该也不是什么问题。</p>
+<p>废话到此为止～囧～</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/" target="_blank" rel="external">Word2Vec Tutorial - The Skip-Gram Model</a></li>
+<li><a href="http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/" target="_blank" rel="external">Word2Vec Tutorial Part 2 - Negative Sampling</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2017/06/word-embeddings-count-word2veec/" target="_blank" rel="external">An Intuitive Understanding of Word Embeddings: From Count Vectors to Word2Vec</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/Word2vec" target="_blank" rel="external">Word2vec</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/" title="word2vec概述">https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/28/2017-10-28-mutil-modal-gaussian/" rel="next" title="多维高斯分布">
+                <i class="fa fa-chevron-left"></i> 多维高斯分布
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是word2vec"><span class="nav-number">1.</span> <span class="nav-text">什么是Word2Vec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本思想"><span class="nav-number">2.</span> <span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cbowcontinuous-bag-of-words"><span class="nav-number">3.1.</span> <span class="nav-text">CBOW(Continuous Bag of Words)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#skip-grams"><span class="nav-number">3.2.</span> <span class="nav-text">Skip-grams</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
