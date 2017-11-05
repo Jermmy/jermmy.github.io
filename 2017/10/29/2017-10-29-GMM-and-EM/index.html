@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="深度学习,论文," />
+  <meta name="keywords" content="机器学习," />
 
 
 
@@ -94,30 +94,22 @@
 
 
 
-<meta name="description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
+<meta name="description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
+这篇文">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记：Deep Residual Learning">
-<meta property="og:url" content="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/index.html">
+<meta property="og:title" content="GMM与EM共舞">
+<meta property="og:url" content="https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual network.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity mapping block.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity mapping block1.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference1.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference2.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference3.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/gradient.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/experiment.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/validation error.png">
-<meta property="og:updated_time" content="2017-10-05T05:58:56.000Z">
+<meta property="og:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
+这篇文">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/GMM.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/EM_for_GMM.png">
+<meta property="og:updated_time" content="2017-11-05T16:32:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="论文笔记：Deep Residual Learning">
-<meta name="twitter:description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
-<meta name="twitter:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
+<meta name="twitter:title" content="GMM与EM共舞">
+<meta name="twitter:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
+这篇文">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-10-29/GMM.png">
 
 
 
@@ -145,13 +137,13 @@
 
 
 
-  <link rel="canonical" href="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/"/>
+  <link rel="canonical" href="https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/"/>
 
 
 
 
 
-  <title>论文笔记：Deep Residual Learning | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>GMM与EM共舞 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -299,7 +291,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jermmy">
@@ -320,7 +312,7 @@
             
             
               
-                论文笔记：Deep Residual Learning
+                GMM与EM共舞
               
             
           </h1>
@@ -335,8 +327,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-25T16:41:35+08:00">
-                2017-09-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-29T10:27:15+08:00">
+                2017-10-29
               </time>
             
 
@@ -358,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/深度学习/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
 
@@ -375,7 +367,7 @@
 
           
           
-             <span id="/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/" class="leancloud_visitors" data-flag-title="论文笔记：Deep Residual Learning">
+             <span id="/2017/10/29/2017-10-29-GMM-and-EM/" class="leancloud_visitors" data-flag-title="GMM与EM共舞">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -403,71 +395,90 @@
       
 
       
-        <p>上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。</p>
-<p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="(https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5)">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
+        <p>GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。</p>
+<p>这篇文章会简单提一下 GMM 模型的内容，最主要的，还是讲一下 EM 算法如何应用到 GMM 模型的参数估计上。</p>
 <center>
-<p><img src="/images/2017-9-25/residual learning.png" width="400px"></p>
+<p><img src="/images/2017-10-29/GMM.png" width="500px"></p>
 </center>
 <a id="more"></a>
-<h3 id="基本思想">基本思想</h3>
-<p>回到最开始的问题，为什么深度神经网络会难以训练？根源在于 BP 的时候我们需要逐层计算导数并将这些导数相乘。这些导数如果太小，梯度就容易消失，反之，则会爆炸。我们没法从 BP 算法的角度出发让这个相乘的导数链消失，因此，可行的方法就是控制每个导数的值，让它们尽量靠近 1，这样，连乘后的结果不会太小，也不会太大。</p>
-<p>现在，我们就从导数入手，看看如何实现上面的要求。由于梯度消失的问题比梯度爆炸更常见，因此只针对梯度消失这一点进行改进。</p>
-<p>假设我们理想中想让网络学习出来的函数是 <span class="math inline">\(F(x; {W_i})\)</span>，但由于它的导数 <span class="math inline">\(\frac{\partial F}{\partial x}\)</span> 太小，所以训练的时候梯度就消失了。所谓太小，就是说 <span class="math inline">\(\frac{\partial F}{\partial x} \approx 0\)</span>，那么，我们何不在这个导数的基础上加上 1 或者减去 1，这样梯度不就变大了吗？（这里的 1 是为了满足之前提到的梯度靠近 1 这一要求，事实上，只要能防止梯度爆炸，其他数值也是可以的，不过作者在之后的实验中证明，1 的效果最好）</p>
-<p>按照这种思路，我们现在想构造一个新的函数，让它的导数等于 <span class="math inline">\(\frac{\partial F}{\partial x}+1\)</span>。由这个导数反推回去，很自然地就得到一个我们想要的函数：<span class="math inline">\(H(x)=F(x)+x\)</span>，它的导数为：<span class="math inline">\(\frac{\partial H}{\partial x} = \frac{\partial F}{\partial x}+1\)</span>。这个时候你可能会想，如果将原来的 <span class="math inline">\(F(x)\)</span> 变成 <span class="math inline">\(H(x)\)</span>，那网络想要提取的特征不就不正确了吗，这个网络还有什么用？不错，我们想要的最终函数是 <span class="math inline">\(F(x; {W_i})\)</span>，这个时候再加个 <span class="math inline">\(x\)</span> 上去，结果肯定不是我们想要的。但是，为什么一定要让网络学出 <span class="math inline">\(F(x; {W_i})\)</span>？为什么不用 <span class="math inline">\(H(x)\)</span> 替换原本的 <span class="math inline">\(F(x;{W_i})\)</span>，而将网络学习的目标调整为：<span class="math inline">\(F(x)=H(x)-x\)</span>？要知道，神经网络是可以近似任何函数的，只要让网络学出这个新的 <span class="math inline">\(F(x)\)</span>，那么我们自然也就可以通过 <span class="math inline">\(H(x)=F(x)+x\)</span> 得到最终想要的函数形式。作者认为，通过这种方式学习得到的 <span class="math inline">\(H(x)\)</span> 函数，跟当初直接让网络学习出的 <span class="math inline">\(F(x, {W_i})\)</span>，效果上是等价的，但前者却更容易训练。</p>
-<p>上面所说的 <span class="math inline">\(F(x)=H(x)-x\)</span> 就是所谓的残差 (residual)，而式子内的 <span class="math inline">\(x\)</span> 在论文中被称为 <strong>Identity Mapping</strong>，因为 x 可以看作是由自己到自己的映射函数。基于此，我们可以得到一个新的网络结构，如同开篇的图片所示，这个网络结构跟普通的网络结构类似，但在输出那里多加了一个 Identity Mapping，相当于在网络原有输出的基础上加一个 x，这样便得到我们想要的函数 <span class="math inline">\(H(x)\)</span>。作者将这种相加称为 <strong>shortcut connection</strong>，意思就是说，<span class="math inline">\(x\)</span> 没有经过中间的变换操作，像「短路」一样直接跳到输出那里和 <span class="math inline">\(F(x)\)</span> 相加。需要注意的是，这个网络结构的输入并不一定是原始的数据，它可以是前面一层网络的输出结果。同理，网络的输出也可以继续输入到后面层的网络中。</p>
-<p>我们用一个式子来表示这个网络：<span class="math inline">\(y=F(x,{W_i})+x\)</span>，其中 <span class="math inline">\(F(x,{W_i})=W_2 \sigma(W_1x)\)</span> （这里忽略了 bias）。在论文中，这里的 <span class="math inline">\(\sigma\)</span> 函数采用的是 ReLu。得到 <span class="math inline">\(y\)</span> 后，作者又对其做了一次 ReLu 操作，然后再进入下一层网络。</p>
-<p>Talk is cheap，show you the code（这里用 tensorflow 表示一下上图那个网络结构）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 假设 x 是该网络结构的输入</span></div><div class="line">c1 = tf.layers.conv2d(x, kernel, [w, h], strides=[s,s])</div><div class="line">b1 = tf.layers.batch_normalization(c1, training=is_training)</div><div class="line">h1 = tf.nn.relu(b1)</div><div class="line">c2 = tf.layers.conv2d(h1, kernel, [w, h], strides=[s,s])</div><div class="line">b2 = tf.layers.batch_normalization(c2, training=is_training)</div><div class="line">r = b2 + x</div><div class="line">y = tf.nn.relu(r)</div></pre></td></tr></table></figure>
-<p>因为 <span class="math inline">\(x\)</span> 和 <span class="math inline">\(F(x)\)</span> 是直接相加的，所以它们的维度必须相同，不同的情况下，需要对 <span class="math inline">\(x\)</span> 的维度进行调整。可以通过做一次线性变换将它投影到所需的维度空间，也可以用其他简单粗暴的方法。比如，当维度太高时，可以用 pooling 的方法降低维度。而维度较低时，作者在实验中则是直接补 0 来扩展维度。</p>
-<h3 id="深度残差网络">深度残差网络</h3>
-<p>好了，了解了残差网络的基本思路和简单的网络结构后，下面我们可以将它拓展到更深的网络结构中。</p>
-<p>下图是一个普通的网络和改造后的残差网络：</p>
+<h3 id="高斯混合模型">高斯混合模型</h3>
+<h4 id="什么是-gmm">什么是 GMM</h4>
+<p>GMM 可以认为是 K-means 算法的升级版。在 K-means 中，我们会先计算出几个聚类中心，然后根据数据点与聚类中心的距离，直接将数据点归类到最近的聚类中心。这种做法其实很“硬”，因为有很多边缘点属于两个聚类中心的概率可能相差不大，如果一股脑就直接将它归到某一个中心，实在是太粗暴了。而 GMM 不同于 K-means 的地方就在于，它除了给出聚类中心外，还能告诉你每个点归属于某个聚类中心的概率，因此，GMM 又被称作 soft assignment。</p>
+<p>首先，还是给出 GMM 模型的公式： <span class="math display">\[
+p( x)=\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)}
+\]</span> 其中，我们规定，<span class="math inline">\(\sum_{k=1}^K{\pi_k}=1\)</span>。可以看出，GMM 就是将几个高斯模型线性组合起来，人们习惯上把这里面的各个高斯模型称为 Component。其中，<span class="math inline">\(\pi_k\)</span> 表示每个模型的占比，或者说数据属于模型 k 的概率，这个值越大，说明聚集在这个模型内的数据越多。</p>
+<p>为什么要用这种模型组合的方式呢？我们知道，高斯模型一般成椭圆状（二维）或椭球状（三维），可以把这个椭圆或椭球认为是一种聚类的形状，而圆心或球心则是聚类中心（对应高斯函数的参数 <span class="math inline">\(\mu\)</span>）。但真实世界中，数据的分布并不一定都是按这样的形状分布的（如上面给出的图），因此，一个高斯模型可能没法很好的拟合这些数据，而如果能综合考虑几个高斯模型的表达能力，让这些模型发挥所长，不同的模型拟合不同的数据，这样一来，所有数据就可以很好地被这个「组合模型」拟合起来。</p>
+<p>其实，这种组合模型的思路可以应用到很多模型上，比如：泊松模型。而由于高斯模型本身一些良好的性质，因此 GMM 这种模型被用的比较多。</p>
+<p>前面说到，GMM 本质上是一种聚类算法，那么，如果已知一个 GMM 模型，现在给定一个点，我们要怎么知道这个点属于哪个聚类中心呢？更具体一点说，怎么知道这个点属于每个聚类中心的概率是多少？</p>
+<p>用数学的语言表达就是，已知一个 GMM 模型： <span class="math inline">\(p( x)=\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)}\)</span>，它的 K 个聚类中心为 <span class="math inline">\(C_k\)</span>，现在要求概率值 <span class="math inline">\(p( x \in C_k | x)\)</span>。</p>
+<p>求解的方法很简单，根据贝叶斯公式：<span class="math inline">\(p(a|b)=\frac{p(b|a)p(a)}{p(b)}\)</span>，我们可以得出： <span class="math display">\[
+p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
+\]</span> 因此，对于每个聚类中心 <span class="math inline">\(C_k\)</span>，由于分母 <span class="math inline">\(p( x)\)</span> 都是相同的，我们只需要计算 <span class="math inline">\(p(C_k)p( x| x\in C_k)=\pi_k N( x|\mu_k, \Sigma_k)\)</span> 即可。得到的值就是数据点 $ x$ 属于 <span class="math inline">\(C_k\)</span> 的概率，至于具体要将 $ x$ 归类到哪个中心，可以根据具体情况决定，比如将概率最大的作为归属的聚类中心。这一点也是 GMM 优于 K-means 的地方，前者是通过概率的方式来决定归属，因此提供了更加丰富的信息。</p>
+<h4 id="参数估计">参数估计</h4>
+<p>不过，GMM 模型最难的地方在于，如何根据一堆数据点估计出模型的参数？</p>
+<p>GMM 需要确定的参数有三类：</p>
+<ol style="list-style-type: decimal">
+<li>高斯模型的个数 <span class="math inline">\(K\)</span>，这个参数跟 K-means 的 <span class="math inline">\(K\)</span> 一样，需要人工事先设定，<span class="math inline">\(K\)</span> 越大，聚类的粒度也越细；</li>
+<li><span class="math inline">\(\pi_k\)</span>， 每个 Component 的概率分量，或者说在总样本中的占比；</li>
+<li><span class="math inline">\(\mu_k\)</span>、<span class="math inline">\(\Sigma_k\)</span>，各个 Component 的参数。</li>
+</ol>
+<p>如果样本所属分类已知（即已知 <span class="math inline">\(x\)</span> 属于哪个 <span class="math inline">\(C_k\)</span>），那 GMM 的参数就很容易确定了。首先，参数 <span class="math inline">\(K\)</span> 就一目了然得到了。然后，假设样本容量为 <span class="math inline">\(N\)</span>，归属于聚类中心 <span class="math inline">\(C_k\)</span> 的样本数量为 <span class="math inline">\(N_k\)</span>，归属每个 <span class="math inline">\(C_k\)</span> 的样本集合为 <span class="math inline">\(S(k)\)</span>，可以用以下公式求出其他参数： <span class="math display">\[
+\pi_k=\frac{N_k}{N}   \\
+\mu_k=\frac{1}{N_k}\sum_{ x\in S(k)}{ x}  \\
+\Sigma_k=\frac{1}{N_k}\sum_{ x\in S(k)}{( x-\mu_k)( x-\mu_k)^T}
+\]</span> 其实，这跟一个高斯模型的情况是一样的，只不过要依葫芦画瓢求出 <span class="math inline">\(K\)</span> 个。</p>
+<p>但如果样本的分类事先不知道，又该怎么办呢？首先，由于 <span class="math inline">\(K\)</span> 这个值是需要人工确定的，所以这里暂时假设 <span class="math inline">\(K\)</span> 已经知道了。现在，我们要预测 <span class="math inline">\(K\)</span> 个高斯模型的概率分量 <span class="math inline">\(\pi_k\)</span> 以及每个模型各自的参数 <span class="math inline">\(\mu_k\)</span> 和 <span class="math inline">\(\Sigma_k\)</span>。</p>
+<p>最简单也最容易想到的方法是极大似然估计。假设有 m 个样本，首先，写出 <span class="math inline">\(p( x)=\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)}\)</span> 的似然函数： <span class="math display">\[
+\begin{eqnarray}
+\ln{[\prod_{i=1}^m p( x_i)]}&amp;=&amp;\ln{[\prod_{i=1}^m{\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)}}]}   \\
+&amp;=&amp;\sum_{i=1}^m{\ln{[\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)]}}}   \\
+\end{eqnarray}
+\]</span> 不过，这个对数函数却出奇的复杂，直接求导数的方法很难求出 <span class="math inline">\(\mu_k\)</span> 和 <span class="math inline">\(\Sigma_k\)</span>，因此，我们只能换用其他方式来求解。而这就是 EM 算法发挥作用的地方。</p>
+<h3 id="均值最大化算法-em">均值最大化算法 EM</h3>
+<h4 id="k-means-的启示">K-means 的启示</h4>
+<p>在正式开讲 EM 之前，我们先回忆一下，K-means 是怎么求出聚类中心的。其实，总共分三步进行：</p>
+<ol style="list-style-type: decimal">
+<li>随机初始化 K 个聚类中心的位置；</li>
+<li>将所有样本点，按照跟各个聚类中心的距离进行归类；</li>
+<li>根据样本重新归类的结果，更新聚类中心的位置，重复步骤 2 直到收敛（即聚类中心重新调整的幅度小于某个阈值）。</li>
+</ol>
+<p>既然 GMM 本身也属于一种聚类算法，那么，我们能不能用 K-means 的思路来求出 GMM 的参数呢？答案当然是可以的。</p>
+<p>不过，在这之前，我们需要先知道 GMM 的几个参数（<span class="math inline">\(\pi_k\)</span>，<span class="math inline">\(\mu_k\)</span>，<span class="math inline">\(\Sigma_k\)</span>）要怎么计算。假设我们已经知道了后验概率 <span class="math inline">\(P( x \in C_k| x)\)</span>，则可以根据以下公式计算参数（其中，m 表示样本数量）： <span class="math display">\[
+\pi_k=\frac{1}{n}\sum_{i=1}^m{P( x_i\in C_k|x_i)} \tag{3}
+\]</span> 这个公式是把所有样本属于 <span class="math inline">\(C_k\)</span> 的概率求平均后，作为 <span class="math inline">\(C_k\)</span> 这个聚类中心（或者说这个高斯模型）的出现概率。 <span class="math display">\[
+\mu_k=\frac{\sum_{i=1}^m{ xP(x_i\in C_k|x_i)}}{\sum_{i=1}^m{P(x_i\in C_k|x_i)}}  \tag{4}
+\]</span> 这个求均值的公式，跟单个高斯模型不同的地方在于，我们用的是加权平均。因为每个样本点都有一定的概率属于聚类中心 <span class="math inline">\(C_k\)</span>，所以，每个样本对 <span class="math inline">\(C_k\)</span> 对应的高斯模型的均值也会产生一定的作用，只是由于 <span class="math inline">\(P(x_i\in C_k|x_i)\)</span> 的值不同，因此这种作用也会有显著差别。 <span class="math display">\[
+\Sigma_k=\frac{\sum_{i=1}^m{P(x_i\in C_k|x_i)(x_i-\mu_k)(x_i-\mu_k)^T}}{\sum_{i=1}^m{P(x_i\in C_k|x_i)}}  \tag{5}
+\]</span> 类似地，协方差也是用加权平均求出来的。</p>
+<p>（公式 (3) (4) (5) 其实是从极大似然函数推出来的，在周志华老师的<a href="https://book.douban.com/subject/26708119/" target="_blank" rel="external">西瓜书</a>和<a href="https://book.douban.com/subject/2061116/" target="_blank" rel="external">PRML</a>书中都有详细推导，不过这里我只想给出感性的认识）</p>
+<p>不过，以上公式都是基于 <span class="math inline">\(P( x \in C_k| x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}\)</span>计算出来的，而这个公式本身又需要知道 <span class="math inline">\(P(C_k)\)</span>（即 <span class="math inline">\(\pi_k\)</span>）等参数，这就陷入一个鸡生蛋还是蛋生鸡的怪圈。</p>
+<p>但是，借助 K-means 的思路，我们可以事先随机初始化这些参数，然后计算出 <span class="math inline">\(P( x \in C_k| x)\)</span>，再用它更新 GMM 参数，然后再用更新的模型计算 <span class="math inline">\(P( x \in C_k| x)\)</span>，如此迭代下去，总有收敛的时候，这样，我们不就可以像 K-means 一样计算出参数了吗？！</p>
+<p>下面，我们就仿照 K-means 的方法，给出迭代计算 GMM 参数的步骤：</p>
+<ol style="list-style-type: decimal">
+<li>随机初始化各个高斯模型的参数；</li>
+<li>根据参数，计算 <span class="math inline">\(P( x \in C_k| x)\)</span>，这一步其实是计算出每一个样本归属于每一个聚类中心的概率；</li>
+<li>根据第 2 步计算得到的 <span class="math inline">\(P( x \in C_k| x)\)</span>，按照公式 (3) (4) (5) 重新计算 GMM 参数，并重复步骤 2 直到收敛。</li>
+</ol>
+<h4 id="em-算法">EM 算法</h4>
+<p>其实，上面仿照 K-means 算法的计算步骤，就是 EM 算法的核心部分了。</p>
+<p>EM 算法主要分为 E 和 M 两步：</p>
+<ol style="list-style-type: decimal">
+<li>E 指的是 Expectation，即计算均值的过程，对应的是上面的步骤 2，这一步主要是计算每个样本归属的聚类中心；</li>
+<li>M 指的是 Maximum，即对参数的最大似然估计，对应的是上面的步骤 3。我前面也说了，公式 (3) (4) (5) 计算参数的公式是用最大似然函数推出来的，所以，这一步其实是在根据步骤 2 的分类结果，重新用最大似然函数来估计参数。</li>
+</ol>
+<p>下面这幅图是从西瓜书上截下来的，是 EM 算法求解 GMM 参数的完整过程。</p>
 <center>
-<p><img src="/images/2017-9-25/residual network.png" width="200px"></p>
+<p><img src="/images/2017-10-29/EM_for_GMM.png" width="600px"></p>
 </center>
-<p>左边的网络是没有添加残差层的网络，作者称它为 <strong>plain network</strong>，意思就是这个网络很「平」（每次看到这个名字我总是会浮出一些邪恶的想法～囧～）。右边的则是一个完整的深度残差网络，它其实就是由前文所说的小的网络结构组成的，虚线表示要对 <span class="math inline">\(x\)</span> 的维度进行扩增。作者在两个网络中都加了 Batch Normalization（具体加在卷积层之后，激活层之前），我想目的大概是要在之后的实验中凸显 residual learning 优于 BN 的效果吧。</p>
-<p>下面分析一下 <strong>identity mapping</strong> 对残差网络所起的作用，通过这个最简单的映射来了解 residual learning 不同于一般网络的地方。</p>
-<p>首先，给出最通用的网络结构：</p>
-<center>
-<p><img src="/images/2017-9-25/identity mapping block.png" width="400px"></p>
-</center>
-<p>这里其实就是将之前的 <span class="math inline">\(x\)</span> 换成 <span class="math inline">\(h(x)\)</span>，将最后的 ReLu 换成 <span class="math inline">\(f(x)\)</span>。因为事实上，<span class="math inline">\(h(x)\)</span> 和 <span class="math inline">\(f(x)\)</span> 的形式是很自由的，<span class="math inline">\(h(x)\)</span> 可以是 <span class="math inline">\(x\)</span>、<span class="math inline">\(2x\)</span>、<span class="math inline">\(x^2\)</span>，只要能防止梯度消失或爆炸即可。而 <span class="math inline">\(f(x)\)</span> 也可以是其他各种激活函数。</p>
-<p>不过，因为我们是要从 identity mapping 着手，所以这里还是令 <span class="math inline">\(h(x)=x\)</span>，<span class="math inline">\(f(x)=x\)</span>：</p>
-<center>
-<p><img src="/images/2017-9-25/identity mapping block1.png" width="400px"></p>
-</center>
-<p>然后，我们用类推出：</p>
-<center>
-<p><img src="/images/2017-9-25/inference1.png" width="200px"></p>
-</center>
-<center>
-<p><img src="/images/2017-9-25/inference2.png" width="200px"></p>
-</center>
-<center>
-<p><img src="/images/2017-9-25/inference3.png" width="200px"></p>
-</center>
-<p>到了这一步，可以发现，在 identity mapping 中，残差网络的输出其实就是在原始输入 <span class="math inline">\(x_l\)</span> 的基础上，加上后面的一堆「残差」。如果对其求导，则可以得出：</p>
-<center>
-<p><img src="/images/2017-9-25/gradient.png" width="500px"></p>
-</center>
-<p>我们发现，导数的形式也很类似，也是最后一层的导数加上前面的一堆「残差」导数，而这一步是残差网络中梯度不容易消失的原因。</p>
-<p>作者经过对比实验发现，identity mapping 的效果要好于其他的 mapping，具体的实验细节请参考 <a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="external">tutorial</a> 和后续的一篇论文 <a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="external">Identity Mappings in Deep Residual Networks</a>。换句话说，使用 residual network 时，最好用上 identity mapping。</p>
-<h3 id="论文中的实验">论文中的实验</h3>
-<p>实验部分，我只讲一下 ImageNet 的结果。</p>
-<p>作者分别用 18 层和 34 层的网络做了两组对比实验（两组网络除了残差外，其他结构相同，并且都加了 BN 层。在对 <span class="math inline">\(x\)</span> 升维时，直接使用 0 进行 padding，换句话说，残差网络的参数和 plain 的一样。34 层的网络见上一部分的说明），并分析了它们在 ImageNet 训练集上的误差下降情况：</p>
-<center>
-<p><img src="/images/2017-9-25/experiment.png" width="500px"></p>
-</center>
-<p>上图中，左图是 plain 网络，右图是 ResNet。注意，训练刚开始的时候，ResNet 的误差下降的速度比 plain 网络要快，也就是说，残差网络的训练速度快于 plain 网络。对于 18 层的网络而言，两者最终的准确率持平，但对于 34 层的网络，使用残差的结果要好于一般的网络。另外，我们再看看验证集上的情况：</p>
-<center>
-<p><img src="/images/2017-9-25/validation error.png" width="500px"></p>
-</center>
-<p>这个结果表明，当网络层数不多时，plain 网络和残差网络除了训练速度不一样外，对最终的结果影响不大。但如果层数比较深，残差网络可以提升准确率。作者在这里提出一个问题：既然我们已经在网络中加了 BN，那导致 plain 网络准确率降不下来的原因应该不会是梯度消失。但又会是其他什么原因呢？作者在论文中称这种问题为 <strong>degradation problem</strong>，即退化问题。它指的是随着网络层数增加，在梯度没有消失的情况下导致的网络训练缓慢或训练停止的问题。当然啦，按照我自己的理解和猜测，就如这篇文章开篇所讲的那样，梯度消失是由两个方面导致，而 BN 只是将数据从激活函数的收敛区调整到梯度更大的区域，但导数相乘后的累积效应仍然会使梯度变小，所以才导致这里所说的退化问题。不过具体的原因，还有待进一步研究。</p>
+<p>图中有很多公式标记，可能要参考原书才看得懂，不过，它的流程和我之前给出的 3 个步骤是一致。另外，算法的停止条件可以是达到最大迭代次数，或者是似然函数（公式 (2)）的增长小于某个阈值。</p>
+<p>好了，本文到这里就不再深入下去了。EM 算法博大精深，吴军老师在《数学之美》称它为<strong>上帝的算法</strong>，可见这个算法的强大之处。EM 算法可以应用的场合非常多，从本文给出的 GMM 例子来看，它其实很类似梯度下降算法，在给定的目标函数很复杂、难以求解时，EM 算法用一种迭代的策略来优化初始参数，并逐步收敛到最优解。关于这个算法的具体内容，我想进一步深入理解后，再用一篇文章好好写一下。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="external">何恺明的tutorial</a></li>
-<li><a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="external">Identity Mappings in Deep Residual Networks</a></li>
-<li><a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="external">Deep Residual Learning for Image Recognition</a></li>
+<li><a href="http://blog.pluskid.org/?p=39" target="_blank" rel="external">漫谈 Clustering (3): Gaussian Mixture Model</a></li>
+<li><a href="http://classes.engr.oregonstate.edu/eecs/fall2011/cs434/notes/GMM-14.pdf" target="_blank" rel="external">Mixture of Gaussian clustering</a></li>
+<li><a href="http://www.cnblogs.com/zhangchaoyang/articles/2624882.html" target="_blank" rel="external">EM及高斯混合模型</a></li>
+<li><a href="https://book.douban.com/subject/26708119/" target="_blank" rel="external">机器学习西瓜书</a></li>
+<li><a href="https://book.douban.com/subject/2061116/" target="_blank" rel="external">PRML</a></li>
 </ul>
 
       
@@ -497,7 +508,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/" title="论文笔记：Deep Residual Learning">https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/</a>
+      <a href="https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/" title="GMM与EM共舞">https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -513,9 +524,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
-          
-            <a href="/tags/论文/" rel="tag"># 论文</a>
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
           
         </div>
       
@@ -528,8 +537,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/" rel="next" title="论文笔记：Batch Normalization">
-                <i class="fa fa-chevron-left"></i> 论文笔记：Batch Normalization
+              <a href="/2017/10/28/2017-10-28-mutil-modal-gaussian/" rel="next" title="多维高斯分布">
+                <i class="fa fa-chevron-left"></i> 多维高斯分布
               </a>
             
           </div>
@@ -538,8 +547,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/30/2017-9-30-maximum-likelihood-estimation/" rel="prev" title="最大似然估计">
-                最大似然估计 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/11/03/2017-11-3-word2vec-introduction/" rel="prev" title="word2vec概述">
+                word2vec概述 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -696,7 +705,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本思想"><span class="nav-number">1.</span> <span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度残差网络"><span class="nav-number">2.</span> <span class="nav-text">深度残差网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文中的实验"><span class="nav-number">3.</span> <span class="nav-text">论文中的实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#高斯混合模型"><span class="nav-number">1.</span> <span class="nav-text">高斯混合模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是-gmm"><span class="nav-number">1.1.</span> <span class="nav-text">什么是 GMM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数估计"><span class="nav-number">1.2.</span> <span class="nav-text">参数估计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均值最大化算法-em"><span class="nav-number">2.</span> <span class="nav-text">均值最大化算法 EM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#k-means-的启示"><span class="nav-number">2.1.</span> <span class="nav-text">K-means 的启示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#em-算法"><span class="nav-number">2.2.</span> <span class="nav-text">EM 算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
