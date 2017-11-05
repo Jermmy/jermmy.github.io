@@ -108,7 +108,7 @@ N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
 N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-28/360px-Normal_Distribution_PDF.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-28/Gaussian_2d.png">
-<meta property="og:updated_time" content="2017-10-29T02:55:06.000Z">
+<meta property="og:updated_time" content="2017-11-05T08:50:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多维高斯分布">
 <meta name="twitter:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
@@ -456,6 +456,25 @@ exp[-\frac{1}{2}(\overline x-\overline u)^T\Sigma^{-1}(\overline x-\overline u)]
 <p><img src="/images/2017-10-28/Gaussian_2d.png" width="300px"></p>
 </center>
 <p>有了一维图像的例子，二维图像就可以类比出来了。如果说，一维只是山峰的一个横截面，那么二维则是一个完整的有立体感的山峰。山峰的「中心」和「胖瘦」和一维的情况是一致的，而且，对于偏离中心较远的位置，数据出现的概率几乎为 0，因此，函数图像在这些地方就逐渐退化成「平原」了。</p>
+<h3 id="参数估计">参数估计</h3>
+<p>另外，如果给定了很多数据点，并且知道它们服从某个高斯分布，我们要如何求出高斯分布的参数（<span class="math inline">\(\mu\)</span> 和 <span class="math inline">\(\Sigma\)</span>）呢？</p>
+<p>当然，估计模型参数的方法有很多，最常用的就是极大似然估计。</p>
+<p>简单起见，拿一维的高斯模型举例。假设我们有很多数据点：<span class="math inline">\((x_1, x_2, x_3, \dots, x_m)\)</span>。一维高斯函数是：<span class="math inline">\(p(x|\mu, \sigma^2)=\frac{1}{\sqrt{2\pi}\sigma}exp(-\frac{(x-\mu)^2}{2\sigma^2})\)</span></p>
+<p>首先，我们先写出似然函数： <span class="math display">\[
+\begin{eqnarray}
+f(x_1, x_2, \dots, x_m)&amp;=&amp;\prod_{i=1}^{m}\frac{1}{\sqrt{2\pi}\sigma}exp(-\frac{(x_i-\mu)^2}{2\sigma^2}) \\
+&amp;=&amp;(2\pi \sigma^2)^{-\frac{m}{2}}exp(-\frac{\sum_{i=1}^n{(x_i-\mu)^2}}{2\sigma^2})
+\end{eqnarray}
+\]</span> 然后取对数： <span class="math display">\[
+\ln{f(x_1, x_2, \dots, x_m)}=-\frac{m}{2}\ln{(2\pi \sigma^2)}-\frac{1}{2\sigma^2}\sum_{i=1}^n{(x_i-\mu)^2}
+\]</span> 求出导数，令导数为 0 得到似然方程： <span class="math display">\[
+\frac{\partial \ln f}{\partial \mu}=\frac{1}{\sigma^2}\sum_{i=1}^{n}{(x_i-\mu)}=0
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial \ln{f}}{\partial \sigma}=-\frac{m}{\sigma}+\frac{1}{\sigma^3}\sum_{i=1}^n{(x_i-\mu)}=0
+\]</span></p>
+<p>我们可以求出：<span class="math inline">\(\mu=\frac{1}{m}\sum_{i=1}^m{(x_i-\mu)}\)</span>，<span class="math inline">\(\sigma=\sqrt{\frac{1}{m}\sum_{i=1}^m{(x_i-\mu)^2}}\)</span>，可以看到，这其实就是高斯函数中平均值和标准差的定义。</p>
+<p>对于高维的情况，平均值和协方差矩阵也可以用类似的方法计算出来。</p>
 <h3 id="总结">总结</h3>
 <p>本文只是从一个简单的二维例子出发，来说明多维高斯公式的来源。在 PRML 的书中，推导的过程更加全面，也复杂了许多，想深入学习多维高斯模型的还是参考教材为准。</p>
 <p>重新对比一维和多维的公式： <span class="math display">\[
@@ -697,7 +716,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二维的情况"><span class="nav-number">1.</span> <span class="nav-text">二维的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数图像"><span class="nav-number">2.</span> <span class="nav-text">函数图像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二维的情况"><span class="nav-number">1.</span> <span class="nav-text">二维的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数图像"><span class="nav-number">2.</span> <span class="nav-text">函数图像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数估计"><span class="nav-number">3.</span> <span class="nav-text">参数估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
