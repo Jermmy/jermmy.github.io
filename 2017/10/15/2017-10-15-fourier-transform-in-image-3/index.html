@@ -1,0 +1,1035 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="图像处理," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
+为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图像中的傅立叶变换（三）">
+<meta property="og:url" content="https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/index.html">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
+为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/03.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/spec.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/shift_spec.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/idft.png">
+<meta property="og:updated_time" content="2017-11-25T13:31:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="图像中的傅立叶变换（三）">
+<meta name="twitter:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
+为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-10-15/03.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/"/>
+
+
+
+
+
+  <title>图像中的傅立叶变换（三） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                图像中的傅立叶变换（三）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-15T16:26:16+08:00">
+                2017-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/图像处理/" itemprop="url" rel="index">
+                    <span itemprop="name">图像处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/10/15/2017-10-15-fourier-transform-in-image-3/" class="leancloud_visitors" data-flag-title="图像中的傅立叶变换（三）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。</p>
+<p>为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。</p>
+<a id="more"></a>
+<h3 id="离散傅立叶变换">离散傅立叶变换</h3>
+<p>首先，回忆一下离散傅立叶变换的公式： <span class="math display">\[
+\begin{eqnarray}
+F(u, v)&amp;=&amp;\frac{1}{MN}\sum_{x=0}^{M-1}\sum_{y=0}^{N-1}f(x, y)e^{-j2\pi ux/M}e^{-j2\pi vy/N} \\
+&amp;=&amp;\frac{1}{MN}\sum_{y=0}^{N-1}\lbrace \sum_{x=0}^{M-1}f(x, y)e^{-j2\pi ux/M}\rbrace e^{-j2\pi vy/N}
+\end{eqnarray}
+\]</span> 从上式可以得到一个很有用的性质：可分性。即我们可以先计算 <span class="math inline">\(\sum_{x=0}^{M-1}f(x, y)e^{-j2\pi ux/M}\)</span>，得到 <span class="math inline">\(F(u,y)\)</span>，再计算 <span class="math inline">\(\frac{1}{MN}\sum_{y=0}^{N-1} F(u,y) e^{-j2\pi vy/N}\)</span> 得到 <span class="math inline">\(F(u,v)\)</span>。</p>
+<p>根据这种可分性，我们可以将二维的计算分为两个一维进行。</p>
+<p>现在，考虑如何计算 <span class="math inline">\(F(u,y)=\sum_{x=0}^{M-1}f(x, y)e^{-j2\pi ux/M}\)</span>，这个式子中的 <span class="math inline">\(y\)</span> 可以当作是常数，所以这其实是关于 <span class="math inline">\(x\)</span> 的一维运算。</p>
+<p>根据这个式子，可以得到： <span class="math display">\[
+F(0,y)=\sum_{x=0}^{M-1}f(x,y)e^{-j2\pi 0 x} \\
+F(1,y)=\sum_{x=0}^{M-1}f(x,y)e^{-j2\pi x/M} \\
+\dots  \\
+F(M-1,y)=\sum_{x=0}^{M-1}f(x,y)e^{-j2\pi (M-1)x/M}
+\]</span> 我们完全可以用矩阵相乘的形式来表示这些式子： <span class="math display">\[
+\begin{bmatrix}
+F(0,y) \\
+F(1,y) \\
+\dots \\
+F(M-1,y)
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 1 &amp; \dots &amp; 1 \\
+1 &amp; W_M^{1} &amp; \dots &amp; W_M^{M-1} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+1&amp; W_{M}^{M-1} &amp; \dots &amp; W_M^{(M-1)(M-1)}
+\end{bmatrix}
+\times 
+\begin{bmatrix}
+f(0,y) \\
+f(1,y) \\
+\dots \\
+f(M-1, y)
+\end{bmatrix}
+\]</span> （式子中的 <span class="math inline">\(W_M\)</span> 表示 <span class="math inline">\(e^{-j2\pi /M}\)</span>）</p>
+<p>当然，由于图片是二维的，所以 <span class="math inline">\(f(x,y)\)</span> 对应的向量实际上应该是： <span class="math display">\[
+\begin{bmatrix}
+f(0,y_1) &amp; f(0,y_2) &amp; \dots &amp; f(0,y_N) \\
+f(1,y_1) &amp; f(1,y_2) &amp; \dots &amp; f(1,y_N) \\
+\dots \\
+f(M-1, y_1) &amp; f(M-1,y_2) &amp; \dots &amp; f(M-1,y_N)
+\end{bmatrix}
+\]</span> 同理，得到的 <span class="math inline">\(F(u,y)\)</span> 也是一个二维矩阵。</p>
+<p>现在，我们还是先考虑怎么实现这个一维的计算。</p>
+<p>首先，需要先把 <span class="math inline">\(W_M\)</span> 这个矩阵表示出来。注意到，这个矩阵实际上可以由 <span class="math inline">\(\begin{bmatrix} W_M^0 \\ W_M^1 \\ \vdots \\ W_M^{M-1} \end{bmatrix}\)</span> <span class="math inline">\(\times\)</span> <span class="math inline">\(\begin{bmatrix} W_M^0 &amp; W_M^1 &amp; \dots &amp; W_M^{M-1} \end{bmatrix}\)</span> 得到。借助 numpy 强大的矩阵处理能力，可以很方便的计算出这个矩阵。示例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dftmtx</span><span class="params">(M)</span>:</span></div><div class="line">    n = np.asmatrix(np.arange(M))</div><div class="line">    <span class="keyword">return</span> np.exp((<span class="number">-2j</span> * np.pi / M) * n.transpose() * n)</div></pre></td></tr></table></figure>
+<p><code>np.asmatrix</code> 是把 M 维的向量变成 1 <span class="math inline">\(\times\)</span> M 的矩阵的格式，因为只有矩阵才有 <code>transpose()</code> 操作。<code>np.exp</code> 会把 <span class="math inline">\(exp\)</span> 函数作用到矩阵的每个元素中。</p>
+<p>得到这个矩阵后，最关键的一步其实就做完了，我们可以用这个矩阵计算出 <span class="math inline">\(F(u,y)\)</span>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># input表示输入图像，M是图像的高</span></div><div class="line">M = input.shape[<span class="number">0</span>]</div><div class="line">F = dftmtx(M) * input</div></pre></td></tr></table></figure>
+<p>得到 <span class="math inline">\(F(u,y)\)</span> 后，剩下的是要对 y 这一维进行同样的操作：<span class="math inline">\(F(u,v)=\frac{1}{MN}\sum_{y=0}^{N-1}F(u,y) e^{-j2\pi vy/N}\)</span>。同样地，我们需要计算一个 <span class="math inline">\(W_N\)</span> 的矩阵。幸运的是，这个矩阵的计算方法和之前的 <span class="math inline">\(W_M\)</span> 一模一样，这样一来，我们已经可以得到完整的计算方法了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 傅立叶变换函数</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dft2d</span><span class="params">(input)</span>:</span></div><div class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">return</span> dftmtx(M) * input * dftmtx(N) / (M * N)</div></pre></td></tr></table></figure>
+<p>接下来我们把频谱图打印出来。傅立叶频谱图是实部和虚部的平方和，需要注意的是，由于数值显示的问题，我们需要将频谱图用 <code>log</code> 函数增强后，再标定到 [0, 255] 之间才能看清。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 将像素值标定到[0，255]之间</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">scale_intensity</span><span class="params">(image)</span>:</span></div><div class="line">    min = image.min()</div><div class="line">    max = image.max()</div><div class="line">    image = (image - min) / (max - min) * <span class="number">255.0</span></div><div class="line">    <span class="keyword">return</span> image</div><div class="line"></div><div class="line"><span class="comment"># 计算频谱图</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spectrogram</span><span class="params">(image)</span>:</span></div><div class="line">    dft = dft2d(image)</div><div class="line">    spec = np.sqrt(np.power(np.real(dft), <span class="number">2</span>) + np.power(np.imag(dft), <span class="number">2</span>))</div><div class="line">    spec = np.log(<span class="number">0.5</span> + spec) * <span class="number">10</span></div><div class="line">    spec = scale_intensity(spec)</div><div class="line">    <span class="keyword">return</span> spec</div><div class="line"> </div><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">spec = spectrogram(image)</div><div class="line">cv2.imwrite(<span class="string">"spec.png"</span>, spec)</div></pre></td></tr></table></figure>
+<p>结果展示：</p>
+<figure>
+<p><img src="/images/2017-10-15/03.png" width="250px"></p>
+<p><img src="/images/2017-10-15/spec.png" width="250px"></p>
+</figure>
+<p>上一幅图是原图，下面的图是频谱图。如果仔细看的话，可以发现频谱图四个角有一些白色的点。这是因为图片中低频成分居多，而频谱图四个角代表的就是低频分量（至于为什么四个角是低频，我也没搞懂）。</p>
+<p>实践中，人们习惯于把低频都聚集到图片中心，这样方便后续的操作。根据平移性质： <span class="math display">\[
+F(u-\frac{M}{2},v-\frac{N}{2}) =f(x,y)(-1)^{x+y}
+\]</span> 要把频谱图的低频部分平移到中心，需要将整个频谱图平移 <span class="math inline">\((M/2, N/2)\)</span> 个单位，也就是需要对原图乘以 <span class="math inline">\((-1)^{x+y}\)</span>。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">shift_image</span><span class="params">(image)</span>:</span></div><div class="line">    M, N = image.shape[<span class="number">0</span>], image.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> range(M):</div><div class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> range(N):</div><div class="line">            image[x, y] *= np.power(<span class="number">-1</span>, x + y)</div><div class="line">    <span class="keyword">return</span> image</div><div class="line"></div><div class="line">  </div><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">shift_image(image)</div><div class="line">spec = spectrogram(image)</div><div class="line">cv2.imwrite(<span class="string">"shift_spec.png"</span>, spec)</div></pre></td></tr></table></figure>
+<p>结果展示：</p>
+<figure>
+<p><img src="/images/2017-10-15/shift_spec.png" width="250px"></p>
+</figure>
+<h3 id="离散傅立叶反变换">离散傅立叶反变换</h3>
+<p>讲完傅立叶变换后，反变换基本也得到了，唯一的区别是，这一次我们需要计算一个傅立叶反变换的矩阵。这个矩阵和之前计算的矩阵 <span class="math inline">\(W_M\)</span> 的区别只在于符号，这里就直接给出代码了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">idftmtx</span><span class="params">(M)</span>:</span></div><div class="line">    n = np.asmatrix(np.arange(M))</div><div class="line">    <span class="comment"># 下面的符号是正的</span></div><div class="line">    <span class="keyword">return</span> np.exp((<span class="number">2j</span> * np.pi / M) * n.transpose() * n)</div></pre></td></tr></table></figure>
+<p>反变换的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">idft2d</span><span class="params">(input)</span>:</span></div><div class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">return</span> idftmtx(M) * input * idftmtx(N)</div></pre></td></tr></table></figure>
+<p>把之前得到的傅立叶变换的结果，输入 <code>idft2d</code> 函数后，再取实部既可以得到原图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">dft = dft2d(image)</div><div class="line">idft = idft2d(dft)</div><div class="line">cv2.imwrite(<span class="string">"idft.png"</span>, np.real(idft))</div></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure>
+<p><img src="/images/2017-10-15/idft.png" width="250px"></p>
+</figure>
+<p>这个反变换的结果和原图是略有差别的，因为傅立叶变换时舍弃了很多高频成分。不过，由于图片中高频成分本身就比较少，所以这点差别可以忽略不计。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/" title="图像中的傅立叶变换（三）">https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图像处理/" rel="tag"># 图像处理</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/10/2017-10-10-fourier-transform-in-image-2/" rel="next" title="图像中的傅立叶变换（二）">
+                <i class="fa fa-chevron-left"></i> 图像中的傅立叶变换（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/28/2017-10-28-mutil-modal-gaussian/" rel="prev" title="多维高斯分布">
+                多维高斯分布 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">70</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#离散傅立叶变换"><span class="nav-number">1.</span> <span class="nav-text">离散傅立叶变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#离散傅立叶反变换"><span class="nav-number">2.</span> <span class="nav-text">离散傅立叶反变换</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
