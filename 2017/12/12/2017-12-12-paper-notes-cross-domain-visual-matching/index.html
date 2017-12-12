@@ -1,0 +1,1029 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
+<meta property="og:url" content="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/index.html">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
+<meta property="og:updated_time" content="2017-12-12T16:22:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
+<meta name="twitter:description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/"/>
+
+
+
+
+
+  <title>论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-12T23:34:00+08:00">
+                2017-12-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/" class="leancloud_visitors" data-flag-title="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合。因此，我们与其纠结选择哪种相似度模型，不如让网络自己学习出这个通用模型的参数，让网络自己选择最适合的模型。本文的另一个贡献在于将特征的提取与相似模型的学习融合进一个统一的框架内。</p>
+<a id="more"></a>
+<h3 id="论文方法">论文方法</h3>
+<h4 id="通用的相似模型">通用的相似模型</h4>
+<p>论文认为，大多数相似模型都可以归纳为如下形式： <span class="math display">\[
+\begin{align}
+S(\mathbf{x}, \mathbf{y})=\begin{bmatrix}\mathbf{x}^T &amp; \mathbf{y}^T &amp; 1  \end{bmatrix} \begin{bmatrix} \mathbf{A} &amp; \mathbf{C} &amp; \mathbf{d} \\ \mathbf{C}^T &amp; \mathbf{B} &amp; \mathbf{e} \\ \mathbf{d}^T &amp; \mathbf{e}^T &amp; f \end{bmatrix} \begin{bmatrix} \mathbf{x} \\ \mathbf{y} \\ 1 \end{bmatrix}  \tag{1}
+\end{align}
+\]</span> 其中，我们限制<span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>为半正定矩阵，表示同域内的自相关性，<span class="math inline">\(\mathbf{C}\)</span>为两个域之间的协方差矩阵。基于该限制，我们可以将<span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span>表示为： <span class="math display">\[
+\begin{align}
+\mathbf{A}=\mathbf{L_A}^T \mathbf{L_A} \notag \\
+\mathbf{B}=\mathbf{L_B}^T \mathbf{L_B}  \tag{2} \\
+\mathbf{C}=-\mathbf{L_C^x}^T\mathbf{L_C^y}  \notag
+\end{align}
+\]</span> 这样，(1)式可以展开为： <span class="math display">\[
+\begin{align}
+\tilde{S}(\mathbf{x},\mathbf{y})&amp;=S(\mathbf{f_1}(\mathbf{x}), \mathbf{f_2}(\mathbf{y})) \notag \\
+=&amp;
+\begin{bmatrix} \mathbf{f_1}(\mathbf{x})^T &amp; \mathbf{f_2}(\mathbf{y})^T &amp; 1 \end{bmatrix} 
+\begin{bmatrix} \mathbf{A} &amp; \mathbf{C} &amp; \mathbf{d} \\ \mathbf{C}^T &amp; \mathbf{B} &amp; \mathbf{e} \\ \mathbf{d}^T &amp; \mathbf{e}^T &amp; f \end{bmatrix} 
+\begin{bmatrix} \mathbf{f_1}(\mathbf{x}) \\ \mathbf{f_2}(\mathbf{y}) \\ 1 \end{bmatrix} \tag{3} \\
+=&amp;||\mathbf{L_A}\mathbf{f_1}(\mathbf{x})||^2+||\mathbf{L_B}\mathbf{f_2}(\mathbf{y})||^2+2\mathbf{d}^T\mathbf{f_1}(\mathbf{x})\notag \\ 
+&amp; -2(\mathbf{L_C^x}\mathbf{f_1}(\mathbf{x}))^T(\mathbf{L_C^y}\mathbf{f_2}(\mathbf{y}))+2\mathbf{e}^T\mathbf{f_2}(\mathbf{y})+f \notag
+\end{align}
+\]</span> (3)式中的<span class="math inline">\(\mathbf{f_1}(\mathbf{x})\)</span>和<span class="math inline">\(\mathbf{f_2}(\mathbf{y})\)</span>分别代表<span class="math inline">\(\mathbf{x}\)</span>、<span class="math inline">\(\mathbf{y}\)</span>两个样本经过提取得到的向量。</p>
+<p>接下来，我们考虑如何优化这个相似模型。</p>
+<p>假设<span class="math inline">\(D=\{(\{\mathbf{x_i}, \mathbf{y_i}\}, \ell_i) \}_{i=1}^N\)</span>表示训练的数据集，<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>表示来自两个不同域的样本，<span class="math inline">\(\ell_i\)</span>标记两个样本是否属于同一类，如果是同一类则记为-1，否则为1： <span class="math display">\[
+\begin{align}
+\ell_i=\ell(\mathbf{x_i}, \mathbf{y_i})=
+\begin{cases} -1 &amp; c(\mathbf{x})=c(\mathbf{y}) \\ 1 &amp;  otherwise \end{cases} \tag{4}
+\end{align}
+\]</span> 我们的目标是，当两个样本属于同一类时，相似度要小于-1，否则大于1： <span class="math display">\[
+\begin{align}
+\tilde{S}(\mathbf{x_i}, \mathbf{y_i})=\begin{cases} &lt; -1 &amp; if \ell_i=-1 \\ \ge 1 &amp; otherwise \end{cases}  \tag{5}
+\end{align}
+\]</span> 基于此，论文提出如下目标函数： <span class="math display">\[
+\begin{align}
+G(\mathbf{W}, \mathbf{\phi})=\sum_{i=1}^N{(1-\ell_i \tilde{S}(\mathbf{x_i}, \mathbf{y_i}))_+}+\Psi (\mathbf{W}, \mathbf{\phi}) \tag{6}
+\end{align}
+\]</span> 其中，<span class="math inline">\(\mathbf{W}, \mathbf{\phi}\)</span>分别表示网络参数和相似模型参数，<span class="math inline">\(\mathbf{\phi}=(\mathbf{L_A},\mathbf{L_B},\mathbf{L_C^x},\mathbf{L_C^y},\mathbf{d},\mathbf{e},f)\)</span>，<span class="math inline">\(\Psi(\mathbf{W}, \mathbf{\phi})\)</span>表示正则化项。</p>
+<h4 id="特征学习与相似度融合">特征学习与相似度融合</h4>
+<p>接下来要解决的是如何用一个框架将特征学习与相似模型融合在一起。论文采用如下网络结构：</p>
+<center>
+<p><img src="/images/2017-12-12/network.png" width="600px"></p>
+</center>
+<p>首先，我们用两个子网络分支分别提取两个不同域的图片特征，然后用一个共享的网络将两种特征融合起来，最后再用两个子网络分支计算相似模型的参数。 接下来分析一下网络训练的流程。首先，我们将网络的输出结果记为： <span class="math display">\[
+\begin{align} 
+\tilde{x} \triangleq \begin{bmatrix} \mathbf{L_A f_1(x)} &amp; \mathbf{L_C^x f_1(x)} &amp; \mathbf{d}^T \mathbf{f_1(x)} \end{bmatrix}^T   \notag \\
+\tilde{y} \triangleq \begin{bmatrix} \mathbf{L_B f_2(x)} &amp; \mathbf{L_C^y f_2(y)} &amp; \mathbf{e}^T \mathbf{f_2(y)} \end{bmatrix}^T \notag 
+\end{align}
+\]</span> 为了将 <span class="math inline">\(\tilde{x}\)</span> 和 <span class="math inline">\(\tilde{y}\)</span> 代入 (3) 式，我们再引入三个辅助矩阵： <span class="math display">\[
+\begin{align}
+&amp; \mathbf{P_1}=\begin{bmatrix} \mathbf{I}^{r \times r} &amp; \mathbf{0}^{r \times (r+1)} \end{bmatrix}  \notag \\
+&amp; \mathbf{P_2}=\begin{bmatrix} \mathbf{0}^{r \times r} &amp; \mathbf{I}^{r \times r} &amp; \mathbf{0}^{r \times 1} \end{bmatrix} \notag \\
+&amp; \mathbf{P_3}=\begin{bmatrix} \mathbf{0}^{1 \times 2r} &amp; 1^{1 \times 1} \end{bmatrix}^T \notag
+\end{align}
+\]</span> 然后我们可以把(3)式表示为： <span class="math display">\[
+\begin{align}
+\tilde{S}(x,y)=&amp;(\mathbf{P_1} \tilde{x})^T\mathbf{P_1}\tilde{x}+(\mathbf{P_1} \tilde{y})^T\mathbf{P_1}\tilde{y} \notag \\
+&amp;-2(\mathbf{P_2}\tilde{x}^T)\mathbf{P_2}\tilde{y}+2\mathbf{P_3}^T\tilde{x}+2\mathbf{P_3}^T\tilde{y}+f \notag
+\end{align}
+\]</span> 目标函数调整为： <span class="math display">\[
+\begin{align}
+G(\mathbf{W}, \mathbf{\phi}; D)
+=&amp;\sum_{i=1}^N{(1-\ell_i \tilde{S}(x_i,y_i))_+ + \Psi{(\mathbf{W}, \phi)}} \notag \\
+=&amp;\sum_{i=1}^N{\{1-\ell_i [(\mathbf{P_1}\tilde{x_i})^T\mathbf{P_1}\tilde{x_i} + (\mathbf{P_1}\tilde{y_i})^T\mathbf{P_1}\tilde{y_i}} - \notag \\
+&amp; {2(\mathbf{P_2 \tilde{x_i}})^T\mathbf{P_2}\tilde{y_i} + 2\mathbf{P_3}^T\tilde{x_i}+2\mathbf{P_3}^T\tilde{y_i}+f] \}}_+ + \Psi{(\mathbf{W}, \phi)}  \tag{13}
+\end{align}
+\]</span> 值得注意的是，这是一种sample-pair-based的表示，每次计算目标函数的时候，我们需要生成很多的样本对，时间和空间的开销都比较大。所以，下一步是将它表示成sample-based的形式，这样我们可以用普通的SGD算法来优化目标函数。</p>
+<p>对于<span class="math inline">\(D\)</span>中的每一个样本对<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>，我们假设<span class="math inline">\(\mathbf{z}^{j_{i,1}}=\mathbf{x_i}\)</span>，<span class="math inline">\(\mathbf{z}^{j_{i,2}}=\mathbf{y_i}\)</span>，其中，<span class="math inline">\(1 \le j_{i,1} \le M_x\)</span>，<span class="math inline">\(M_x+1 \le j_{i,2} \le M_z(=M_x+M_y)\)</span>，<span class="math inline">\(M_x\)</span>是样本<span class="math inline">\(\mathbf{x}\)</span>的数量，<span class="math inline">\(M_y\)</span>是样本<span class="math inline">\(\mathbf{y}\)</span>的数量。同理，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}=\tilde{\mathbf{x_i}}\)</span>，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}=\tilde{\mathbf{y_i}}\)</span>。 然后，我们可以将(13)式改写成sample-based的形式： <span class="math display">\[
+\begin{align}
+G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
+=&amp; \sum_{i=1}^N{\{1-\ell_i [(\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,1}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,1}} + (\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,2}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,2}}} \notag \\
+&amp; {-2(\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,1}})^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,2}} + 2\mathbf{P_3}^T\tilde{\mathbf{z}}^{j_{i,1}} + 2\mathbf{P_3}^T\tilde{\mathbf{z}}^{j_{i,2}} + f] \}}_+ \notag \\
+&amp; + \Psi(\Omega)  \tag{14}
+\end{align}
+\]</span> 其中，<span class="math inline">\(\Omega=(\mathbf{W}, \phi)\)</span>。 梯度下降的导数为： <span class="math display">\[
+\Omega=\Omega - \alpha \frac{\partial G(\Omega)}{\partial \Omega}=\Omega - \alpha ( \frac{\partial L(\Omega)}{\Omega} + \frac{\partial \Psi}{\partial \Omega})
+\]</span> 其中，<span class="math inline">\(\alpha\)</span>是学习率。 这里的重点是要计算<span class="math inline">\(\frac{\partial L(\Omega)}{\partial \Omega}\)</span>： <span class="math display">\[
+\frac{\partial L(\Omega)}{\partial \Omega}=\sum_j{\frac{\partial L}{\partial \tilde{\mathbf{z}}^j}\frac{\partial \tilde{\mathbf{z}}^j}{\partial \Omega}}
+\]</span> 由于存在两个子网络分支，上式中，<span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,x}}\)</span>或<span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,y}}\)</span>，<span class="math inline">\(\frac{\partial \tilde{\mathbf{z}}^j}{\partial \Omega}\)</span> 分别对应两个网络分支的导数（论文中<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}\)</span>、<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}\)</span>和(14)式中的<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,x}}\)</span>等符号混用了）。在梯度下降中，我们需要针对两个网络分支计算两次导数。\ 对处理<span class="math inline">\(\mathbf{x}\)</span>的分支，计算得到： <span class="math display">\[
+\begin{align}
+\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,x}}}=-\sum_{j_{i,y}}{2\ell_{j_{i,x},j_{i,y}} (\mathbf{P_1}^T\mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,x}}-\mathbf{P_2}^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,y}}+\mathbf{P_3})} \notag 
+\end{align}
+\]</span> 这里的<span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\)</span>就是(4)式中定义的<span class="math inline">\(\ell(\mathbf{x_i}, \mathbf{y_i})\)</span>。\ 另外，有些样本可能已经具备一定的区分度了，因此训练时要剔除这些样本。论文中引入一个标识函数<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\)</span>，当<span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\tilde{S}(\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})&lt;1\)</span>时（由(5)式可知，此时<span class="math inline">\((\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})\)</span>还达不到要求的区分度），<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})=1\)</span>，否则为0。于是，得到最终的导数公式： <span class="math display">\[
+\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,x}}}=-\sum_{j_{i,y}}{2\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\ell_{j_{i,x},j_{i,y}} (\mathbf{P_1}^T\mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,x}}-\mathbf{P_2}^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,y}}+\mathbf{P_3})} \tag{18}
+\]</span> 对于另一个分支，我们可以用同样的方法计算<span class="math inline">\(\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,y}}}\)</span>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/" title="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/03/2017-11-3-word2vec-introduction/" rel="next" title="word2vec概述">
+                <i class="fa fa-chevron-left"></i> word2vec概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">1.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用的相似模型"><span class="nav-number">1.1.</span> <span class="nav-text">通用的相似模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征学习与相似度融合"><span class="nav-number">1.2.</span> <span class="nav-text">特征学习与相似度融合</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
