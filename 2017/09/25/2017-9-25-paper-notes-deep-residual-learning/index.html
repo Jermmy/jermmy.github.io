@@ -94,14 +94,12 @@
 
 
 
-<meta name="description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
+<meta name="description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Deep Residual Learning">
 <meta property="og:url" content="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
+<meta property="og:description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity mapping block.png">
@@ -112,11 +110,10 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/experiment.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/validation error.png">
-<meta property="og:updated_time" content="2017-10-05T05:58:56.000Z">
+<meta property="og:updated_time" content="2017-12-13T03:00:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Deep Residual Learning">
-<meta name="twitter:description" content="上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。
-之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不">
+<meta name="twitter:description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
 
 
@@ -358,8 +355,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/深度学习/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
 
@@ -403,8 +400,7 @@
       
 
       
-        <p>上一篇文章说要介绍一下深度残差学习，结果一拖就是三个星期(囧)。开学这几周虽然事多，但人也比之前颓废了。想想能专心读书的时间已经不多了，以后还是尽量做到每周出一篇文章。</p>
-<p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="(https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5)">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
+        <p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="(https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5)">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
 <center>
 <p><img src="/images/2017-9-25/residual learning.png" width="400px"></p>
 </center>
@@ -625,7 +621,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
