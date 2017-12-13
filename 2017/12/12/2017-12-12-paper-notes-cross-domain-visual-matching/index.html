@@ -94,18 +94,20 @@
 
 
 
-<meta name="description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
+<meta name="description" content="Cross-Domain Visual Matching 指的是跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
 <meta property="og:url" content="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/index.html">
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
+<meta property="og:description" content="Cross-Domain Visual Matching 指的是跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/cross-domain.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/siamese.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
-<meta property="og:updated_time" content="2017-12-12T16:22:22.000Z">
+<meta property="og:updated_time" content="2017-12-13T02:44:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
-<meta name="twitter:description" content="通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合">
-<meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
+<meta name="twitter:description" content="Cross-Domain Visual Matching 指的是跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-12/cross-domain.png">
 
 
 
@@ -391,46 +393,57 @@
       
 
       
-        <p>通常，在跨域图片检索中，我们会用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。这个相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种Affine变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合。因此，我们与其纠结选择哪种相似度模型，不如让网络自己学习出这个通用模型的参数，让网络自己选择最适合的模型。本文的另一个贡献在于将特征的提取与相似模型的学习融合进一个统一的框架内。</p>
+        <p>Cross-Domain Visual Matching 指的是跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特征匹配。这篇论文提出用一种通用的相似模型来匹配两个域之间的特征，并将其和特征提取流程融合在一起，统一成一个 end-to-end 的框架。</p>
+<center>
+<p><img src="/images/2017-12-12/cross-domain.png" width="400px"></p>
+</center>
 <a id="more"></a>
+<h3 id="论文动机">论文动机</h3>
+<p>针对这种跨域图片检索，常用的方法是：先用深度学习方法提取出不同域之间的特征，然后选择一种相似度模型来度量特征之间的相似性，并以此作为网络的代价函数来训练网络参数。如下图就是一种很常用的 Siamese 网络结构：</p>
+<center>
+<p><img src="/images/2017-12-12/siamese.png" width="400px"></p>
+</center>
+<p>这里说的相似模型可以是欧氏距离、余弦相似度等等。但很多时候，我们并不知道哪种相似度模型最合适。这篇论文提出了一种通用的相似度模型——一种 Affine 变换。它表明，很多相似模型都可以用这个统一的模型来表示，而这个通用的模型也可以认为是多种相似模型的综合。因此，我们与其纠结选择哪种相似度模型，不如让网络自己学习出这个通用模型的参数，让网络自己选择最适合的模型。本文的另一个贡献在于将特征的提取与相似模型的学习融合进一个统一的框架内。</p>
 <h3 id="论文方法">论文方法</h3>
 <h4 id="通用的相似模型">通用的相似模型</h4>
 <p>论文认为，大多数相似模型都可以归纳为如下形式： <span class="math display">\[
 \begin{align}
 S(\mathbf{x}, \mathbf{y})=\begin{bmatrix}\mathbf{x}^T &amp; \mathbf{y}^T &amp; 1  \end{bmatrix} \begin{bmatrix} \mathbf{A} &amp; \mathbf{C} &amp; \mathbf{d} \\ \mathbf{C}^T &amp; \mathbf{B} &amp; \mathbf{e} \\ \mathbf{d}^T &amp; \mathbf{e}^T &amp; f \end{bmatrix} \begin{bmatrix} \mathbf{x} \\ \mathbf{y} \\ 1 \end{bmatrix}  \tag{1}
 \end{align}
-\]</span> 其中，我们限制<span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>为半正定矩阵，表示同域内的自相关性，<span class="math inline">\(\mathbf{C}\)</span>为两个域之间的协方差矩阵。基于该限制，我们可以将<span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span>表示为： <span class="math display">\[
+\]</span> 其中，我们限制 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span> 为半正定矩阵，表示同域内的自相关性，<span class="math inline">\(\mathbf{C}\)</span> 为两个域之间的协方差矩阵。根据半正定矩阵的性质以及 <span class="math inline">\(\mathbf(C)\)</span> 的对称性，我们可以将 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span> 表示为： <span class="math display">\[
 \begin{align}
 \mathbf{A}=\mathbf{L_A}^T \mathbf{L_A} \notag \\
 \mathbf{B}=\mathbf{L_B}^T \mathbf{L_B}  \tag{2} \\
 \mathbf{C}=-\mathbf{L_C^x}^T\mathbf{L_C^y}  \notag
 \end{align}
-\]</span> 这样，(1)式可以展开为： <span class="math display">\[
+\]</span> 这样，(1) 式可以展开为： <span class="math display">\[
 \begin{align}
 \tilde{S}(\mathbf{x},\mathbf{y})&amp;=S(\mathbf{f_1}(\mathbf{x}), \mathbf{f_2}(\mathbf{y})) \notag \\
 =&amp;
 \begin{bmatrix} \mathbf{f_1}(\mathbf{x})^T &amp; \mathbf{f_2}(\mathbf{y})^T &amp; 1 \end{bmatrix} 
 \begin{bmatrix} \mathbf{A} &amp; \mathbf{C} &amp; \mathbf{d} \\ \mathbf{C}^T &amp; \mathbf{B} &amp; \mathbf{e} \\ \mathbf{d}^T &amp; \mathbf{e}^T &amp; f \end{bmatrix} 
 \begin{bmatrix} \mathbf{f_1}(\mathbf{x}) \\ \mathbf{f_2}(\mathbf{y}) \\ 1 \end{bmatrix} \tag{3} \\
-=&amp;||\mathbf{L_A}\mathbf{f_1}(\mathbf{x})||^2+||\mathbf{L_B}\mathbf{f_2}(\mathbf{y})||^2+2\mathbf{d}^T\mathbf{f_1}(\mathbf{x})\notag \\ 
+=&amp; \mathbf{f_1}(\mathbf{x})^T\mathbf{A}\mathbf{f_1}(\mathbf{x}) + \mathbf{f_1}(\mathbf{x})^T\mathbf{C}\mathbf{f_2}(\mathbf{y}) + \mathbf{f_1}(\mathbf{x})^T\mathbf{d} + \mathbf{f_2}(\mathbf{y})^T\mathbf{C}\mathbf{f_1}(\mathbf{x})  \notag \\
+&amp;+\mathbf{f_2}(\mathbf{y})^T\mathbf{B}\mathbf{f_2}(\mathbf{y}) + \mathbf{f_2}(\mathbf{y})^T\mathbf{e} + \mathbf{d}^T\mathbf{f_1}(\mathbf{x}) + \mathbf{e}^T\mathbf{f_2}(\mathbf{y}) + f  \notag \\
+=&amp;||\mathbf{L_A}\mathbf{f_1}(\mathbf{x})||^2+||\mathbf{L_B}\mathbf{f_2}(\mathbf{y})||^2+2\mathbf{d}^T\mathbf{f_1}(\mathbf{x}) \notag \\ 
 &amp; -2(\mathbf{L_C^x}\mathbf{f_1}(\mathbf{x}))^T(\mathbf{L_C^y}\mathbf{f_2}(\mathbf{y}))+2\mathbf{e}^T\mathbf{f_2}(\mathbf{y})+f \notag
 \end{align}
-\]</span> (3)式中的<span class="math inline">\(\mathbf{f_1}(\mathbf{x})\)</span>和<span class="math inline">\(\mathbf{f_2}(\mathbf{y})\)</span>分别代表<span class="math inline">\(\mathbf{x}\)</span>、<span class="math inline">\(\mathbf{y}\)</span>两个样本经过提取得到的向量。</p>
+\]</span> (3) 式中的 <span class="math inline">\(\mathbf{f_1}(\mathbf{x})\)</span> 和 <span class="math inline">\(\mathbf{f_2}(\mathbf{y})\)</span> 分别代表 <span class="math inline">\(\mathbf{x}\)</span>、<span class="math inline">\(\mathbf{y}\)</span> 两个样本经过提取得到的向量。这样一来，我们就将半正定矩阵等限制引入到这个度量关系中。</p>
 <p>接下来，我们考虑如何优化这个相似模型。</p>
-<p>假设<span class="math inline">\(D=\{(\{\mathbf{x_i}, \mathbf{y_i}\}, \ell_i) \}_{i=1}^N\)</span>表示训练的数据集，<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>表示来自两个不同域的样本，<span class="math inline">\(\ell_i\)</span>标记两个样本是否属于同一类，如果是同一类则记为-1，否则为1： <span class="math display">\[
+<p>假设 <span class="math inline">\(D=\{(\{\mathbf{x_i}, \mathbf{y_i}\}, \ell_i) \}_{i=1}^N\)</span> 表示训练的数据集，<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span> 表示来自两个不同域的样本，<span class="math inline">\(\ell_i\)</span> 标记两个样本是否属于同一类，如果是同一类则记为 -1，否则为 1： <span class="math display">\[
 \begin{align}
 \ell_i=\ell(\mathbf{x_i}, \mathbf{y_i})=
 \begin{cases} -1 &amp; c(\mathbf{x})=c(\mathbf{y}) \\ 1 &amp;  otherwise \end{cases} \tag{4}
 \end{align}
-\]</span> 我们的目标是，当两个样本属于同一类时，相似度要小于-1，否则大于1： <span class="math display">\[
+\]</span> 我们的目标是，当两个样本属于同一类时，相似度要小于 -1，否则大于 1： <span class="math display">\[
 \begin{align}
-\tilde{S}(\mathbf{x_i}, \mathbf{y_i})=\begin{cases} &lt; -1 &amp; if \ell_i=-1 \\ \ge 1 &amp; otherwise \end{cases}  \tag{5}
+\tilde{S}(\mathbf{x_i}, \mathbf{y_i})=\begin{cases} &lt; -1 &amp; if\ \ell_i=-1 \\ \ge 1 &amp; otherwise \end{cases}  \tag{5}
 \end{align}
 \]</span> 基于此，论文提出如下目标函数： <span class="math display">\[
 \begin{align}
 G(\mathbf{W}, \mathbf{\phi})=\sum_{i=1}^N{(1-\ell_i \tilde{S}(\mathbf{x_i}, \mathbf{y_i}))_+}+\Psi (\mathbf{W}, \mathbf{\phi}) \tag{6}
 \end{align}
-\]</span> 其中，<span class="math inline">\(\mathbf{W}, \mathbf{\phi}\)</span>分别表示网络参数和相似模型参数，<span class="math inline">\(\mathbf{\phi}=(\mathbf{L_A},\mathbf{L_B},\mathbf{L_C^x},\mathbf{L_C^y},\mathbf{d},\mathbf{e},f)\)</span>，<span class="math inline">\(\Psi(\mathbf{W}, \mathbf{\phi})\)</span>表示正则化项。</p>
+\]</span> 其中，<span class="math inline">\(\mathbf{W}, \mathbf{\phi}\)</span> 分别表示网络参数和相似模型参数，<span class="math inline">\(\mathbf{\phi}=(\mathbf{L_A},\mathbf{L_B},\mathbf{L_C^x},\mathbf{L_C^y},\mathbf{d},\mathbf{e},f)\)</span>，<span class="math inline">\(\Psi(\mathbf{W}, \mathbf{\phi})\)</span> 表示正则化项。</p>
 <h4 id="特征学习与相似度融合">特征学习与相似度融合</h4>
 <p>接下来要解决的是如何用一个框架将特征学习与相似模型融合在一起。论文采用如下网络结构：</p>
 <center>
@@ -447,7 +460,9 @@ G(\mathbf{W}, \mathbf{\phi})=\sum_{i=1}^N{(1-\ell_i \tilde{S}(\mathbf{x_i}, \mat
 &amp; \mathbf{P_2}=\begin{bmatrix} \mathbf{0}^{r \times r} &amp; \mathbf{I}^{r \times r} &amp; \mathbf{0}^{r \times 1} \end{bmatrix} \notag \\
 &amp; \mathbf{P_3}=\begin{bmatrix} \mathbf{0}^{1 \times 2r} &amp; 1^{1 \times 1} \end{bmatrix}^T \notag
 \end{align}
-\]</span> 然后我们可以把(3)式表示为： <span class="math display">\[
+\]</span> <span class="math inline">\(r\)</span> 表示网络输出的特征维度，即 <span class="math inline">\(\mathbf{f_1}(\mathbf{x})\)</span> 和 <span class="math inline">\(\mathbf{f_2}(\mathbf{y})\)</span> 的维度。</p>
+<p>借助这三个矩阵，可以得到：<span class="math inline">\(\mathbf{L_A}\mathbf{f_1}(\mathbf{x})=\mathbf{P_1}\tilde{x}\)</span>，<span class="math inline">\(\mathbf{L_B}\mathbf{f_2}(\mathbf{y})=\mathbf{P_1}\tilde{y}\)</span> 等。</p>
+<p>然后我们可以把 (3) 式表示为： <span class="math display">\[
 \begin{align}
 \tilde{S}(x,y)=&amp;(\mathbf{P_1} \tilde{x})^T\mathbf{P_1}\tilde{x}+(\mathbf{P_1} \tilde{y})^T\mathbf{P_1}\tilde{y} \notag \\
 &amp;-2(\mathbf{P_2}\tilde{x}^T)\mathbf{P_2}\tilde{y}+2\mathbf{P_3}^T\tilde{x}+2\mathbf{P_3}^T\tilde{y}+f \notag
@@ -459,8 +474,10 @@ G(\mathbf{W}, \mathbf{\phi}; D)
 =&amp;\sum_{i=1}^N{\{1-\ell_i [(\mathbf{P_1}\tilde{x_i})^T\mathbf{P_1}\tilde{x_i} + (\mathbf{P_1}\tilde{y_i})^T\mathbf{P_1}\tilde{y_i}} - \notag \\
 &amp; {2(\mathbf{P_2 \tilde{x_i}})^T\mathbf{P_2}\tilde{y_i} + 2\mathbf{P_3}^T\tilde{x_i}+2\mathbf{P_3}^T\tilde{y_i}+f] \}}_+ + \Psi{(\mathbf{W}, \phi)}  \tag{13}
 \end{align}
-\]</span> 值得注意的是，这是一种sample-pair-based的表示，每次计算目标函数的时候，我们需要生成很多的样本对，时间和空间的开销都比较大。所以，下一步是将它表示成sample-based的形式，这样我们可以用普通的SGD算法来优化目标函数。</p>
-<p>对于<span class="math inline">\(D\)</span>中的每一个样本对<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>，我们假设<span class="math inline">\(\mathbf{z}^{j_{i,1}}=\mathbf{x_i}\)</span>，<span class="math inline">\(\mathbf{z}^{j_{i,2}}=\mathbf{y_i}\)</span>，其中，<span class="math inline">\(1 \le j_{i,1} \le M_x\)</span>，<span class="math inline">\(M_x+1 \le j_{i,2} \le M_z(=M_x+M_y)\)</span>，<span class="math inline">\(M_x\)</span>是样本<span class="math inline">\(\mathbf{x}\)</span>的数量，<span class="math inline">\(M_y\)</span>是样本<span class="math inline">\(\mathbf{y}\)</span>的数量。同理，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}=\tilde{\mathbf{x_i}}\)</span>，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}=\tilde{\mathbf{y_i}}\)</span>。 然后，我们可以将(13)式改写成sample-based的形式： <span class="math display">\[
+\]</span></p>
+<h4 id="训练细节优化">训练细节优化</h4>
+<p>值得注意的是，(13) 式是一种 sample-pair-based 的表示，每次计算目标函数的时候，我们需要生成很多的样本对，时间和空间的开销都比较大。所以，下一步是将它表示成 sample-based 的形式，这样我们可以用普通的 SGD 算法来优化目标函数。</p>
+<p>对于<span class="math inline">\(D\)</span>中的每一个样本对<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>，我们假设 <span class="math inline">\(\mathbf{z}^{j_{i,1}}=\mathbf{x_i}\)</span>，<span class="math inline">\(\mathbf{z}^{j_{i,2}}=\mathbf{y_i}\)</span>，其中，<span class="math inline">\(1 \le j_{i,1} \le M_x\)</span>，<span class="math inline">\(M_x+1 \le j_{i,2} \le M_z(=M_x+M_y)\)</span>，<span class="math inline">\(M_x\)</span> 是样本 <span class="math inline">\(\mathbf{x}\)</span> 的数量，<span class="math inline">\(M_y\)</span> 是样本 <span class="math inline">\(\mathbf{y}\)</span> 的数量。同理，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}=\tilde{\mathbf{x_i}}\)</span>，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}=\tilde{\mathbf{y_i}}\)</span>。 然后，我们可以将 (13) 式改写成 sample-based 的形式： <span class="math display">\[
 \begin{align}
 G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
 =&amp; \sum_{i=1}^N{\{1-\ell_i [(\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,1}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,1}} + (\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,2}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,2}}} \notag \\
@@ -469,15 +486,19 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
 \end{align}
 \]</span> 其中，<span class="math inline">\(\Omega=(\mathbf{W}, \phi)\)</span>。 梯度下降的导数为： <span class="math display">\[
 \Omega=\Omega - \alpha \frac{\partial G(\Omega)}{\partial \Omega}=\Omega - \alpha ( \frac{\partial L(\Omega)}{\Omega} + \frac{\partial \Psi}{\partial \Omega})
-\]</span> 其中，<span class="math inline">\(\alpha\)</span>是学习率。 这里的重点是要计算<span class="math inline">\(\frac{\partial L(\Omega)}{\partial \Omega}\)</span>： <span class="math display">\[
+\]</span> 其中，<span class="math inline">\(\alpha\)</span> 是学习率。 这里的重点是要计算 <span class="math inline">\(\frac{\partial L(\Omega)}{\partial \Omega}\)</span>： <span class="math display">\[
 \frac{\partial L(\Omega)}{\partial \Omega}=\sum_j{\frac{\partial L}{\partial \tilde{\mathbf{z}}^j}\frac{\partial \tilde{\mathbf{z}}^j}{\partial \Omega}}
-\]</span> 由于存在两个子网络分支，上式中，<span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,x}}\)</span>或<span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,y}}\)</span>，<span class="math inline">\(\frac{\partial \tilde{\mathbf{z}}^j}{\partial \Omega}\)</span> 分别对应两个网络分支的导数（论文中<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}\)</span>、<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}\)</span>和(14)式中的<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,x}}\)</span>等符号混用了）。在梯度下降中，我们需要针对两个网络分支计算两次导数。\ 对处理<span class="math inline">\(\mathbf{x}\)</span>的分支，计算得到： <span class="math display">\[
+\]</span> 由于存在两个子网络分支，上式中，<span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,x}}\)</span> 或 <span class="math inline">\(\tilde{\mathbf{z}}^j=\tilde{\mathbf{z}}^{j_{i,y}}\)</span>，<span class="math inline">\(\frac{\partial \tilde{\mathbf{z}}^j}{\partial \Omega}\)</span> 分别对应两个网络分支的导数（论文中 <span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,x}}\)</span>、<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,y}}\)</span> 和 (14) 式中的 <span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}\)</span>、<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}\)</span> 等符号混用了）。在梯度下降中，我们需要针对两个网络分支计算两次导数。 对处理 <span class="math inline">\(\mathbf{x}\)</span> 的分支，计算得到： <span class="math display">\[
 \begin{align}
 \frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,x}}}=-\sum_{j_{i,y}}{2\ell_{j_{i,x},j_{i,y}} (\mathbf{P_1}^T\mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,x}}-\mathbf{P_2}^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,y}}+\mathbf{P_3})} \notag 
 \end{align}
-\]</span> 这里的<span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\)</span>就是(4)式中定义的<span class="math inline">\(\ell(\mathbf{x_i}, \mathbf{y_i})\)</span>。\ 另外，有些样本可能已经具备一定的区分度了，因此训练时要剔除这些样本。论文中引入一个标识函数<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\)</span>，当<span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\tilde{S}(\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})&lt;1\)</span>时（由(5)式可知，此时<span class="math inline">\((\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})\)</span>还达不到要求的区分度），<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})=1\)</span>，否则为0。于是，得到最终的导数公式： <span class="math display">\[
+\]</span> 这里的 <span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\)</span> 就是 (4) 式中定义的 <span class="math inline">\(\ell(\mathbf{x_i}, \mathbf{y_i})\)</span>。 另外，有些样本可能已经具备一定的区分度了，因此训练时要剔除这些样本。论文中引入一个标识函数 <span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\)</span>，当 <span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\tilde{S}(\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})&lt;1\)</span> 时「由 (5) 式可知，此时 <span class="math inline">\((\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})\)</span> 还达不到要求的区分度」，<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})=1\)</span>，否则为 0。于是，得到最终的导数公式： <span class="math display">\[
 \frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,x}}}=-\sum_{j_{i,y}}{2\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\ell_{j_{i,x},j_{i,y}} (\mathbf{P_1}^T\mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,x}}-\mathbf{P_2}^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,y}}+\mathbf{P_3})} \tag{18}
-\]</span> 对于另一个分支，我们可以用同样的方法计算<span class="math inline">\(\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,y}}}\)</span>。</p>
+\]</span> 对于另一个分支，我们可以用同样的方法计算 <span class="math inline">\(\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,y}}}\)</span>。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/1605.04039" target="_blank" rel="external">Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning</a></li>
+</ul>
 
       
     </div>
@@ -699,7 +720,7 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">1.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用的相似模型"><span class="nav-number">1.1.</span> <span class="nav-text">通用的相似模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征学习与相似度融合"><span class="nav-number">1.2.</span> <span class="nav-text">特征学习与相似度融合</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文动机"><span class="nav-number">1.</span> <span class="nav-text">论文动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">2.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用的相似模型"><span class="nav-number">2.1.</span> <span class="nav-text">通用的相似模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征学习与相似度融合"><span class="nav-number">2.2.</span> <span class="nav-text">特征学习与相似度融合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练细节优化"><span class="nav-number">2.3.</span> <span class="nav-text">训练细节优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
