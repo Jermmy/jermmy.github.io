@@ -104,7 +104,7 @@ PCA，又称主成分分析，英文全称「Principal Components Analysis」。
 <meta property="og:description" content="最近频繁在论文中看到「PCA」的影子，所以今天决定好好把「PCA」的原理和算法过程弄清楚。
 「PCA」是什么
 PCA，又称主成分分析，英文全称「Principal Components Analysis」。维基百科上的解释是：「PCA」是一种分析、简化数据集的技术，经常用于减少数据集的维数，同时保持数据集中对方差贡献最大的特征。说得通俗一点，就是把数据集中重要的特征保存下来，把不重要的特征去除掉。">
-<meta property="og:updated_time" content="2017-09-03T13:40:04.000Z">
+<meta property="og:updated_time" content="2017-12-14T14:03:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCA算法浅析">
 <meta name="twitter:description" content="最近频繁在论文中看到「PCA」的影子，所以今天决定好好把「PCA」的原理和算法过程弄清楚。
@@ -398,7 +398,6 @@ PCA，又称主成分分析，英文全称「Principal Components Analysis」。
         <p>最近频繁在论文中看到「PCA」的影子，所以今天决定好好把「PCA」的原理和算法过程弄清楚。</p>
 <h3 id="pca是什么">「PCA」是什么</h3>
 <p>PCA，又称<strong>主成分分析</strong>，英文全称<strong>「Principal Components Analysis」</strong>。维基百科上的解释是：「PCA」是一种分析、简化数据集的技术，经常用于减少数据集的维数，同时保持数据集中对方差贡献最大的特征。说得通俗一点，就是把数据集中重要的特征保存下来，把不重要的特征去除掉。 <a id="more"></a> 为什么要做这种事情呢？特征越多不是对分析问题更有帮助吗？确实，特征越多，涵盖的信息理论上会越多。但要注意一点，这个假设成立的前提是特征本身都彼此无关，并能描述事物的某些属性。如果由特征 A 可以推出特征 B，或者特征 B 所描述的属性与问题本身无关，或者特征 A 和特征 B 描述的是同一个特征，那么特征 B 是没有价值的。在机器学习里面，特征越多意味着需要更多的训练样本（否则容易 underfit ），但真实情况是，训练数据并不容易获取。基于以上种种，如果能构提取出特征的主要部分，那么，不仅数据将变得简单清晰，训练过程也会更快，效果理论上也会更好才是。</p>
-<p>（小插曲：「PCA」是卡尔·皮尔逊于 1901 年发明的，那个时候计算机还没出现，慈禧老佛爷还在西北流窜。</p>
 <h3 id="pca算法过程">「PCA」算法过程</h3>
 <p>「PCA」的目标是把原来 n 维特征的数据压缩成 k 维特征。 接下来用一个例子说明「PCA」的执行流程（这个例子参考自文末链接<a href="http://www.cnblogs.com/jerrylead/archive/2011/04/18/2020209.html" target="_blank" rel="external">主成分分析（Principal components analysis）-最大方差解释</a>）。</p>
 <p>假设我们得到 2 维数据如下： <span class="math display">\[
@@ -441,7 +440,10 @@ FinalData(m*k)=\begin{array}{c|lcr} x \\ \hline -0.82797 \\ 1.77758 \\ -0.992197
 <h3 id="实际应用">实际应用</h3>
 <p>在机器学习中，我们通过训练集计算出特征向量矩阵并降维，然后在降维后的训练集上进行训练。预测的时候，我们同样需要对测试集进行降维（要保证数据模型的统一），降维的方法是用训练集计算出来的特征向量矩阵与测试集的数据相乘，然后再对降维的测试数据进行预测评估。</p>
 <h3 id="参考">参考</h3>
-<p><a href="https://zh.wikipedia.org/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" target="_blank" rel="external">维基百科：主成分分析</a> <a href="http://www.cnblogs.com/jerrylead/archive/2011/04/18/2020209.html" target="_blank" rel="external">主成分分析（Principal components analysis）-最大方差解释</a></p>
+<ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" target="_blank" rel="external">维基百科：主成分分析</a></li>
+<li><a href="http://www.cnblogs.com/jerrylead/archive/2011/04/18/2020209.html" target="_blank" rel="external">主成分分析（Principal components analysis）-最大方差解释</a></li>
+</ul>
 
       
     </div>
@@ -587,7 +589,7 @@ FinalData(m*k)=\begin{array}{c|lcr} x \\ \hline -0.82797 \\ 1.77758 \\ -0.992197
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
