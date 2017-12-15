@@ -103,7 +103,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/cross-domain.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/siamese.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
-<meta property="og:updated_time" content="2017-12-13T02:52:08.000Z">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo2.png">
+<meta property="og:updated_time" content="2017-12-15T04:19:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
 <meta name="twitter:description" content="Cross-Domain Visual Matching，即跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特">
@@ -475,9 +477,24 @@ G(\mathbf{W}, \mathbf{\phi}; D)
 &amp; {2(\mathbf{P_2 \tilde{x_i}})^T\mathbf{P_2}\tilde{y_i} + 2\mathbf{P_3}^T\tilde{x_i}+2\mathbf{P_3}^T\tilde{y_i}+f] \}}_+ + \Psi{(\mathbf{W}, \phi)}  \tag{13}
 \end{align}
 \]</span></p>
+<p>公式中的 <span class="math inline">\(D\)</span> 表示训练的样本对。</p>
 <h4 id="训练细节优化">训练细节优化</h4>
-<p>值得注意的是，(13) 式是一种 sample-pair-based 的表示，每次计算目标函数的时候，我们需要生成很多的样本对，时间和空间的开销都比较大。所以，下一步是将它表示成 sample-based 的形式，这样我们可以用普通的 SGD 算法来优化目标函数。</p>
-<p>对于<span class="math inline">\(D\)</span>中的每一个样本对<span class="math inline">\(\{\mathbf{x_i}, \mathbf{y_i}\}\)</span>，我们假设 <span class="math inline">\(\mathbf{z}^{j_{i,1}}=\mathbf{x_i}\)</span>，<span class="math inline">\(\mathbf{z}^{j_{i,2}}=\mathbf{y_i}\)</span>，其中，<span class="math inline">\(1 \le j_{i,1} \le M_x\)</span>，<span class="math inline">\(M_x+1 \le j_{i,2} \le M_z(=M_x+M_y)\)</span>，<span class="math inline">\(M_x\)</span> 是样本 <span class="math inline">\(\mathbf{x}\)</span> 的数量，<span class="math inline">\(M_y\)</span> 是样本 <span class="math inline">\(\mathbf{y}\)</span> 的数量。同理，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}=\tilde{\mathbf{x_i}}\)</span>，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}=\tilde{\mathbf{y_i}}\)</span>。 然后，我们可以将 (13) 式改写成 sample-based 的形式： <span class="math display">\[
+<p>值得注意的是，(13) 式是一种 sample-pair-based 的表示，每次计算目标函数的时候，我们需要生成很多的样本对，而且，由于同一张图片可能出现在多个 pair 中，这样就容易造成很多重复计算（例如，计算 <span class="math inline">\(\tilde{x_1}\)</span> 时需要一次前向传播，如果 <span class="math inline">\(x_1\)</span> 这张图片又出现在同一个 batch 的其他 pair 中，那我们又需要计算一次前向传播，而这个计算结果其实是可以复用的）。所以，下一步是将它表示成 sample-based 的形式，以减少这种重复计算。</p>
+<p>sample-based 的基本想法是，在每次 batch 训练时，我们不是用一个个 pair 计算，而是针对每张图片，把与该图片相关的操作都放在一起计算。 具体点说，假设一个 batch 中的数据为 <span class="math inline">\(\{\{x_1,y_1\},\dots,\{x_n,y_n\}\}\)</span>，在原始的 sample-pair-based 的算法中，我们会针对网络的两个输入计算两个导数。</p>
+<p>对 <span class="math inline">\(\tilde{x_i}\)</span> 而言： <span class="math display">\[
+\begin{align}
+\frac{\partial G(\Omega_x; D)}{\partial \Omega_x}=\sum_{i=1}^n{-\frac{\partial (\ell_i \tilde{S}(x_i,y_i))}{\partial \tilde{x_i}}\frac{\partial \tilde{x_i}}{\partial \Omega_x} + \frac{\partial \Psi}{\partial \Omega_x} } \notag
+\end{align}
+\]</span> 对 <span class="math inline">\(\tilde{y_i}\)</span> 而言： <span class="math display">\[
+\begin{align}
+\frac{\partial G(\Omega_y; D)}{\partial \Omega_y}=\sum_{i=1}^n{-\frac{\partial (\ell_i \tilde{S}(x_i,y_i))}{\partial \tilde{y_i}}\frac{\partial \tilde{y_i}}{\partial \Omega_y} + \frac{\partial \Psi}{\partial \Omega_y} } \notag
+\end{align}
+\]</span> 在上面两个公式中，<span class="math inline">\(\Omega=\{W,\phi\}\)</span>。不难发现，<span class="math inline">\(\frac{\partial \tilde{x_i}}{\partial \Omega_x}\)</span> 和 <span class="math inline">\(\frac{\partial \tilde{y_i}}{\partial \Omega_y}\)</span> 都只跟各自的输入图片有关，跟样本对中的另一张图片无关，而这一项也是重复计算的根源，所以，sample-based 的计算过程是把这两项单独提取出来，重复利用。以 <span class="math inline">\(\tilde{x_i}\)</span> 为例： <span class="math display">\[
+\begin{align}
+\frac{\partial G(\Omega_x; D)}{\partial \Omega_x}=\sum_{i=1}^n{\{ \frac{\partial \tilde{x_i}}{\partial \Omega_x} \sum_{j}(-\frac{\partial (\ell_i \tilde{S}(x_i,y_j))}{\partial \tilde{x_i}})\} + \frac{\partial \Psi}{\partial \Omega_x} } \notag
+\end{align}
+\]</span> 上式中的 <span class="math inline">\(y_j\)</span> 表示与 <span class="math inline">\(x_i\)</span> 组成一个 pair 的另一张图片。</p>
+<p>基于上述思想，论文给出了如下更加符号化的表述。对于 <span class="math inline">\(D\)</span> 中的每一个样本对 <span class="math inline">\(\{\mathbf{x_i}，\mathbf{y_i}\}\)</span>，我们假设 <span class="math inline">\(\mathbf{z}^{j_{i,1}}=\mathbf{x_i}\)</span>，<span class="math inline">\(\mathbf{z}^{j_{i,2}}=\mathbf{y_i}\)</span>，其中，<span class="math inline">\(1 \le j_{i,1} \le M_x\)</span>，<span class="math inline">\(M_x+1 \le j_{i,2} \le M_z(=M_x+M_y)\)</span>，<span class="math inline">\(M_x\)</span> 是样本 <span class="math inline">\(\mathbf{x}\)</span> 的数量，<span class="math inline">\(M_y\)</span> 是样本 <span class="math inline">\(\mathbf{y}\)</span> 的数量。同理，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,1}}=\tilde{\mathbf{x_i}}\)</span>，<span class="math inline">\(\tilde{\mathbf{z}}^{j_{i,2}}=\tilde{\mathbf{y_i}}\)</span>。 然后，我们可以将 (13) 式改写成 sample-based 的形式： <span class="math display">\[
 \begin{align}
 G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
 =&amp; \sum_{i=1}^N{\{1-\ell_i [(\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,1}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,1}} + (\mathbf{P_1} \tilde{\mathbf{z}}^{j_{i,2}})^T \mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,2}}} \notag \\
@@ -495,6 +512,19 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
 \]</span> 这里的 <span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\)</span> 就是 (4) 式中定义的 <span class="math inline">\(\ell(\mathbf{x_i}, \mathbf{y_i})\)</span>。 另外，有些样本可能已经具备一定的区分度了，因此训练时要剔除这些样本。论文中引入一个标识函数 <span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\)</span>，当 <span class="math inline">\(\ell_{j_{i,x},j_{i,y}}\tilde{S}(\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})&lt;1\)</span> 时「由 (5) 式可知，此时 <span class="math inline">\((\mathbf{z}^{j_{i,x}},\mathbf{z}^{j_{i,y}})\)</span> 还达不到要求的区分度」，<span class="math inline">\(\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})=1\)</span>，否则为 0。于是，得到最终的导数公式： <span class="math display">\[
 \frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,x}}}=-\sum_{j_{i,y}}{2\mathbf{1}_{\mathbf{z}^{j_{i,x}}}(\mathbf{z}^{j_{i,y}})\ell_{j_{i,x},j_{i,y}} (\mathbf{P_1}^T\mathbf{P_1}\tilde{\mathbf{z}}^{j_{i,x}}-\mathbf{P_2}^T\mathbf{P_2}\tilde{\mathbf{z}}^{j_{i,y}}+\mathbf{P_3})} \tag{18}
 \]</span> 对于另一个分支，我们可以用同样的方法计算 <span class="math inline">\(\frac{\partial L}{\partial \tilde{\mathbf{z}}^{j_{i,y}}}\)</span>。</p>
+<p>最后，把 (18) 式代回到 (17) 式，就可以得到 sample-based 的梯度公式。</p>
+<p>论文给出了计算公式 (18) 的具体执行算法：</p>
+<center>
+<p><img src="/images/2017-12-12/algo1.png" width="500px"></p>
+</center>
+<p>这个算法总结起来就是，对于每张输入图片 <span class="math inline">\(\mathbf{z}^j\)</span>，收集跟它组成 pair 的所有图片，按照公式 (18) 计算 <span class="math inline">\(\frac{\partial L}{\partial \tilde{\mathbf{z}}^j}\)</span>。</p>
+<p>下面给出的是完整的梯度下降算法：</p>
+<center>
+<p><img src="/images/2017-12-12/algo2.png" width="500px"></p>
+</center>
+<p>注意到，对于每次迭代训练的 batc h数据，算法中会将每张图片前向传播和后向传播的计算结果都保存下来，然后再针对之前提及的 sample-based 的方法计算梯度。因此，相比 sample-pair-based 的形式，我们实际上只需要对每张图片计算一次前向和后向即可，节省了大量重复计算。</p>
+<h4 id="样本生成">样本生成</h4>
+<p>最后，在训练样本对的生成上，论文采用如下方法： 每次迭代时，先随机挑选 K 个目录（每个目录都包含两个不同的域），然后从每个目录的两个域中，分别随机挑选 <span class="math inline">\(O_1\)</span> 和 <span class="math inline">\(O_2\)</span> 张图片。接着，对第一个域中的每张图片 <span class="math inline">\(A\)</span>，从第二个域中随机挑选若干图片和它组成样本对，注意，从第二个域中挑选的图片，有一半和 <span class="math inline">\(A\)</span> 属于同一目录，另一半与 <span class="math inline">\(A\)</span> 属于不同目录。</p>
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="https://arxiv.org/abs/1605.04039" target="_blank" rel="external">Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning</a></li>
@@ -728,7 +758,7 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文动机"><span class="nav-number">1.</span> <span class="nav-text">论文动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">2.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用的相似模型"><span class="nav-number">2.1.</span> <span class="nav-text">通用的相似模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征学习与相似度融合"><span class="nav-number">2.2.</span> <span class="nav-text">特征学习与相似度融合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练细节优化"><span class="nav-number">2.3.</span> <span class="nav-text">训练细节优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文动机"><span class="nav-number">1.</span> <span class="nav-text">论文动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">2.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用的相似模型"><span class="nav-number">2.1.</span> <span class="nav-text">通用的相似模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征学习与相似度融合"><span class="nav-number">2.2.</span> <span class="nav-text">特征学习与相似度融合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练细节优化"><span class="nav-number">2.3.</span> <span class="nav-text">训练细节优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#样本生成"><span class="nav-number">2.4.</span> <span class="nav-text">样本生成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
