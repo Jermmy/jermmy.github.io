@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz18.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz20.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz21.png">
-<meta property="og:updated_time" content="2017-12-13T03:01:32.000Z">
+<meta property="og:updated_time" content="2017-12-15T06:19:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减)
@@ -420,7 +420,7 @@ a_{j}^l = \sigma(\sum_{k}{w_{jk}^{l}a_{k}^{l-1}+b_{j}^{l}})      \tag{23}
 <p>现在，为了方便书写，我们为每一层定义一个权值矩阵 <span class="math inline">\(W^l\)</span>，矩阵的每个元素对应上面提到的 <span class="math inline">\(w_{jk}^{l}\)</span>。类似地，我们为每一层定义一个偏差向量 <span class="math inline">\(b^l\)</span> 以及一个激活层向量 <span class="math inline">\(a^l\)</span>。</p>
 <p>然后，我们将公式 (23) 表示成矩阵的形式： <span class="math display">\[
 a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
-\]</span> 注意，这里我们对 <span class="math inline">\(\sigma()\)</span> 函数做了点延伸，当输入参数是向量时，<span class="math inline">\(sigma()\)</span> 会逐个作用到向量的每个元素上（elementwise）。</p>
+\]</span> 注意，这里我们对 <span class="math inline">\(\sigma()\)</span> 函数做了点延伸，当输入参数是向量时，<span class="math inline">\(\sigma()\)</span> 会逐个作用到向量的每个元素上（elementwise）。</p>
 <p>在 (25) 式中，有时为了书写的方便，我们会用 <span class="math inline">\(z^l\)</span> 来表示 <span class="math inline">\(W^la^{l-1}+b^l\)</span>。下文中，<span class="math inline">\(z^l\)</span> 将会频繁出现。</p>
 <h3 id="代价函数的两个前提假设">代价函数的两个前提假设</h3>
 <p>BP 算法的目标是要计算偏导数 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial w\)</span> 和 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial b\)</span>，要让 BP 算法起作用，我们需要两个前提假设：</p>
@@ -494,8 +494,8 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <p>BP2 需要用到后一层计算出来的 <span class="math inline">\(\delta^{l+1}\)</span>，因此，我们先根据 BP1 得出：<span class="math inline">\(\delta_k^{l+1}=\frac{\partial C}{\partial z_k^{l+1}}\)</span>。</p>
 <p>由 <span class="math inline">\(\delta_k^{l}=\frac{\partial C}{\partial z_k^l}\)</span> 和 <span class="math inline">\(C=f(\sigma(z_0^L), \sigma(z_1^L), \cdots, \sigma(z_n^L))\)</span> 可以得到： <span class="math display">\[
 \begin{eqnarray}
-\delta_j^{l} &amp; = &amp; \frac{\partial C}{\partial z_0^{l+1}}\frac{\partial z_0^{l+1}}{\partial z_j^{l}}+\cdots+\frac{\partial C}{\partial z_n^{l+1}}\frac{\partial z_n^{l+1}}{\partial z_j^{l}} \\\\
-&amp; = &amp; \sum_k{\frac{\partial C}{\partial z_k^{l+1}}\frac{\partial z_k^{l+1}}{\partial z_j^j}} \\\\
+\delta_j^{l} &amp; = &amp; \frac{\partial C}{\partial z_0^{l+1}}\frac{\partial z_0^{l+1}}{\partial z_j^{l}}+\cdots+\frac{\partial C}{\partial z_n^{l+1}}\frac{\partial z_n^{l+1}}{\partial z_j^{l}}  \notag \\
+&amp; = &amp; \sum_k{\frac{\partial C}{\partial z_k^{l+1}}\frac{\partial z_k^{l+1}}{\partial z_j^j}} \notag \\
 &amp; = &amp; \sum_k \delta_k^{l+1}\frac{\partial z_k^{l+1}}{\partial z_j^{l}}   \tag{42}
 \end{eqnarray}
 \]</span></p>
