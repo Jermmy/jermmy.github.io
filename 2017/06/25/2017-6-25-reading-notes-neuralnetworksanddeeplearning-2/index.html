@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz18.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz20.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz21.png">
-<meta property="og:updated_time" content="2017-12-15T06:19:22.000Z">
+<meta property="og:updated_time" content="2017-12-16T06:16:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减)
@@ -534,7 +534,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
 <ol style="list-style-type: decimal">
 <li><strong>Input</strong> x: Set the corresponding activation <span class="math inline">\(a^1\)</span> for the input layer.</li>
 <li><strong>Feedforward: </strong> For each l = 2, 3, …, L compute <span class="math inline">\(z^l=w^la^{l-1}+b^l\)</span> and <span class="math inline">\(a^l=\sigma(z^l)\)</span>.</li>
-<li><strong>Output error </strong><span class="math inline">\(\delta^L\)</span>: Compute the vector <span class="math inline">\(\delta^L=\nabla\_a C \odot \sigma&#39;(z^L)\)</span>.</li>
+<li><strong>Output error </strong><span class="math inline">\(\delta^L\)</span>: Compute the vector <span class="math inline">\(\delta^L=\nabla_a C \odot \sigma&#39;(z^L)\)</span>.</li>
 <li><strong>Backpropagate the error: </strong>For each l = L-1, L-2, …, 2 compute <span class="math inline">\(\delta^l=((W^{l+1})^T \delta^{l+1}) \odot \sigma&#39;(z^l)\)</span>.</li>
 <li><strong>Output: </strong>The gradient of the cost function is given by <span class="math inline">\(\frac{\partial C}{\partial w_{jk}^l}=a_k^{l-1}\delta_j^{l}\)</span> and <span class="math inline">\(\frac{\partial C}{\partial b_j^l}=\delta_j^l\)</span>.</li>
 </ol>
@@ -701,7 +701,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
