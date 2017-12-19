@@ -105,7 +105,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo2.png">
-<meta property="og:updated_time" content="2017-12-15T04:19:27.000Z">
+<meta property="og:updated_time" content="2017-12-19T14:17:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
 <meta name="twitter:description" content="Cross-Domain Visual Matching，即跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特">
@@ -118,7 +118,7 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
     fancybox: true,
     motion: true,
     duoshuo: {
@@ -412,7 +412,9 @@
 \begin{align}
 S(\mathbf{x}, \mathbf{y})=\begin{bmatrix}\mathbf{x}^T &amp; \mathbf{y}^T &amp; 1  \end{bmatrix} \begin{bmatrix} \mathbf{A} &amp; \mathbf{C} &amp; \mathbf{d} \\ \mathbf{C}^T &amp; \mathbf{B} &amp; \mathbf{e} \\ \mathbf{d}^T &amp; \mathbf{e}^T &amp; f \end{bmatrix} \begin{bmatrix} \mathbf{x} \\ \mathbf{y} \\ 1 \end{bmatrix}  \tag{1}
 \end{align}
-\]</span> 其中，我们限制 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span> 为半正定矩阵，表示同域内的自相关性，<span class="math inline">\(\mathbf{C}\)</span> 为两个域之间的协方差矩阵。根据半正定矩阵的性质以及 <span class="math inline">\(\mathbf(C)\)</span> 的对称性，我们可以将 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span> 表示为： <span class="math display">\[
+\]</span> （<span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span> 是矩阵，<span class="math inline">\(\mathbf{d}\)</span> 和 <span class="math inline">\(\mathbf{e}\)</span> 是两个向量，<span class="math inline">\(\mathbf{x}\)</span> 和 <span class="math inline">\(\mathbf{y}\)</span> 分别表示两个待匹配的向量）</p>
+<p>举个例子，如果 <span class="math inline">\(\mathbf{A}\)</span>=<span class="math inline">\(\mathbf{B} = \mathbf{I}\)</span>，<span class="math inline">\(\mathbf{C}=-\mathbf{I}\)</span>，<span class="math inline">\(\mathbf{d}=\mathbf{e}=\mathbf{0}\)</span>，<span class="math inline">\(f=0\)</span>，则该模型退化为欧式距离：<span class="math inline">\(S(x,y)=\mathbf{x}^T\mathbf{x}-2\mathbf{x}\mathbf{y}+\mathbf{y}^T\mathbf{y}=||\mathbf{x}-\mathbf{y}||^2\)</span>。</p>
+<p>同时，论文还限制 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span> 为半正定矩阵，表示同域内的自相关性，<span class="math inline">\(\mathbf{C}\)</span> 为两个域之间的相关性矩阵。根据半正定矩阵的性质以及 <span class="math inline">\(\mathbf(C)\)</span> 的对称性，我们可以将 <span class="math inline">\(\mathbf{A}\)</span>、<span class="math inline">\(\mathbf{B}\)</span>、<span class="math inline">\(\mathbf{C}\)</span> 表示为： <span class="math display">\[
 \begin{align}
 \mathbf{A}=\mathbf{L_A}^T \mathbf{L_A} \notag \\
 \mathbf{B}=\mathbf{L_B}^T \mathbf{L_B}  \tag{2} \\
