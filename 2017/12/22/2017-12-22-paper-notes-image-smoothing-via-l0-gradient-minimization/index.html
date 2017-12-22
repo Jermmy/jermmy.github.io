@@ -1,0 +1,1018 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="图像处理,NPR," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
+另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记：Image Smoothing via L0 Gradient Minimization">
+<meta property="og:url" content="https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/index.html">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
+另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/l0-smoothing.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/gradient.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/gradient-detail.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/gradient-detail2.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/result1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/edge-detection.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/vectorize.png">
+<meta property="og:updated_time" content="2017-12-22T07:03:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文笔记：Image Smoothing via L0 Gradient Minimization">
+<meta name="twitter:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
+另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-22/l0-smoothing.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/"/>
+
+
+
+
+
+  <title>论文笔记：Image Smoothing via L0 Gradient Minimization | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                论文笔记：Image Smoothing via L0 Gradient Minimization
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-22T10:05:17+08:00">
+                2017-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/图像处理/" itemprop="url" rel="index">
+                    <span itemprop="name">图像处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/" class="leancloud_visitors" data-flag-title="论文笔记：Image Smoothing via L0 Gradient Minimization">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 <span class="math inline">\(L_0\)</span> 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。</p>
+<p>另外这篇论文的作者<a href="http://www.lxu.me/" target="_blank" rel="external">徐立</a>也是一个相当高产的研究员。</p>
+<center>
+<p><img src="/images/2017-12-22/l0-smoothing.png" width="600px"></p>
+</center>
+<a id="more"></a>
+<h3 id="论文的目的">论文的目的</h3>
+<p>所谓图像平滑，就是突出图像中的低频成分，抑制高频成分，减小突变的梯度。大部分情况下，这么做的目的是为了去除图像中的噪声，因为噪声一般就是一些孤立的像素点，是像素变化比较大的区域。在传统的图像处理中，大部分操作都是用一些具有平滑性质的卷积核对图像进行模糊处理，最常用的如：<a href="http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html" target="_blank" rel="external">高斯模糊</a>、均值滤波等等。这些方法都有一个缺陷，就是在模糊噪声的同时，也模糊了边缘。当然之后也有一些改进的方法，如：<a href="https://jermmy.github.io/2017/01/07/2017-1-7-Bilateral-Filter/">双边滤波</a>等，这些方法都在边缘保持上进行了很多改进，但多少还是会损失边缘的信息。本文的方法完全不同于以往的这些算法，它从图像梯度的角度出发，在平滑掉大部分细小的噪声的同时，又能最大限度的保持重要的边缘信息。</p>
+<h3 id="论文主要思想">论文主要思想</h3>
+<h4 id="一维图像信号">一维图像信号</h4>
+<p>在正式讲思想之前，我们先回忆一下图像平滑的目标是什么。</p>
+<center>
+<p><img src="/images/2017-12-22/gradient.png" width="600px"></p>
+</center>
+<p>为了简单起见，我们先从一维出发，把图像当作一维的信号。那么，图像平滑就是要把那些比较小的类似「褶皱」的地方抹平，而把那些大的「褶皱」，或者更准确地说，变化很大的梯度（边缘）保留下来。上面这幅图展示的是不同算法的平滑效果。可以发现，之前的算法在平滑掉那些坑坑洼洼的「褶皱」的同时，也把可能把属于真正边缘的大的梯度给模糊了（细节放大图如下）</p>
+<center>
+<p><img src="/images/2017-12-22/gradient-detail.png"></p>
+</center>
+<p>为了避免这种问题，论文提出一种基于 <span class="math inline">\(L_0\)</span> 范数的能量最小化方法。</p>
+<p>所谓 <span class="math inline">\(L_0\)</span> 范数，指的就是向量中非 0 元素的个数。论文中借用这个概念，提出一个图像梯度<strong>数量</strong>的计算公式： <span class="math display">\[
+c(f)=\#\{p\ \big |\ |f_p-f_{p+1}|\neq 0 \}
+\]</span> 公式中，<span class="math inline">\(f\)</span> 表示我们平滑后的图像，<span class="math inline">\(\#\)</span> 表示集合中元素 <span class="math inline">\(p\)</span> 的个数，而 <span class="math inline">\(p\)</span> 则表示像素位置，因此 <span class="math inline">\(f_p\)</span> 其实就代表图像 <span class="math inline">\(f\)</span> 在 <span class="math inline">\(p\)</span> 这个位置的像素值。</p>
+<p>因此这个公式其实就是在计算：满足 <span class="math inline">\(|f_p-f_{p+1}| \neq 0\)</span> 的像素数量，这个不等式正好就是 <span class="math inline">\(L_0\)</span> 范数。它的现实意义就是计算图片信号中<strong>梯度的数量</strong>。</p>
+<p>有了这个公式后，论文抛出它最核心的目标函数： <span class="math display">\[
+\underset{f} {\operatorname {min}} \sum_{p}(f_p-g_p)^2 \ \ \ \   \operatorname{s.t.} \ c(f)=k
+\]</span> 公式中的 <span class="math inline">\(g\)</span> 表示原图像，<span class="math inline">\(f\)</span> 表示平滑后的图像，<span class="math inline">\(c(f)\)</span> 就是上面提到的计算梯度数量的公式，它表示 <span class="math inline">\(f\)</span> 中的梯度数量应该为 <span class="math inline">\(k\)</span> 个。</p>
+<p>这个公式表示的是图像 <span class="math inline">\(f\)</span> 中每个像素 <span class="math inline">\(f_p\)</span> 和原图 <span class="math inline">\(g\)</span> 中每个像素 <span class="math inline">\(g_p\)</span> 之间的平方差之和。</p>
+<p>最小化这个目标函数，其实就是要最小化 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span> 之间的像素差。如果没有 <span class="math inline">\(c(f)\)</span> 这个限制，那么最终的优化结果就是 <span class="math inline">\(f=g\)</span>。但加上 <span class="math inline">\(c(f)\)</span> 限制后，这个目标函数在尽可能减少两个信号之间的能量差的同时，又要让 <span class="math inline">\(f\)</span> 中的梯度数量满足 <span class="math inline">\(k\)</span> 个。换句话说，它要尽可能让 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span> 相似，同时又抹平 <span class="math inline">\(f\)</span> 中的梯度。因此，最后的优化结果只能是保留住 <span class="math inline">\(f\)</span> 中那些梯度比较大的边缘，而平滑掉那些梯度比较小的「褶皱」。</p>
+<p><span class="math inline">\(c(f)\)</span> 这个限制最大的作用就是防止 <span class="math inline">\(f\)</span> 出现对边缘的模糊。如果仔细观察上面那张边缘模糊的细节图，你就会发现，造成模糊的原因是我们把原来很「抖」的梯度变「缓」了，而缓的梯度其实是由很多小梯度组成的。<span class="math inline">\(c(f)\)</span> 的限制正是为了减少这种梯度的数量。因此，为了满足 <span class="math inline">\(c(f)\)</span>，目标函数会让 <span class="math inline">\(f\)</span> 中的梯度倾向于更「抖」。</p>
+<p>在<strong>最小化能量差</strong>和<strong>减少梯度数量</strong>这两个约束的共同博弈下，最终得到了下面的这种很平滑、同时边缘很尖锐的结果：</p>
+<center>
+<p><img src="/images/2017-12-22/gradient-detail2.png" width="200px"></p>
+</center>
+<p>这种相互制约的想法实在是简单而又精彩！</p>
+<p>不过，实际应用中存在一个问题，就是 <span class="math inline">\(k\)</span> 的变化范围很大，是很难选择的。为了控制 <span class="math inline">\(k\)</span> 的选择范围，论文把 <span class="math inline">\(c(f)=k\)</span> 这个约束也加入到目标函数中： <span class="math display">\[
+\underset{f}{\operatorname{min}} \{ \sum_p{(f_p-g_p)^2+\lambda c(f)} \}
+\]</span> 现在 <span class="math inline">\(\lambda\)</span> 代替 <span class="math inline">\(k\)</span> 作为可以调节的参数。<span class="math inline">\(\lambda\)</span> 越大，目标函数对 <span class="math inline">\(c(f)\)</span> 的抑制就越大，梯度数量就越少（即边缘越少），反之，梯度数量越大。</p>
+<h4 id="二维图像信号">二维图像信号</h4>
+<p>一维信号的约束可以很容易引申到二维信号： <span class="math display">\[
+C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
+\]</span> <span class="math inline">\(S\)</span> 类似上面提到的 <span class="math inline">\(f\)</span>，在这里它表示处理后的二维图像，<span class="math inline">\(\partial_x S_p\)</span> 和 <span class="math inline">\(\partial_y S_p\)</span> 分别代表在 <span class="math inline">\(x\)</span> 方向和 <span class="math inline">\(y\)</span> 方向计算 <span class="math inline">\(L_0\)</span> 范数。</p>
+<p>然后，我们可以用同样的方法得到目标函数： <span class="math display">\[
+\underset{S}{\operatorname{min}} \{ \sum_p{(S_p-I_p)^2+\lambda C(S)} \}
+\]</span> 公式中 <span class="math inline">\(I\)</span> 表示原图，其他的类比一维信号的公式。</p>
+<h3 id="优化方法">优化方法</h3>
+<p>希望有生之年看懂补上。。。</p>
+<h3 id="实验结果">实验结果</h3>
+<center>
+<p><img src="/images/2017-12-22/result1.png"></p>
+</center>
+<p>上图（e）是论文的方法和其他图像平滑方法的对比，可以看出，这种基于 <span class="math inline">\(L_0\)</span> 平滑的方法不仅平滑的效果好，而且几乎是原封不动地保留了色块之间的边缘信息。而其他方法在色块（尤其是红色）上的平滑力度不如 <span class="math inline">\(L_0\)</span> 平滑，且边缘也模糊了不少。</p>
+<p>另外，论文的平滑方法在边缘提取上效果也相当的好，下图中，左边（e）是直接对原图用 Canny 提取边缘的结果，右边是先用 <span class="math inline">\(L_0\)</span> smoothing 进行平滑，再提取边缘的结果，可以看到，平滑后提取的边缘中抹去了很多不重要的细节，而主要的边缘信息都被提取出来。</p>
+<center>
+<p><img src="/images/2017-12-22/edge-detection.png" width="400px"></p>
+</center>
+<p>除此之外，另一个很重要的用途是图像失量化。图像失量化要求图像中的色块数量尽可能少，而这一点正中 <span class="math inline">\(L_0\)</span> smoothing 下怀。下图中的输入图像具有很多噪声细节，而这些细节用一般的平滑方向是很难根除的，但 <span class="math inline">\(L_0\)</span> smoothing 由于限制了梯度数量，因此可以产生很「光滑」的色块区域，非常利于失量化操作。</p>
+<center>
+<p><img src="/images/2017-12-22/vectorize.png"></p>
+</center>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://www.cse.cuhk.edu.hk/~leojia/papers/L0smooth_Siggraph_Asia2011.pdf" target="_blank" rel="external">Image Smoothing via L0 Gradient Minimization</a></li>
+<li><a href="http://blog.csdn.net/bluecol/article/details/48750561" target="_blank" rel="external">L0范数图像平滑</a></li>
+<li><a href="http://blog.csdn.net/zouxy09/article/details/24971995" target="_blank" rel="external">机器学习中的范数规则化之（一）L0、L1与L2范数</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/" title="论文笔记：Image Smoothing via L0 Gradient Minimization">https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图像处理/" rel="tag"># 图像处理</a>
+          
+            <a href="/tags/NPR/" rel="tag"># NPR</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/16/2017-12-16-cnn-back-propagation/" rel="next" title="CNN的反向传播">
+                <i class="fa fa-chevron-left"></i> CNN的反向传播
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文的目的"><span class="nav-number">1.</span> <span class="nav-text">论文的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文主要思想"><span class="nav-number">2.</span> <span class="nav-text">论文主要思想</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一维图像信号"><span class="nav-number">2.1.</span> <span class="nav-text">一维图像信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二维图像信号"><span class="nav-number">2.2.</span> <span class="nav-text">二维图像信号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化方法"><span class="nav-number">3.</span> <span class="nav-text">优化方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结果"><span class="nav-number">4.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

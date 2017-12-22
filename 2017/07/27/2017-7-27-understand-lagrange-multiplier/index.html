@@ -111,7 +111,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/black-gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/LagrangeConstraints.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/multiple-solution.jpg">
-<meta property="og:updated_time" content="2017-12-13T02:58:46.000Z">
+<meta property="og:updated_time" content="2017-12-22T05:08:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉格朗日乘子法">
 <meta name="twitter:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
@@ -407,7 +407,7 @@
         <p>最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。</p>
 <h3 id="什么是拉格朗日乘子法">什么是拉格朗日乘子法</h3>
 <p>按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： <span class="math display">\[
-\underset{x, y} {\operatorname {minimize}} f(x, y)   \\\\
+\underset{x, y} {\operatorname {minimize}} f(x, y)   \\
 \operatorname{subject\ to}  g(x, y) = c
 \]</span> 简单理解就是，我们要在满足 <span class="math inline">\(g(x, y)=c\)</span> 这个等式的前提下，求 <span class="math inline">\(f(x, y)\)</span> 函数的最小值（最大值道理相同）。这样的问题我们在高中的时候就遇到过了，只不过高中时遇到的限制条件 <span class="math inline">\(g(x, y)=c\)</span> 都比较简单，一般而言都可以将 <span class="math inline">\(y\)</span> 用 <span class="math inline">\(x\)</span> 的式子表示出来，然后用变量替换的方法代回 <span class="math inline">\(f(x, y)\)</span> 求解。但是，如果 <span class="math inline">\(g(x, y)\)</span> 的形式过于复杂，或者变量太多时，这种方法就失效了。而拉格朗日乘子法就是解决这类问题的通用策略。</p>
 <a id="more"></a>
@@ -629,7 +629,7 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">75</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -651,7 +651,7 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
