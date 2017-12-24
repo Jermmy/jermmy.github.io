@@ -1,0 +1,1022 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机器学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm 教程，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的博客中。
+这篇文章主要想讲清楚 SVM 的目标函数，而关于一些数学上的优化问题，则放在之后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SVM小白教程（一）">
+<meta property="og:url" content="https://jermmy.github.io/2017/12/23/2017-12-23-svm-tutorial-1/index.html">
+<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:description" content="关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm 教程，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的博客中。
+这篇文章主要想讲清楚 SVM 的目标函数，而关于一些数学上的优化问题，则放在之后">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/package.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/1-svm-hyperplane1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/2-svm-hyperplane1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/svm_margin_demonstration_3.png">
+<meta property="og:updated_time" content="2017-12-24T05:52:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SVM小白教程（一）">
+<meta name="twitter:description" content="关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm 教程，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的博客中。
+这篇文章主要想讲清楚 SVM 的目标函数，而关于一些数学上的优化问题，则放在之后">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-23/package.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2017/12/23/2017-12-23-svm-tutorial-1/"/>
+
+
+
+
+
+  <title>SVM小白教程（一） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/12/23/2017-12-23-svm-tutorial-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SVM小白教程（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-23T19:56:35+08:00">
+                2017-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/23/2017-12-23-svm-tutorial-1/" class="leancloud_visitors" data-flag-title="SVM小白教程（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm <a href="https://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/" target="_blank" rel="external">教程</a>，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的<a href="/images/2017-12-23/support_vector_machines_succinctly.pdf">博客</a>中。</p>
+<p>这篇文章主要想讲清楚 SVM 的目标函数，而关于一些数学上的优化问题，则放在之后的文章。</p>
+<center>
+<p><img src="/images/2017-12-23/package.png"></p>
+</center>
+<a id="more"></a>
+<h2 id="什么是-svm">什么是 SVM</h2>
+<p>SVM 的全称是 <strong>Support Vector Machine</strong>，中文名<strong>支持向量机</strong>。</p>
+<p>关于 SVM 是什么这个问题，知乎上有一篇通俗易懂的<a href="https://www.zhihu.com/question/21094489/answer/86273196" target="_blank" rel="external">文章</a>，说到底，SVM 的提出主要是为了解决二分类的问题。下面会从最简单的数学入手，一步步揭开 SVM 的面纱。</p>
+<h2 id="超平面">超平面</h2>
+<h3 id="什么是超平面">什么是超平面</h3>
+<p>在正式开讲之前，需要先讲一下超平面（hyperplane）的概念，这是 SVM 中一个相当重要的概念。</p>
+<p>在初中的时候，我们就知道 <span class="math inline">\(ax+b-y=0\)</span> 表示的是一条直线。在机器学习里面，为了方便用向量的形式来表示，我们一般用 <span class="math inline">\(x_1\)</span> 来代替 <span class="math inline">\(x\)</span>，<span class="math inline">\(x_2\)</span> 来代替 <span class="math inline">\(y\)</span>，这样，直线就表示成了 <span class="math inline">\(\mathbf{w}^T\mathbf{x}+b=0\)</span>，其中 <span class="math inline">\(\mathbf{w}=\begin{bmatrix} a &amp; -1 \end{bmatrix}^T\)</span>，<span class="math inline">\(\mathbf{x}=\begin{bmatrix} x_1 &amp; x_2 \end{bmatrix}^T\)</span>。</p>
+<p>如果我们把目光投到三维：<span class="math inline">\(ax_1+bx_2+cx_3+d=0\)</span>，那么原来的直线就变成了一个平面。如果继续将维度升高到四维、五维。。。这时，平面就变成了高维空间的<strong>超平面</strong>。机器学习中的问题基本都是在高维空间处理的。</p>
+<p>不过，由于超平面没法用画图表示，因此本文会使用二维的例子来介绍。</p>
+<p>如果你看了上面知乎那篇文章，你就会知道，SVM 正是借助这个超平面来划分数据的。</p>
+<p>关于这个超平面，我们要知道三点：</p>
+<ol style="list-style-type: decimal">
+<li>超平面也是由一系列点组成的。在线性代数中通常将点称为<strong>向量</strong>。如果点 <span class="math inline">\(\mathbf{x}\)</span> 在超平面上，则满足 <span class="math inline">\(\mathbf{w}^T\mathbf{x}+b=0\)</span>。由于这个超平面把数据分为两类，因此这些点又被称为<strong>支持向量</strong>。</li>
+<li>假设超平面两侧各有一点 <span class="math inline">\(\mathbf{x_1}\)</span> 和 <span class="math inline">\(\mathbf{x_2}\)</span>，则满足 <span class="math inline">\(\mathbf{w}^T\mathbf{x_1}+b&gt;0\)</span>，<span class="math inline">\(\mathbf{w}^T\mathbf{x_2}+b&lt;0\)</span>。在二维中这一点很明显。</li>
+<li><span class="math inline">\(\mathbf{w}\)</span> 与超平面垂直。这一点是根据超平面的定义得来的，可以参看这个数学<a href="http://tutorial.math.lamar.edu/Classes/CalcII/EqnsOfPlanes.aspx" target="_blank" rel="external">讲义</a>。当然，如果实在无法理解，可以令 <span class="math inline">\(b=0\)</span>，这样超平面就变成 <span class="math inline">\(\mathbf{w}^T\mathbf{x}=0\)</span>，两向量内积为 0，证明 <span class="math inline">\(\mathbf{w} \perp \mathbf{x}\)</span>。在 SVM 中，正样本的标签通常记为 1，负样本记为 -1。因此，为了保持符号上的一致性，规定 <span class="math inline">\(\mathbf{w}\)</span> 的方向指向正样本的一侧。这样，如果 <span class="math inline">\(\mathbf{x_1}\)</span> 是一个正样本，那么 <span class="math inline">\(\mathbf{w}^T\mathbf{x_1}+b&gt;0\)</span>，否则 <span class="math inline">\(\mathbf{w}^T\mathbf{x_1}+b&lt;0\)</span>。</li>
+</ol>
+<h3 id="间距-margin">间距 margin</h3>
+<p>间距是 SVM 中另一个核心概念。间距指的就是点和超平面之间的距离。当样本点很多时，我们取样本点和超平面之间的<strong>最小距离</strong>作为间距。</p>
+<h2 id="svm-的目标">SVM 的目标</h2>
+<p>SVM 的目的其实就是找一个区分数据最合适的超平面，超平面一侧是正样本，另一侧是负样本。我们应该能隐约感觉到：最合适的平面就在正负样本「最中间」的位置。换句话说，就是找一个间距最大的超平面。这样找到的超平面也将在正负样本的最中间，因为如果超平面离任何样本太近，间距都会变小，因此为了保证间距最大，就必须与所有正负样本都足够的远。</p>
+<h3 id="如何找到最合适的超平面">如何找到最合适的超平面</h3>
+<p>假设下图中的 A～G 表示样本点，橙色线是超平面，两条蓝线表示与超平面平行的面，它们划定了超平面的间距（注意右侧的蓝线穿过了离超平面最近的 A、B 两点）。</p>
+<center>
+<p><img src="/images/2017-12-23/1-svm-hyperplane1.png" width="400px"></p>
+</center>
+<p>虽然这个超平面能把正负样本点分开，但显然不是最优的超平面，因为我们可以找到一个新的超平面，使间距更大（由 <span class="math inline">\(\frac{M_1}{2}\)</span> 扩大到 <span class="math inline">\(\frac{M_2}{2}\)</span>）。</p>
+<center>
+<p><img src="/images/2017-12-23/2-svm-hyperplane1.png" width="400px"></p>
+</center>
+<p>到这里，我们可以发现，超平面是否合适，跟间距大小息息相关。因此，寻找最优的超平面，就等价于<strong>找到最大的间距</strong>。</p>
+<h3 id="寻找最大间距">寻找最大间距</h3>
+<p>下面就来讨论一下怎么找到最大的间距。</p>
+<p>假设我们有一个样本集 <span class="math inline">\(D=\{(\mathbf{x_i},y_i)\ \big |\ \mathbf{x_i} \in R^p, y_i \in \{-1,1\}\}\)</span>，<span class="math inline">\(y_i\)</span> 表示样本标签，正样本取 1，负样本取 -1。</p>
+<p>为了计算超平面 <span class="math inline">\(\mathbf{w}^T\mathbf{x}+b=0\)</span> 的间距，我们可以仿照上图中的蓝线，引入两个超平面： <span class="math inline">\(\mathbf{w}^T\mathbf{x}+b=\delta\)</span> 和 <span class="math inline">\(\mathbf{w}^T\mathbf{x}+b=-\delta\)</span>（<span class="math inline">\(\delta\)</span> 取正数）。注意，这两个超平面之间不能有任何数据点。因此，他们要满足一个限制条件：对于正样本（<span class="math inline">\(y_i=1\)</span>）而言，<span class="math inline">\(\mathbf{w}^T\mathbf{x}+b\ge \delta\)</span>，对于负样本（<span class="math inline">\(y_i=-1\)</span>），<span class="math inline">\(\mathbf{w}^T\mathbf{x}+b\le -\delta\)</span>。这样一来，求原超平面的间距就转换为求这两个超平面之间的距离。利用标签的正负号，我们可以把两个超平面的限制条件统一为： <span class="math display">\[
+y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta  \tag{1}
+\]</span> 接下来要考虑如何计算这两个超平面之间的距离。</p>
+<p>在高中阶段，我们就学过如何计算两条平行直线之间的距离，这里完全可以把二维的公式拓展到高维。不过，这里我们还是从向量的角度出发，看看如何计算两个超平面之间的距离。</p>
+<p>假设这两个超平面分别为 <span class="math inline">\(H_0: \mathbf{w}^T\mathbf{x}+b=-\delta\)</span> 和 <span class="math inline">\(H_1: \mathbf{w}^T\mathbf{x}+b=\delta\)</span>，<span class="math inline">\(x_0\)</span> 是 <span class="math inline">\(H_0\)</span> 上一点，两个平面之间的距离是 <span class="math inline">\(m\)</span>。</p>
+<center>
+<p><img src="/images/2017-12-23/svm_margin_demonstration_3.png" width="400px"></p>
+</center>
+<p>为了计算 <span class="math inline">\(m\)</span>，需要找一个跟 <span class="math inline">\(m\)</span> 相关的表达式。假设 <span class="math inline">\(H_1\)</span> 上有一点 <span class="math inline">\(x_1\)</span>，使得向量 <span class="math inline">\(\overline {x_0x_1} \perp H_1\)</span>，则 <span class="math inline">\(\mathbf{x_1}=\mathbf{x_0}+\overline {x_0x_1}\)</span>。想要求 <span class="math inline">\(\overline {x_0x_1}\)</span>，我们需要确定它的方向和长度。在之前介绍超平面时，我们已经知道，<span class="math inline">\(\mathbf{w} \perp H_1\)</span>，所以这个向量的方向应该和 <span class="math inline">\(\mathbf{w}\)</span> 相同，而它的长度就是我们要求的 <span class="math inline">\(m\)</span>，所以 <span class="math inline">\(\overline {x_0x_1}=m\frac{\mathbf{w}}{||\mathbf{w}||}\)</span>，既而 <span class="math inline">\(\mathbf{x_1}=\mathbf{x_0}+m\frac{\mathbf{w}}{||\mathbf{w}||}\)</span>。</p>
+<p>现在把 <span class="math inline">\(\mathbf{x_1}\)</span> 代入 <span class="math inline">\(H_1 (\mathbf{w}^T\mathbf{x}+b=\delta)\)</span> 中： <span class="math display">\[
+\begin{align}
+\mathbf{w}^T\mathbf{x_1}+b=&amp;\mathbf{w}^T(\mathbf{x_0}+m\frac{\mathbf{w}}{||\mathbf{w}||})+b \notag \\
+=&amp;\mathbf{w}^T\mathbf{x_0}+m\frac{\mathbf{w}^T\mathbf{w}}{||\mathbf{w}||}+b \tag{2} \\
+=&amp;\delta \notag
+\end{align}
+\]</span> 由于 <span class="math inline">\(\mathbf{x_0}\)</span> 是 <span class="math inline">\(H_0\)</span> 上一点，所以 <span class="math inline">\(\mathbf{w}^T\mathbf{x_0}+b=-\delta\)</span>，代入（2）式： <span class="math display">\[
+\begin{align}
+\mathbf{w}^T\mathbf{x_1}+b=&amp;-\delta+m\frac{\mathbf{w}^T\mathbf{w}}{||\mathbf{w}||} \notag \\
+=&amp;-\delta + m||\mathbf{w}|| \notag \\
+=&amp;\delta \notag
+\end{align}
+\]</span> 这样我们就得到 <span class="math inline">\(m\)</span> 的表达式： <span class="math display">\[
+m=\frac{2\delta}{||\mathbf{w}||} \tag{3}
+\]</span> 考虑到 <span class="math inline">\(\delta\)</span> 是一个正数，因此，要使 <span class="math inline">\(m\)</span> 最大，就必须让 <span class="math inline">\(||\mathbf{w}||\)</span> 最小。再考虑到两个超平面的限制条件（1），我们就可以得到如下 SVM 的目标函数。</p>
+<h3 id="目标函数">目标函数</h3>
+<p>综合考虑 (2) (3)，我们得到 SVM 最终的目标函数： <span class="math display">\[
+\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \ \ \ \ \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta
+\]</span> 找出使这个函数最小的 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span>，就找到了最合适的超平面。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://www.zhihu.com/question/21094489/answer/86273196" target="_blank" rel="external">支持向量机(SVM)是什么意思？ - 简之的回答 - 知乎</a></li>
+<li><a href="https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/" target="_blank" rel="external">Part 2: How to compute the margin?</a></li>
+<li><a href="https://www.svm-tutorial.com/2015/06/svm-understanding-math-part-3/" target="_blank" rel="external">Part 3: How to find the optimal hyperplane?</a></li>
+<li><a href="http://tutorial.math.lamar.edu/Classes/CalcII/EqnsOfPlanes.aspx" target="_blank" rel="external">Paul’s Online Math Notes</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2017/12/23/2017-12-23-svm-tutorial-1/" title="SVM小白教程（一）">https://jermmy.github.io/2017/12/23/2017-12-23-svm-tutorial-1/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/" rel="next" title="论文笔记：Image Smoothing via L0 Gradient Minimization">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Image Smoothing via L0 Gradient Minimization
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">76</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-svm"><span class="nav-number">1.</span> <span class="nav-text">什么是 SVM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超平面"><span class="nav-number">2.</span> <span class="nav-text">超平面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是超平面"><span class="nav-number">2.1.</span> <span class="nav-text">什么是超平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#间距-margin"><span class="nav-number">2.2.</span> <span class="nav-text">间距 margin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#svm-的目标"><span class="nav-number">3.</span> <span class="nav-text">SVM 的目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何找到最合适的超平面"><span class="nav-number">3.1.</span> <span class="nav-text">如何找到最合适的超平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找最大间距"><span class="nav-number">3.2.</span> <span class="nav-text">寻找最大间距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标函数"><span class="nav-number">3.3.</span> <span class="nav-text">目标函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

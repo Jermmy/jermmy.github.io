@@ -105,7 +105,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz16.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/convolution-mlp-mapping.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/pooling.png">
-<meta property="og:updated_time" content="2017-12-17T10:13:05.000Z">
+<meta property="og:updated_time" content="2017-12-23T08:39:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CNN的反向传播">
 <meta name="twitter:description" content="在一般的全联接神经网络中，我们通过反向传播算法计算参数的导数。BP 算法本质上可以认为是链式法则在矩阵求导上的运用。但 CNN 中的卷积操作则不再是全联接的形式，因此 CNN 的 BP 算法需要在原始的算法上稍作修改。这篇文章主要讲一下 BP 算法在卷积层和 pooling 层上的应用。">
@@ -478,9 +478,16 @@ z_{22} = a_{22}w_{11} + a_{23}w_{12} + a_{32}w_{21} +   a_{33}w_{22}
 \delta^{l-1}=\frac{\partial C}{\partial z^{l-1}}=\frac{\partial C}{\partial z^{l}}\frac{\partial z^l}{\partial a^{l-1}}\frac{\partial a^{l-1}}{\partial z^{l-1}}=\delta^l \frac{\partial z^l}{\partial a^{l-1}} \odot \sigma&#39;(z^{l-1}) \tag{3}
 \]</span> 对照上面的例子，<span class="math inline">\(z^{l-1}\)</span> 应该是一个 9 维的向量，所以 <span class="math inline">\(\sigma&#39;(z^{l-1})\)</span> 也是一个向量，根据之前 BP 的套路，这里需要 <span class="math inline">\(\odot\)</span> 操作。</p>
 <p>这里的重点是要计算 <span class="math inline">\(\frac{\partial z^l}{\partial a^{l-1}}\)</span>，这也是卷积层区别于全联接层的地方。根据前面展开的卷积操作的等式，这个导数其实比全联接层更容易求。以 <span class="math inline">\(a_{11}^{l-1}\)</span> 和 <span class="math inline">\(a_{12}^{l-1}\)</span> 为例（简洁起见，下面去掉右上角的层数符号 <span class="math inline">\(l\)</span>）： <span class="math display">\[
-\nabla a_{11} = \frac{\partial C}{\partial z_{11}} \frac{\partial z_{11}}{\partial a_{11}}+  \frac{\partial C}{\partial z_{12}}\frac{\partial z_{12}}{\partial a_{11}}+ \frac{\partial C}{\partial z_{21}}\frac{\partial z_{21}}{\partial a_{11}} + \frac{\partial C}{\partial z_{22}}\frac{\partial z_{22}}{\partial a_{11}} = \delta_{11}w_{11} \\
-\nabla a_{12} = \frac{\partial C}{\partial z_{11}}\frac{\partial z_{11}}{\partial a_{12}} + \frac{\partial C}{\partial z_{12}}\frac{\partial z_{12}}{\partial a_{12}} + \frac{\partial C}{\partial z_{21}}\frac{\partial z_{21}}{\partial a_{12}} + \frac{\partial C}{\partial z_{22}}\frac{\partial z_{22}}{\partial a_{12}} =\delta_{11}w_{12} + \delta_{12}w_{11}
-\]</span> （<span class="math inline">\(\nabla a_{ij}\)</span> 表示 <span class="math inline">\(\frac{\partial C}{\partial a_{ij}}\)</span>。如果这两个例子看不懂，证明对之前 BP 例子中的（1）式理解不够，请先复习普通的 BP 算法。）</p>
+\begin{align}
+\nabla a_{11} = &amp; \frac{\partial C}{\partial z_{11}} \frac{\partial z_{11}}{\partial a_{11}}+  \frac{\partial C}{\partial z_{12}}\frac{\partial z_{12}}{\partial a_{11}}+ \frac{\partial C}{\partial z_{21}}\frac{\partial z_{21}}{\partial a_{11}} + \frac{\partial C}{\partial z_{22}}\frac{\partial z_{22}}{\partial a_{11}} \notag \\
+=&amp; \delta_{11}w_{11} \notag \end{align}
+\]</span> <span class="math display">\[
+\begin{align}
+\nabla a_{12} =&amp; \frac{\partial C}{\partial z_{11}}\frac{\partial z_{11}}{\partial a_{12}} + \frac{\partial C}{\partial z_{12}}\frac{\partial z_{12}}{\partial a_{12}} + \frac{\partial C}{\partial z_{21}}\frac{\partial z_{21}}{\partial a_{12}} + \frac{\partial C}{\partial z_{22}}\frac{\partial z_{22}}{\partial a_{12}} \notag \\
+=&amp;\delta_{11}w_{12} + \delta_{12}w_{11} \notag
+\end{align}
+\]</span></p>
+<p>（<span class="math inline">\(\nabla a_{ij}\)</span> 表示 <span class="math inline">\(\frac{\partial C}{\partial a_{ij}}\)</span>。如果这两个例子看不懂，证明对之前 BP 例子中的（1）式理解不够，请先复习普通的 BP 算法。）</p>
 <p>其他 <span class="math inline">\(\nabla a_{ij}\)</span> 的计算，道理相同。</p>
 <p>之后，如果你把所有式子都写出来，就会发现，我们可以用一个卷积运算来计算所有 <span class="math inline">\(\nabla a_{ij}^{l-1}\)</span>： <span class="math display">\[
 \left( \begin{array}{ccc} 0&amp;0&amp;0&amp;0 \\ 0&amp;\delta_{11}&amp; \delta_{12}&amp;0 \\ 0&amp;\delta_{21}&amp;\delta_{22}&amp;0 \\ 0&amp;0&amp;0&amp;0 \end{array} \right) * \left( \begin{array}{ccc} w_{22}&amp;w_{21}\\ w_{12}&amp;w_{11} \end{array} \right)  = \left( \begin{array}{ccc} \nabla a_{11}&amp;\nabla a_{12}&amp;\nabla a_{13} \\ \nabla a_{21}&amp;\nabla a_{22}&amp;\nabla a_{23}\\ \nabla a_{31}&amp;\nabla a_{32}&amp;\nabla a_{33} \end{array} \right)
@@ -684,7 +691,7 @@ z_{22} = a_{22}w_{11} + a_{23}w_{12} + a_{32}w_{21} +   a_{33}w_{22}
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-count">76</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
