@@ -111,7 +111,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/black-gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/LagrangeConstraints.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/multiple-solution.jpg">
-<meta property="og:updated_time" content="2017-12-22T05:08:52.000Z">
+<meta property="og:updated_time" content="2017-12-25T05:33:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉格朗日乘子法">
 <meta name="twitter:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
@@ -372,6 +372,17 @@
 
           
             
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/07/27/2017-7-27-understand-lagrange-multiplier/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/07/27/2017-7-27-understand-lagrange-multiplier/" itemprop="commentsCount"></span>
+                </a>
+              
+            
           
 
           
@@ -419,10 +430,9 @@
 {\operatorname {subject to}}\ g(x, y)=xy-1=0
 \]</span> 当然，这个问题比较简单，直接用 <span class="math inline">\(g(x, y)\)</span> 解出 y 再代入 <span class="math inline">\(f(x, y)\)</span> 也可以求解，但这里，我们准备用拉格朗日乘子法。</p>
 <p>首先我们画出 <span class="math inline">\(f(x, y)\)</span> 的图像，这个图像应该是 3 维的，但为了方便讲解，这里给出它的 2 维投影：</p>
-<div class="figure">
-<img src="/images/2017-7-27/lagrange1.png" alt="lagrange1">
-<p class="caption">lagrange1</p>
-</div>
+<center>
+<p><img src="/images/2017-7-27/lagrange1.png"></p>
+</center>
 <p>图中的红色圆表示 <span class="math inline">\(f(x, y)\)</span>，越靠近原点的部分，值越小（表示“谷底”），这些圆又称为「等高线」，因为同一个圆代表的函数值相同。</p>
 <p>图中的蓝线代表 <span class="math inline">\(g(x, y)\)</span>，这里只取 <span class="math inline">\(g(x, y)=0\)</span> 的部分。</p>
 <p>整幅图像可以想象成一个巨大的山谷，原点是谷底，而我们的任务是在蓝线表示的道路上，找到最低的位置。</p>
@@ -438,15 +448,13 @@ f(x+\Delta x, y+\Delta y) \approx f(x, y)+\frac{\partial f}{\partial x}\Delta x 
 \]</span> 如果 <span class="math inline">\((\Delta x, \Delta y)\)</span> 是在等高线方向的增量，那么 <span class="math inline">\(f(x+\Delta x, y+\Delta y) \approx f(x, y)\)</span>，这意味着 <span class="math inline">\(\frac{\partial f}{\partial x}\Delta x + \frac{\partial f}{\partial y}\Delta y=0\)</span>，换句话说，向量 <span class="math inline">\(\nabla f\)</span> 和向量 <span class="math inline">\((\Delta x, \Delta y)\)</span> 的内积为 0。所以，梯度和函数的等高线是垂直的。</p>
 <h4 id="拉格朗日乘子法的几何认识">拉格朗日乘子法的几何认识</h4>
 <p>现在，我们来感性地认识一下，为什么拉格朗日认为相切才能找到最低点（只是感性认识，不添加任何数学推导）。</p>
-<div class="figure">
-<img src="/images/2017-7-27/orange-gradient.png" alt="orange-gradient">
-<p class="caption">orange-gradient</p>
-</div>
+<center>
+<p><img src="/images/2017-7-27/orange-gradient.png"></p>
+</center>
 <p>在橙点这个位置，由于两条曲线不相切，所以橙线的梯度（上图橙色箭头）和蓝线的切线（蓝色虚线）肯定不垂直。在这种情况下，蓝线的两个切线方向，必定有一个往函数高处走（与梯度的夹角小于 90 度），有一个往函数低处走（与梯度的夹角大于 90 度）。所以，在两条曲线相交时，我们肯定不在最低点或最高点的位置。</p>
-<div class="figure">
-<img src="/images/2017-7-27/black-gradient.png" alt="black-gradient">
-<p class="caption">black-gradient</p>
-</div>
+<center>
+<p><img src="/images/2017-7-27/black-gradient.png"></p>
+</center>
 <p>那么，反过来想，如果两条曲线相切（上图），那么在切点这个位置，蓝线的切线和橙线的梯度是垂直的，这个时候，蓝线的切线方向都指向橙线的等高线方向。换句话说，在切点的位置沿蓝线移动很小的一步，都相当于在橙线的等高线上移动，这个时候，可以认为函数值已经趋于稳定了。所以，我们认为这个点的值“可能”是最低（高）的（之后解释为什么是“可能“。另外，个人觉得拉格朗日乘子法最好用反证法从不相切的点入手思考，从相切的点思考总有点别扭）。</p>
 <p>既然相切可以帮助我们找到最低点，那么接下来我们要研究的便是如何利用相切来找出最低点。</p>
 <p>相切，意味着在切点的位置，两条曲线的等高线方向是平行的，考虑到梯度与等高线垂直， 我们可以用两条曲线的梯度平行来求出切点位置（最低点）。</p>
@@ -462,19 +470,17 @@ g(x,y)=0
 \]</span> 结果和上面的方程组是一样的。</p>
 <h4 id="多个约束条件">多个约束条件</h4>
 <p>多个约束条件和单个约束条件是一样的。如果是多个约束条件，那么这些约束函数肯定是相交的，否则无解。多个约束条件一般会把变量约束到一个更低维的空间，例如，下图中，紫色球面和黄色平面将变量约束到黑色线的位置。</p>
-<div class="figure">
-<img src="/images/2017-7-27/LagrangeConstraints.jpg" alt="LagrangeConstraints">
-<p class="caption">LagrangeConstraints</p>
-</div>
+<center>
+<p><img src="/images/2017-7-27/LagrangeConstraints.jpg"></p>
+</center>
 <p>求解过程和单个约束条件是一样的，我们定义一个新的拉格朗日函数： <span class="math display">\[
 L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda_j g_j(x_1,\dots,s_n)}
 \]</span> 然后同样令这个函数的导数 <span class="math inline">\(\nabla L=0\)</span>，最后可以得到 <span class="math inline">\(n+k\)</span> 个方程以及 <span class="math inline">\(n+k\)</span> 个未知数，一般也能求解出来。</p>
 <h3 id="总结">总结</h3>
 <p>根据拉格朗日乘子法的定义，这是一种寻找极值的策略，换句话说，该方法并不能保证找到的一定是最低点或者最高点。事实上，它只是一种寻找极值点的过程，而且，拉格朗日乘子法找到的切点可能不只一个（也就是上面的方程组可能找到多个解），例如下图：</p>
-<div class="figure">
-<img src="/images/2017-7-27/multiple-solution.jpg" alt="multiple-solution">
-<p class="caption">multiple-solution</p>
-</div>
+<center>
+<p><img src="/images/2017-7-27/multiple-solution.jpg"></p>
+</center>
 <p>图中相切的点有两个，而红点的函数值明显比黑点小。事实上，要想判断找到的点是极低点还是极高点，我们需要将切点代入原函数再进行判断。</p>
 <p>另外，在写作本文时，我仍然有一个疑惑没有解决：拉格朗日乘子法在哪些情况下无解（也就是上面的方程组 <span class="math inline">\(\nabla L\)</span> 无解）？换句话说，约束条件和函数没有切点时，我们要怎么求出最低点或最高点。这个问题留待之后想通再补上。</p>
 <h3 id="参考">参考</h3>
@@ -483,6 +489,7 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
 <li><a href="http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html" target="_blank" rel="external">An Introduction to Lagrange Multipliers</a></li>
 <li><a href="https://danstronger.wordpress.com/2015/08/08/lagrange-multipliers/" target="_blank" rel="external">Understanding Lagrange Multipliers</a></li>
 <li><a href="https://www.zhihu.com/question/38586401/answer/134473412" target="_blank" rel="external">拉格朗日乘子法如何理解？</a></li>
+<li><a href="https://www.svm-tutorial.com/2016/09/duality-lagrange-multipliers/" target="_blank" rel="external">SVM - Understanding the math - Duality and Lagrange multipliers</a></li>
 </ul>
 
       
@@ -872,6 +879,21 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
 
 
 
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
 
 
 

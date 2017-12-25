@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/1-svm-hyperplane1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/2-svm-hyperplane1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-23/svm_margin_demonstration_3.png">
-<meta property="og:updated_time" content="2017-12-24T05:52:44.000Z">
+<meta property="og:updated_time" content="2017-12-24T09:50:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SVM小白教程（一）">
 <meta name="twitter:description" content="关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm 教程，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的博客中。
@@ -365,6 +365,17 @@
 
           
             
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/12/23/2017-12-23-svm-tutorial-1/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/12/23/2017-12-23-svm-tutorial-1/" itemprop="commentsCount"></span>
+                </a>
+              
+            
           
 
           
@@ -462,8 +473,8 @@ m=\frac{2\delta}{||\mathbf{w}||} \tag{3}
 \]</span> 考虑到 <span class="math inline">\(\delta\)</span> 是一个正数，因此，要使 <span class="math inline">\(m\)</span> 最大，就必须让 <span class="math inline">\(||\mathbf{w}||\)</span> 最小。再考虑到两个超平面的限制条件（1），我们就可以得到如下 SVM 的目标函数。</p>
 <h3 id="目标函数">目标函数</h3>
 <p>综合考虑 (2) (3)，我们得到 SVM 最终的目标函数： <span class="math display">\[
-\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \ \ \ \ \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta
-\]</span> 找出使这个函数最小的 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span>，就找到了最合适的超平面。</p>
+\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \ \ \ \ \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m
+\]</span> 找出使这个函数最小的 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span>，就找到了最合适的超平面。注意，由于我们有 <span class="math inline">\(m\)</span> 个样本，所以总共有 <span class="math inline">\(m\)</span> 个限制条件。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://www.zhihu.com/question/21094489/answer/86273196" target="_blank" rel="external">支持向量机(SVM)是什么意思？ - 简之的回答 - 知乎</a></li>
@@ -853,6 +864,21 @@ m=\frac{2\delta}{||\mathbf{w}||} \tag{3}
 
 
 
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cysYmfmny';
+      var conf = 'a46a7a8938f6ffb802e7ee26df5b43fb';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
 
 
 
