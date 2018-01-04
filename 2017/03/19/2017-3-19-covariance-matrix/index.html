@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Jermmy's Lazy Blog">
 <meta property="og:description" content="概念
 协方差（Covariance）在概率论和统计学中用于衡量两个变量的总体误差。而方差是协方差的一种特殊情况，即当两个变量是相同的情况。 这个解释摘自维基百科，看起来很是抽象，不好理解。其实简单来讲，协方差就是衡量两个变量相关性的变量。当协方差为正时，两个变量呈正相关关系（同增同减）；当协方差为负时，两个变量呈负相关关系（一增一减）。 而协方差矩阵，只是将所有变量的协方差关系用矩阵的形式表现出来">
-<meta property="og:updated_time" content="2017-10-06T10:19:30.000Z">
+<meta property="og:updated_time" content="2018-01-04T11:57:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="协方差矩阵">
 <meta name="twitter:description" content="概念
@@ -440,10 +440,10 @@ Cov(Z)=\begin{bmatrix} Cov(X,X) &amp; Cov(X,Y) \\ Cov(Y,X) &amp; Cov(Y,Y) \end{b
 <p>不过，如果两个变量 <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> 独立，那么它们的协方差 <span class="math inline">\(Cov(X,Y) = 0\)</span>。简要证明如下（简单起见，假设变量是离散的）：</p>
 <p>由于 <span class="math inline">\(X, Y\)</span> 独立，所以它们的概率密度函数满足：<span class="math inline">\(p(x,y)=p_x(x)p_y(y)\)</span>。</p>
 <p>求出期望： <span class="math display">\[
-\begin{eqnarray} E(XY) &amp; = &amp;\sum_x \sum_y {x*y*p(x,y)} \\
-&amp; = &amp;\sum_x \sum_y x*y*p_x(x)*p_y(y) \\
-&amp; = &amp;\sum_x{x*p_x(x)}\sum_y{y*p_y(y)} \\
-&amp; = &amp;E(X)E(Y)
+\begin{eqnarray} E(XY) &amp; = &amp;\sum_x \sum_y {x*y*p(x,y)} \notag \\
+&amp; = &amp;\sum_x \sum_y x*y*p_x(x)*p_y(y) \notag \\
+&amp; = &amp;\sum_x{x*p_x(x)}\sum_y{y*p_y(y)} \notag \\
+&amp; = &amp;E(X)E(Y) \notag
 \end{eqnarray}
 \]</span> 利用协方差的另一个公式：<span class="math inline">\(Cov(X,Y)=E(X,Y)-E(X)E(Y)\)</span>，可以推出，当 <span class="math inline">\(X, Y\)</span> 相互独立时，<span class="math inline">\(Cov(X, Y)=0\)</span>。</p>
 <p>这时，协方差矩阵就变成一个对角矩阵了： <span class="math display">\[
