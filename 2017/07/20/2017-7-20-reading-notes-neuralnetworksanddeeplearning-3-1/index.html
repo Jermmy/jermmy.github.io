@@ -112,7 +112,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation3.gif">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation4.gif">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/softmax.gif">
-<meta property="og:updated_time" content="2017-12-13T03:01:26.000Z">
+<meta property="og:updated_time" content="2018-01-06T08:28:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
@@ -436,13 +436,13 @@
 <p>虽然学习率和上次一样，但网络一开始学习的速度却很慢，在最开始的 150 次学习里，参数和偏差几乎没有改变，之后，学习速度突然提高，神经元的输出快速降到接近 0.0。这一点很令人差异，因为当神经元的输出严重错误时，学习的速度反而不是很快。</p>
 <p>下面我们需要了解问题发生的根源。神经元在训练的时候，学习速度除了受学习率影响外，还受偏导数 <span class="math inline">\(\partial C/ \partial w\)</span> 和 <span class="math inline">\(\partial C / \partial b\)</span> 影响。所以，学习速度很慢，也就是偏导数的值太小。根据 <span class="math display">\[
 C=\frac{(y-a)^2}{2}    \tag{54}
-\]</span> （其中，<span class="math inline">\(a=\sigma(z)\)</span>，<span class="math inline">\(z=wx+b\)</span>），我们可以求出： <span class="math display">\[
+\]</span> （其中，<span class="math inline">\(a=\sigma(z)\)</span>，<span class="math inline">\(z=wx+b\)</span>），我们可以求出（下面两个式子中，已经将 x 和 y 的值替换为 1 和 0）： <span class="math display">\[
 \frac{\partial C}{\partial w} = (a-y)\sigma&#39;(z)x=a\sigma&#39;(z)   \tag{55}  
 \]</span></p>
 <p><span class="math display">\[
-\frac{\partial C}{\partial b} = (a-y)\sigma&#39;(z)x=a\sigma&#39;(z)   \tag{56}
+\frac{\partial C}{\partial b} = (a-y)\sigma&#39;(z)=a\sigma&#39;(z)   \tag{56}
 \]</span></p>
-<p>（上面两个式子中，已经将 x 和 y 的值替换为 1 和 0）。要想深入理解这两个式子，我们需要回顾一下 sigmoid 函数的内容，如下图：</p>
+<p>要想深入理解这两个式子，我们需要回顾一下 sigmoid 函数的内容，如下图：</p>
 <div class="figure">
 <img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid">
 <p class="caption">sigmoid</p>
@@ -464,7 +464,7 @@ C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
 \begin{eqnarray}
   \frac{\partial C}{\partial w_j} &amp; = &amp; -\frac{1}{n} \sum_x \left(
     \frac{y }{\sigma(z)} -\frac{(1-y)}{1-\sigma(z)} \right)
-  \frac{\partial \sigma}{\partial w_j} \tag{58}\\\\
+  \frac{\partial \sigma}{\partial w_j} \tag{58}\\
  &amp; = &amp; -\frac{1}{n} \sum_x \left( 
     \frac{y}{\sigma(z)} 
     -\frac{(1-y)}{1-\sigma(z)} \right)\sigma&#39;(z) x_j.

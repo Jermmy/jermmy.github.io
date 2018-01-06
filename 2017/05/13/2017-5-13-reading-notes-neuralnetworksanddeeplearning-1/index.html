@@ -119,7 +119,7 @@ digits
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/sigmoid.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/step%20function.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-13/valley.png">
-<meta property="og:updated_time" content="2017-12-13T03:01:38.000Z">
+<meta property="og:updated_time" content="2018-01-06T08:20:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter1">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第一章 Using neural nets to recognize handwritten digits 整理而成的读书笔记，根据个人口味做了删减)
@@ -453,7 +453,7 @@ output=\begin{cases} 0 &amp;if \ \ WX+b &lt;= 0 \\\\ 1 &amp;if \ \ WX+b &gt; 0 \
 <p>如果网络错误地将手写数字 <strong>8</strong> 分类为 <strong>9</strong>，那么我们希望在参数做一点点修改，网络的输出会更靠近 <strong>9</strong> 这个结果，只要数据量够多，这个修改的过程重复下去，最后网络的输出就会越来越正确，这样神经网络才能不断学习。</p>
 <p>然而，对于 Perceptrons 来说，参数的微调却可能导致结果由 <strong>0</strong> 变为 <strong>1</strong>，然后导致后面的网络层发生连锁反应。换句话说，Perceptrons 的性质导致它的训练过程是相当难控制的。</p>
 <p>为了克服这个问题，我们引入一种新的感知器 <strong>sigmoid neuron</strong>。它跟 Perceptrons 的结构一模一样，只是在输出结果时加上了一层 <strong>sigmoid 函数</strong>：<span class="math inline">\(\sigma(z)=\frac{1}{1+e^{(-z)}}\)</span>。这样，网络的输出就变成了： <span class="math display">\[
-output=\frac{1}{1+exp(WX+b)}
+output=\frac{1}{1+exp(-(WX+b))}
 \]</span> sigmoid 函数的图像如下：</p>
 <div class="figure">
 <img src="/images/2017-5-13/sigmoid.png" alt="sigmoid">
