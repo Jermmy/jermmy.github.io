@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减)
-在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
 <meta property="og:url" content="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减)
-在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz16.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz17.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz18.png">
@@ -110,8 +110,7 @@
 <meta property="og:updated_time" content="2017-12-16T06:16:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
-<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减)
-在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-6-25/tikz16.png">
 
 
@@ -146,7 +145,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter2 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>读书笔记：neuralnetworksanddeeplearning chapter2 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -398,22 +397,20 @@
       
 
       
-        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第二章<a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="external">How the backpropagation algorithm works</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第二章<a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="noopener">How the backpropagation algorithm works</a>整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。 <a id="more"></a></p>
-<p>backpropagation 算法起源于上个世纪 70 年代，但一直到 <a href="http://www.cs.toronto.edu/~hinton/" target="_blank" rel="external">Hinton</a> 等人在 1986 年发表的这篇著名<a href="https://www.nature.com/nature/journal/v323/n6088/pdf/323533a0.pdf" target="_blank" rel="external">论文</a>后才开始受到关注。BP 算法使得神经网络的训练速度快速提升，因此它是学习神经网络的重中之重。</p>
+<p>backpropagation 算法起源于上个世纪 70 年代，但一直到 <a href="http://www.cs.toronto.edu/~hinton/" target="_blank" rel="noopener">Hinton</a> 等人在 1986 年发表的这篇著名<a href="https://www.nature.com/nature/journal/v323/n6088/pdf/323533a0.pdf" target="_blank" rel="noopener">论文</a>后才开始受到关注。BP 算法使得神经网络的训练速度快速提升，因此它是学习神经网络的重中之重。</p>
 <h3 id="热身一种基于矩阵的快速计算神经网络输出的方法">热身：一种基于矩阵的快速计算神经网络输出的方法</h3>
 <p>在开始讨论 BP 算法之前，我们先回顾一种基于矩阵形式的计算神经网络输出的方法。</p>
 <p>首先，引入几个符号表示。</p>
 <p>假设 <span class="math inline">\(w_{jk}^{l}\)</span> 表示从第 l-1 层的第 k 个神经元到第 l 层的第 j 个神经元的权值，如下图所示。</p>
-<div class="figure">
-<img src="/images/2017-6-25/tikz16.png" alt="tikz16">
-<p class="caption">tikz16</p>
-</div>
+<figure>
+<img src="/images/2017-6-25/tikz16.png" alt="tikz16"><figcaption>tikz16</figcaption>
+</figure>
 <p>假设 <span class="math inline">\(b_{j}^{l}\)</span> 表示 l 层第 j 个神经元的偏差，<span class="math inline">\(a_{j}^{l}\)</span> 表示 l 层第 j 个神经元的激活层，如下图所示：</p>
-<div class="figure">
-<img src="/images/2017-6-25/tikz17.png" alt="tikz16">
-<p class="caption">tikz16</p>
-</div>
+<figure>
+<img src="/images/2017-6-25/tikz17.png" alt="tikz16"><figcaption>tikz16</figcaption>
+</figure>
 <p>有了这些标记，第 l 层的第 j 个神经元的激活层 <span class="math inline">\(a_{j}^{l}\)</span> 就可以和 l-1 层的激活层关联起来： <span class="math display">\[
 a_{j}^l = \sigma(\sum_{k}{w_{jk}^{l}a_{k}^{l-1}+b_{j}^{l}})      \tag{23}
 \]</span> 其中，<span class="math inline">\(\sigma()\)</span> 是一个激活函数，例如 sigmoid 函数之类的。</p>
@@ -424,14 +421,13 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <p>在 (25) 式中，有时为了书写的方便，我们会用 <span class="math inline">\(z^l\)</span> 来表示 <span class="math inline">\(W^la^{l-1}+b^l\)</span>。下文中，<span class="math inline">\(z^l\)</span> 将会频繁出现。</p>
 <h3 id="代价函数的两个前提假设">代价函数的两个前提假设</h3>
 <p>BP 算法的目标是要计算偏导数 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial w\)</span> 和 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial b\)</span>，要让 BP 算法起作用，我们需要两个前提假设：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>代价函数可以表示成 <span class="math inline">\(C=\frac{1}{n}\sum_{x}{C_x}\)</span>，其中 <span class="math inline">\(C_x\)</span> 是每个训练样本 x 的代价函数。</li>
 <li>代价函数用神经网络的输出作为函数的输入：</li>
 </ol>
-<div class="figure">
-<img src="/images/2017-6-25/tikz18.png" alt="tikz16">
-<p class="caption">tikz16</p>
-</div>
+<figure>
+<img src="/images/2017-6-25/tikz18.png" alt="tikz16"><figcaption>tikz16</figcaption>
+</figure>
 <h3 id="bp-算法背后的四个基本公式">BP 算法背后的四个基本公式</h3>
 <p>BP 算法本质上是为了计算出 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial w_{jk}^{l}\)</span> 和 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial b_{j}^{l}\)</span>。为了计算这两个导数，我们引入一个中间变量 <span class="math inline">\(\delta_{j}^{l}\)</span>，这个中间变量表示第 l 层第 j 个神经元的<strong>误差</strong>。BP 算法会计算出这个<strong>误差</strong>，然后用它来计算<span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial w_{jk}^{l}\)</span> 和 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial b_{j}^{l}\)</span>。</p>
 <p><span class="math inline">\(\delta_{j}^{l}\)</span> 被定义为： <span class="math display">\[
@@ -464,10 +460,9 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <p>同理，这个公式揭露出权重 W 的导数和误差以及网络输出之间的关系。用一种更简洁的方式表示为： <span class="math display">\[
 \frac{\partial C}{\partial w} = a_{in}\delta_{out}  \tag{32}
 \]</span> 其中，<span class="math inline">\(a_{in}\)</span> 是权重 <span class="math inline">\(W\)</span> 的输入，而 <span class="math inline">\(\delta_{out}\)</span> 是权重 <span class="math inline">\(W\)</span> 对应的 <span class="math inline">\(z\)</span> 的误差。用一幅图表示如下：</p>
-<div class="figure">
-<img src="/images/2017-6-25/tikz20.png" alt="tikz20">
-<p class="caption">tikz20</p>
-</div>
+<figure>
+<img src="/images/2017-6-25/tikz20.png" alt="tikz20"><figcaption>tikz20</figcaption>
+</figure>
 <p>公式 (32) 一个很好的效果是：当 <span class="math inline">\(a_{in} \approx 0\)</span> 时，梯度公式的值会很小，换句话说，当权重 <span class="math inline">\(W\)</span> 的输入 <span class="math inline">\(a_{in}\)</span>，也就是上一层激活层的输出接近 0 时，那么这个激活层对网络的影响就变得很小，<span class="math inline">\(W\)</span> 的学习也会变得很慢。</p>
 <h4 id="一些启发insights">一些启发（insights）</h4>
 <p>根据上面四个公式，可以发现，当最后输出层的导数 <span class="math inline">\(\sigma&#39;(z^L)\)</span> 变的很小时（即网络本身已经接近收敛），权重 <span class="math inline">\(W\)</span> 和偏差 <span class="math inline">\(b\)</span> 会逐渐停止学习（因为误差 <span class="math inline">\(\delta\)</span> 逐渐趋于 0）。</p>
@@ -475,10 +470,9 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <p>总之，当 <span class="math inline">\(W\)</span> 的输入 <span class="math inline">\(a\)</span> 变的很小或者输出层 <span class="math inline">\(\sigma(z^l)\)</span> 收敛时，网络权值的训练将会变得很慢。</p>
 <p>需要注意的一点是，这四个公式的推导适用于任何激活函数。因此，我们完全可以用其他函数来取代 <span class="math inline">\(sigmoid()\)</span>。比如，我们可以设计一个函数 <span class="math inline">\(\sigma()\)</span>，这个函数的导数 <span class="math inline">\(\sigma&#39;()\)</span> 永远为正，且 <span class="math inline">\(\sigma()\)</span> 函数值永远不会接近 0，那么就可以避免上面提到的学习停止的问题。</p>
 <p>最后，总结一下 BP 的 4 个基本公式：</p>
-<div class="figure">
-<img src="/images/2017-6-25/tikz21.png" alt="tikz21">
-<p class="caption">tikz21</p>
-</div>
+<figure>
+<img src="/images/2017-6-25/tikz21.png" alt="tikz21"><figcaption>tikz21</figcaption>
+</figure>
 <h4 id="个人对于误差以及-bp-的理解">个人对于误差以及 BP 的理解</h4>
 <p>根据误差 <span class="math inline">\(\delta\)</span> 的定义，不难发现，它其实就是代价函数关于参数 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的间接导数，这一点跟第一章中对梯度的定义是一致的。当 <span class="math inline">\(\delta\)</span> 越大时，证明网络还远没有收敛，即网络的「误差」还很大，因此需要学习更多，反之，则证明网络的「误差」比较小，学习可以停止了。</p>
 <p>网络中每一层的误差都需要借助前一层的误差进行计算，这个过程其实是一个导数的叠加过程，可以感性地认为，整个神经网络其实是由一个个函数复合在一起形成的，因此，导数的计算其实就是链式法则的不断应用，前面层神经元的导数需要后面层神经元导数不断叠加，这个过程就构成了<strong>后向传播</strong>算法。</p>
@@ -531,7 +525,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
 \]</span></p>
 <h3 id="后向传播算法bp">后向传播算法(BP)</h3>
 <blockquote>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li><strong>Input</strong> x: Set the corresponding activation <span class="math inline">\(a^1\)</span> for the input layer.</li>
 <li><strong>Feedforward: </strong> For each l = 2, 3, …, L compute <span class="math inline">\(z^l=w^la^{l-1}+b^l\)</span> and <span class="math inline">\(a^l=\sigma(z^l)\)</span>.</li>
 <li><strong>Output error </strong><span class="math inline">\(\delta^L\)</span>: Compute the vector <span class="math inline">\(\delta^L=\nabla_a C \odot \sigma&#39;(z^L)\)</span>.</li>
@@ -541,22 +535,20 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
 </blockquote>
 <p>以上算法是针对一个训练样本进行的，实际操作中，通常是用随机梯度下降算法，用几个样本进行训练，因此我们将算法略微修改如下：</p>
 <blockquote>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li><strong>Input a set of training examples</strong></li>
-<li><strong>For each training example </strong>x: Set the corresponding input activation <span class="math inline">\(a^{x, 1}\)</span>, and perform the following steps:</li>
-</ol>
+<li><strong>For each training example </strong>x: Set the corresponding input activation <span class="math inline">\(a^{x, 1}\)</span>, and perform the following steps:
 <ul>
 <li><strong>Feedforward: </strong>For each l = 2, 3, …, L compute <span class="math inline">\(z^{x, l}=w^la^{x, l-1}+b^l\)</span> and <span class="math inline">\(a^{x, l}=\sigma(z^{x,l})\)</span>.</li>
 <li><strong>Output error </strong><span class="math inline">\(\delta^{x, L}\)</span>: Compute the vector <span class="math inline">\(\delta^{x, L}=\nabla_a C_x \odot \sigma&#39;(z^{x,L})\)</span>.</li>
 <li><strong>Backpropagate the error: </strong>For each l = L-1, L-2, …, 2 compute <span class="math inline">\(\delta^{x,l}=((W^{l+1})^T \delta^{x,l+1}) \odot \sigma&#39;(z^{x,l})\)</span>.</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
+</ul></li>
 <li><strong>Gradient descent: </strong>For each l = L, L-1, …, 2 update the weights according to the rule <span class="math inline">\(W^l \rightarrow W^l-\frac{\eta}{m} \sum_x \delta^{x,l}(a^{x,l-1})^T\)</span>, and the biases according to the rule <span class="math inline">\(b^l \rightarrow b^l - \frac{\eta}{m} \sum_x{\delta^{x,l}}\)</span>.</li>
 </ol>
 </blockquote>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="external">How the backpropagation algorithm works</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="noopener">How the backpropagation algorithm works</a></li>
 </ul>
 
       
@@ -1084,24 +1076,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

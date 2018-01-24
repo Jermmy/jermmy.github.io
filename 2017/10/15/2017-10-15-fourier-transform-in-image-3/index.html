@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
-为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta name="description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。 为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta name="keywords" content="图像处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="图像中的傅立叶变换（三）">
 <meta property="og:url" content="https://jermmy.github.io/2017/10/15/2017-10-15-fourier-transform-in-image-3/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
-为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。 为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/03.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/spec.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-15/shift_spec.png">
@@ -109,8 +109,7 @@
 <meta property="og:updated_time" content="2017-11-25T13:31:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="图像中的傅立叶变换（三）">
-<meta name="twitter:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。
-为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
+<meta name="twitter:description" content="在之前的文章中，我们介绍了傅立叶变换的本质和很多基本性质，现在，该聊聊代码实现的问题了。 为了方便起见，本文采用的编程语言是 Python3，矩阵处理用 numpy，图像处理则使用 OpenCV3。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-10-15/03.png">
 
 
@@ -145,7 +144,7 @@
 
 
 
-  <title>图像中的傅立叶变换（三） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>图像中的傅立叶变换（三） | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -155,7 +154,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -446,14 +445,14 @@ f(M-1, y_1) &amp; f(M-1,y_2) &amp; \dots &amp; f(M-1,y_N)
 \]</span> 同理，得到的 <span class="math inline">\(F(u,y)\)</span> 也是一个二维矩阵。</p>
 <p>现在，我们还是先考虑怎么实现这个一维的计算。</p>
 <p>首先，需要先把 <span class="math inline">\(W_M\)</span> 这个矩阵表示出来。注意到，这个矩阵实际上可以由 <span class="math inline">\(\begin{bmatrix} W_M^0 \\ W_M^1 \\ \vdots \\ W_M^{M-1} \end{bmatrix}\)</span> <span class="math inline">\(\times\)</span> <span class="math inline">\(\begin{bmatrix} W_M^0 &amp; W_M^1 &amp; \dots &amp; W_M^{M-1} \end{bmatrix}\)</span> 得到。借助 numpy 强大的矩阵处理能力，可以很方便的计算出这个矩阵。示例如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dftmtx</span><span class="params">(M)</span>:</span></div><div class="line">    n = np.asmatrix(np.arange(M))</div><div class="line">    <span class="keyword">return</span> np.exp((<span class="number">-2j</span> * np.pi / M) * n.transpose() * n)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dftmtx</span><span class="params">(M)</span>:</span></span><br><span class="line">    n = np.asmatrix(np.arange(M))</span><br><span class="line">    <span class="keyword">return</span> np.exp((<span class="number">-2j</span> * np.pi / M) * n.transpose() * n)</span><br></pre></td></tr></table></figure>
 <p><code>np.asmatrix</code> 是把 M 维的向量变成 1 <span class="math inline">\(\times\)</span> M 的矩阵的格式，因为只有矩阵才有 <code>transpose()</code> 操作。<code>np.exp</code> 会把 <span class="math inline">\(exp\)</span> 函数作用到矩阵的每个元素中。</p>
 <p>得到这个矩阵后，最关键的一步其实就做完了，我们可以用这个矩阵计算出 <span class="math inline">\(F(u,y)\)</span>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># input表示输入图像，M是图像的高</span></div><div class="line">M = input.shape[<span class="number">0</span>]</div><div class="line">F = dftmtx(M) * input</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># input表示输入图像，M是图像的高</span></span><br><span class="line">M = input.shape[<span class="number">0</span>]</span><br><span class="line">F = dftmtx(M) * input</span><br></pre></td></tr></table></figure>
 <p>得到 <span class="math inline">\(F(u,y)\)</span> 后，剩下的是要对 y 这一维进行同样的操作：<span class="math inline">\(F(u,v)=\frac{1}{MN}\sum_{y=0}^{N-1}F(u,y) e^{-j2\pi vy/N}\)</span>。同样地，我们需要计算一个 <span class="math inline">\(W_N\)</span> 的矩阵。幸运的是，这个矩阵的计算方法和之前的 <span class="math inline">\(W_M\)</span> 一模一样，这样一来，我们已经可以得到完整的计算方法了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 傅立叶变换函数</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dft2d</span><span class="params">(input)</span>:</span></div><div class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">return</span> dftmtx(M) * input * dftmtx(N) / (M * N)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 傅立叶变换函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dft2d</span><span class="params">(input)</span>:</span></span><br><span class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> dftmtx(M) * input * dftmtx(N) / (M * N)</span><br></pre></td></tr></table></figure>
 <p>接下来我们把频谱图打印出来。傅立叶频谱图是实部和虚部的平方和，需要注意的是，由于数值显示的问题，我们需要将频谱图用 <code>log</code> 函数增强后，再标定到 [0, 255] 之间才能看清。代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 将像素值标定到[0，255]之间</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">scale_intensity</span><span class="params">(image)</span>:</span></div><div class="line">    min = image.min()</div><div class="line">    max = image.max()</div><div class="line">    image = (image - min) / (max - min) * <span class="number">255.0</span></div><div class="line">    <span class="keyword">return</span> image</div><div class="line"></div><div class="line"><span class="comment"># 计算频谱图</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spectrogram</span><span class="params">(image)</span>:</span></div><div class="line">    dft = dft2d(image)</div><div class="line">    spec = np.sqrt(np.power(np.real(dft), <span class="number">2</span>) + np.power(np.imag(dft), <span class="number">2</span>))</div><div class="line">    spec = np.log(<span class="number">0.5</span> + spec) * <span class="number">10</span></div><div class="line">    spec = scale_intensity(spec)</div><div class="line">    <span class="keyword">return</span> spec</div><div class="line"> </div><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">spec = spectrogram(image)</div><div class="line">cv2.imwrite(<span class="string">"spec.png"</span>, spec)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将像素值标定到[0，255]之间</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scale_intensity</span><span class="params">(image)</span>:</span></span><br><span class="line">    min = image.min()</span><br><span class="line">    max = image.max()</span><br><span class="line">    image = (image - min) / (max - min) * <span class="number">255.0</span></span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算频谱图</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spectrogram</span><span class="params">(image)</span>:</span></span><br><span class="line">    dft = dft2d(image)</span><br><span class="line">    spec = np.sqrt(np.power(np.real(dft), <span class="number">2</span>) + np.power(np.imag(dft), <span class="number">2</span>))</span><br><span class="line">    spec = np.log(<span class="number">0.5</span> + spec) * <span class="number">10</span></span><br><span class="line">    spec = scale_intensity(spec)</span><br><span class="line">    <span class="keyword">return</span> spec</span><br><span class="line"> </span><br><span class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</span><br><span class="line">spec = spectrogram(image)</span><br><span class="line">cv2.imwrite(<span class="string">"spec.png"</span>, spec)</span><br></pre></td></tr></table></figure>
 <p>结果展示：</p>
 <figure>
 <p><img src="/images/2017-10-15/03.png" width="250px"></p>
@@ -463,18 +462,18 @@ f(M-1, y_1) &amp; f(M-1,y_2) &amp; \dots &amp; f(M-1,y_N)
 <p>实践中，人们习惯于把低频都聚集到图片中心，这样方便后续的操作。根据平移性质： <span class="math display">\[
 F(u-\frac{M}{2},v-\frac{N}{2}) =f(x,y)(-1)^{x+y}
 \]</span> 要把频谱图的低频部分平移到中心，需要将整个频谱图平移 <span class="math inline">\((M/2, N/2)\)</span> 个单位，也就是需要对原图乘以 <span class="math inline">\((-1)^{x+y}\)</span>。代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">shift_image</span><span class="params">(image)</span>:</span></div><div class="line">    M, N = image.shape[<span class="number">0</span>], image.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> range(M):</div><div class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> range(N):</div><div class="line">            image[x, y] *= np.power(<span class="number">-1</span>, x + y)</div><div class="line">    <span class="keyword">return</span> image</div><div class="line"></div><div class="line">  </div><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">shift_image(image)</div><div class="line">spec = spectrogram(image)</div><div class="line">cv2.imwrite(<span class="string">"shift_spec.png"</span>, spec)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shift_image</span><span class="params">(image)</span>:</span></span><br><span class="line">    M, N = image.shape[<span class="number">0</span>], image.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> range(M):</span><br><span class="line">        <span class="keyword">for</span> y <span class="keyword">in</span> range(N):</span><br><span class="line">            image[x, y] *= np.power(<span class="number">-1</span>, x + y)</span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</span><br><span class="line">shift_image(image)</span><br><span class="line">spec = spectrogram(image)</span><br><span class="line">cv2.imwrite(<span class="string">"shift_spec.png"</span>, spec)</span><br></pre></td></tr></table></figure>
 <p>结果展示：</p>
 <figure>
 <p><img src="/images/2017-10-15/shift_spec.png" width="250px"></p>
 </figure>
 <h3 id="离散傅立叶反变换">离散傅立叶反变换</h3>
 <p>讲完傅立叶变换后，反变换基本也得到了，唯一的区别是，这一次我们需要计算一个傅立叶反变换的矩阵。这个矩阵和之前计算的矩阵 <span class="math inline">\(W_M\)</span> 的区别只在于符号，这里就直接给出代码了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">idftmtx</span><span class="params">(M)</span>:</span></div><div class="line">    n = np.asmatrix(np.arange(M))</div><div class="line">    <span class="comment"># 下面的符号是正的</span></div><div class="line">    <span class="keyword">return</span> np.exp((<span class="number">2j</span> * np.pi / M) * n.transpose() * n)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">idftmtx</span><span class="params">(M)</span>:</span></span><br><span class="line">    n = np.asmatrix(np.arange(M))</span><br><span class="line">    <span class="comment"># 下面的符号是正的</span></span><br><span class="line">    <span class="keyword">return</span> np.exp((<span class="number">2j</span> * np.pi / M) * n.transpose() * n)</span><br></pre></td></tr></table></figure>
 <p>反变换的代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">idft2d</span><span class="params">(input)</span>:</span></div><div class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</div><div class="line">    <span class="keyword">return</span> idftmtx(M) * input * idftmtx(N)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">idft2d</span><span class="params">(input)</span>:</span></span><br><span class="line">    M, N = input.shape[<span class="number">0</span>], input.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> idftmtx(M) * input * idftmtx(N)</span><br></pre></td></tr></table></figure>
 <p>把之前得到的傅立叶变换的结果，输入 <code>idft2d</code> 函数后，再取实部既可以得到原图：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</div><div class="line">dft = dft2d(image)</div><div class="line">idft = idft2d(dft)</div><div class="line">cv2.imwrite(<span class="string">"idft.png"</span>, np.real(idft))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">image = cv2.imread(<span class="string">"your_file.png"</span>, cv2.IMREAD_GRAYSCALE)</span><br><span class="line">dft = dft2d(image)</span><br><span class="line">idft = idft2d(dft)</span><br><span class="line">cv2.imwrite(<span class="string">"idft.png"</span>, np.real(idft))</span><br></pre></td></tr></table></figure>
 <p>结果如下：</p>
 <figure>
 <p><img src="/images/2017-10-15/idft.png" width="250px"></p>
@@ -1006,24 +1005,7 @@ F(u-\frac{M}{2},v-\frac{N}{2}) =f(x,y)(-1)^{x+y}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

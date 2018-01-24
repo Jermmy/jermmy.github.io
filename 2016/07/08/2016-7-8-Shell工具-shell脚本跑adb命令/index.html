@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,19 +94,18 @@
 
 
 
-<meta name="description" content="NDK开发遇到的麻烦
-最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
+<meta name="description" content="NDK开发遇到的麻烦 最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
+<meta name="keywords" content="Shell,adb">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Shell脚本跑adb，快速替换.so">
 <meta property="og:url" content="https://jermmy.github.io/2016/07/08/2016-7-8-Shell工具-shell脚本跑adb命令/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="NDK开发遇到的麻烦
-最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="NDK开发遇到的麻烦 最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-05-02T13:11:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Shell脚本跑adb，快速替换.so">
-<meta name="twitter:description" content="NDK开发遇到的麻烦
-最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
+<meta name="twitter:description" content="NDK开发遇到的麻烦 最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。">
 
 
 
@@ -140,7 +139,7 @@
 
 
 
-  <title>Shell脚本跑adb，快速替换.so | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Shell脚本跑adb，快速替换.so | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -395,45 +394,45 @@
         <h3 id="ndk开发遇到的麻烦">NDK开发遇到的麻烦</h3>
 <p>最近使用 Android Studio 开发 jni 程序时，遇到一个极其蛋疼的问题：AS 编译运行的速度实在是太慢了！！！而且 jni 开发的时候一定要先 clean 一遍，再重新 build 工程，整个过程总耗时＝上个厕所＋喝一杯咖啡，这在调试时尤为不便。于是我上网兜了一遍，终于找到一种更快捷的方法。</p>
 <a id="more"></a>
-<p>参考链接：<a href="http://wrox.cn/article/100066906/" target="_blank" rel="external">使用QtCreator加速Android NDK开发调试</a></p>
+<p>参考链接：<a href="http://wrox.cn/article/100066906/" target="_blank" rel="noopener">使用QtCreator加速Android NDK开发调试</a></p>
 <h3 id="前期准备工作">前期准备工作</h3>
 <p>一部 Android 手机(最好是 root 过的，我用华为P7测试的时候发现没 root 会失败，用没有 roo t的Samsung GT9105则成功了)。虚拟机没有尝试，毕竟 jni 开发还是真机靠谱一点。另外，adb、ndk 等程序肯定也是需要的。</p>
 <h3 id="具体步骤">具体步骤</h3>
 <p>大致流程是：先用 <code>ndk-build</code> 编译 c/c++ 代码，再用 adb 将生成的so库上传到手机里面，然后直接运行 app 即可(如果改了 java 代码当然还是得用 AS 编译一下再运行的，但是这个时间比之前的 clean ＋ build 所花时间少一个数量级)。下面以我的实践为例看看怎么玩：</p>
 <h3 id="ndk-build-编译代码">ndk-build 编译代码</h3>
-<p>这里我直接使用了 AS 的 External Tools 工具，具体可以看这篇博客 <a href="http://hujiaweibujidao.github.io/blog/2014/10/22/android-ndk-and-opencv-development-with-android-studio/" target="_blank" rel="external">Android NDK and OpenCV development with Android Studio</a> 。配置好 External Tools 后，只需要对着你的 jni 文件夹，右键选择 External Tools 中的 ndk-build 命令即可，之后正常的话会在 jniLibs 目录(这里取决于你的 ndk-build 参数怎么设置)下生成 .so 链接库。</p>
+<p>这里我直接使用了 AS 的 External Tools 工具，具体可以看这篇博客 <a href="http://hujiaweibujidao.github.io/blog/2014/10/22/android-ndk-and-opencv-development-with-android-studio/" target="_blank" rel="noopener">Android NDK and OpenCV development with Android Studio</a> 。配置好 External Tools 后，只需要对着你的 jni 文件夹，右键选择 External Tools 中的 ndk-build 命令即可，之后正常的话会在 jniLibs 目录(这里取决于你的 ndk-build 参数怎么设置)下生成 .so 链接库。</p>
 <h4 id="adb-push到手机">adb push到手机</h4>
 <p>现在 .so 链接库已经有了，接下来就是将库推到手机上，需要用到 adb 提供的 push 命令。这里先讲一下 Android 文件系统的权限问题。一般来说，Android 的文件系统分为两种：一种是 app 私有文件空间，在 /data/data/com.yourcompany.yourapp 目录下，这个空间是该 app 特有的，一般会存放 sharepreference 以及数据库等文件，用户无权访问；另一种是内置存储器的文件空间(在 java 代码中通过<code>Environment.getExternalStorageDirectory()</code>得到的就是这一部分的文件路径，所以也可以称之为外部空间吧)，用手机上的文件管理工具可以直接访问，用户有读写权限。言归正传，我的做法是先将 .so 文件推到 sdcard 目录里，之后再复制到 app 所在的文件夹(之后会给出详细的命令操作)。这样做的原因是，在进入手机 shell 之前，我无法得到 app 内部文件的读写权限，所以先暂时将文件推到手机上再说。</p>
 <h4 id="拷贝.so文件到app文件夹">拷贝.so文件到app文件夹</h4>
 <p>这里的 app 文件夹就是前面提到的 app 私有文件空间。先用 <code>adb shell</code> 进入手机后，再 <code>cd /data/data/com.yourcompany.yourapp</code> 就进入该 app 内部了，但此时我们是没有读写权限的。文章开头参考链接的文章提供了另一种方法：用 Android 提供的 run-as 命令来获取权限，这个命令具体我不清楚，貌似是为 debug 用的，所以应该是对那种 apk 签名是 debug 的起作用。具体用法是：<code>run-as com.yourcompany.yourapp</code>。此时，ls、touch 等命令应该是有效的。但我在华为P7上用 cp 命令的时候则提示 permission denied，而Samsung那部机子则没有问题，所以还是 root 的可靠一点。如果提示没有权限而手机已经 root 过，可以使用 su 命令获得权限，再用 cp 命令将文件 copy 到当前目录。说到这又有必要扯一下 .so 链接库的存放位置，如果你成功进入 app 内部空间用 <code>ls</code> 命令可以看到这些文件夹：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">app_data</div><div class="line">app_webview</div><div class="line">cache</div><div class="line">files</div><div class="line">lib</div><div class="line">shared_prefs</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app_data</span><br><span class="line">app_webview</span><br><span class="line">cache</span><br><span class="line">files</span><br><span class="line">lib</span><br><span class="line">shared_prefs</span><br></pre></td></tr></table></figure>
 <p>别的不说，.so 链接库一般是放在 lib 文件夹下的，我们用来加载链接库的代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> &#123;</div><div class="line">  System.loadLibrary(<span class="string">"name"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  System.loadLibrary(<span class="string">"name"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>默认会去 lib 文件夹下寻找指定的链接库。遗憾的是，这个文件即使 root 过也没有写权限。因此，我们只能退一步将 .so 文件拷贝到 app 总目录下，然后修改加载的代码来“曲线救国”：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> &#123;</div><div class="line">  System.load(<span class="string">"/data/data/com.yourcompany.yourapp/libname.so"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  System.load(<span class="string">"/data/data/com.yourcompany.yourapp/libname.so"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>load 函数也是加载文件，但需要用户指定文件位置以及文件名，注意前面的 loadLibrary 函数只需要指定文件名，而且不需要前缀 lib，而后面这个函数需要指定 so 文件的全名。之后还需要给动态链接库运行权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 0755 libname.so</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 0755 libname.so</span><br></pre></td></tr></table></figure>
 <h4 id="build-run">build、 run</h4>
 <p>基本步骤到这里就结束了，接下来就是重新生成 apk 并跑起来。讲道理的话，如果你中间没有修改过 java 代码，那你完全可以将 .so 文件推到 app 文件夹内，直接跑就可以了(毕竟是动态链接的)。但如果改了也没关系，先用 AS build 一下(比 clean 再 build 快 n 倍)，但将 ndk-build 生成的 .so 文件按照之前的步骤推到手机上，然后运行 app 就可以了，讲道理的话，运行结果跟直接用 AS 编译运行的结果是一样的。之后如果你只是调试修改了 C/C++ 的代码，你只需要重新生成 .so 库，然后推到手机上就可以跑了，java 层完全不影响。</p>
 <h4 id="写个脚本吧">写个脚本吧</h4>
 <p>虽然这种方法让调试速度大幅提高，但敲那么多命令终究还是很耗时的，所以有必要用脚本批处理一下。因为 ndk-build 我不太熟悉，而且已经在 AS 里配置好了，一键运行即可，所以脚本只处理 adb 相关的命令。这里又涉及另一个问题：一开始用 adb 的时候，我们是在电脑的 shell 上运行的，而之后的命令又是在手机的 shell 上跑的，只用一个脚本会在 shell 切换的时候卡住。因此我在 adb shell 的时候用了重定向符 ‘&lt;’ 引用了另一个脚本文件。这两个脚本的命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># file name: run.sh，在电脑上跑的命令</div><div class="line"></div><div class="line"># 停止运行app</div><div class="line">adb shell am force-stop com.yourcompany.yourapp</div><div class="line"># 这里要根据实际情况修改路径和文件名</div><div class="line">adb push app/src/main/jniLibs/armeabi-v7a/libname.so  /sdcard/  </div><div class="line">echo &quot;push .so finish&quot;</div><div class="line"># 这一步重定向脚本文件</div><div class="line">adb shell &lt; cmd.sh</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"># file name: cmd.sh  在手机上跑的命令</div><div class="line"></div><div class="line"># 进入调试模式的app内部</div><div class="line">run-as com.weimanteam.weiman</div><div class="line"># 获取权限，视情况而定，可能有些手机不用获取也可以</div><div class="line">su</div><div class="line"># 拷贝文件到当前目录下</div><div class="line">cp /sdcard/libname.so .</div><div class="line"># 添加执行权限</div><div class="line">chmod 0755 libname.so</div><div class="line"># 离开su超级权限</div><div class="line">exit</div><div class="line"># 离开run-as调试权限</div><div class="line">exit</div><div class="line"># 离开手机shell，注意之后有空行，否则shell没读到回车键就会一直停在这里</div><div class="line">exit</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> file name: run.sh，在电脑上跑的命令</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 停止运行app</span><br><span class="line">adb shell am force-stop com.yourcompany.yourapp</span><br><span class="line"><span class="meta">#</span> 这里要根据实际情况修改路径和文件名</span><br><span class="line">adb push app/src/main/jniLibs/armeabi-v7a/libname.so  /sdcard/  </span><br><span class="line">echo "push .so finish"</span><br><span class="line"><span class="meta">#</span> 这一步重定向脚本文件</span><br><span class="line">adb shell &lt; cmd.sh</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> file name: cmd.sh  在手机上跑的命令</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 进入调试模式的app内部</span><br><span class="line">run-as com.weimanteam.weiman</span><br><span class="line"><span class="meta">#</span> 获取权限，视情况而定，可能有些手机不用获取也可以</span><br><span class="line">su</span><br><span class="line"><span class="meta">#</span> 拷贝文件到当前目录下</span><br><span class="line">cp /sdcard/libname.so .</span><br><span class="line"><span class="meta">#</span> 添加执行权限</span><br><span class="line">chmod 0755 libname.so</span><br><span class="line"><span class="meta">#</span> 离开su超级权限</span><br><span class="line">exit</span><br><span class="line"><span class="meta">#</span> 离开run-as调试权限</span><br><span class="line">exit</span><br><span class="line"><span class="meta">#</span> 离开手机shell，注意之后有空行，否则shell没读到回车键就会一直停在这里</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
 <h4 id="其他小问题">其他小问题</h4>
 <p>我发现有些手机的命令行被阉割得很严重，甚至连 <code>cp</code> 这样的命令都没有，简单的解决办法是找到能用的命令代替，比如可以用 <code>cat</code> 代替 <code>cp</code> ，这样，5中 <code>cp</code> 的命令就要改成 <code>cat /sdcard/libname.so &gt; libname.so</code>。如果实在替换不了，可以试试 busybox 工具，文末提供了相关链接，因为本人没有尝试就不多说了。</p>
 <p>​</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="缺陷">缺陷</h3>
 <p>可能需要一部 root 的手机。另外，对于静态链接库应该不适用。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://wrox.cn/article/100066906/" target="_blank" rel="external">使用QtCreator加速Android NDK开发调试</a></li>
-<li><a href="http://hujiaweibujidao.github.io/blog/2014/10/22/android-ndk-and-opencv-development-with-android-studio/" target="_blank" rel="external">Android NDK and OpenCV development with Android Studio</a></li>
-<li><a href="http://stackoverflow.com/questions/1043322/why-do-i-get-access-denied-to-data-folder-when-using-adb" target="_blank" rel="external">Why do I get access denied to data folder when using adb?</a></li>
-<li><a href="http://mzywqwq.blog.163.com/blog/static/958701220134842449172/" target="_blank" rel="external">BAT脚本如何自动执行 adb shell 以后的命令 </a></li>
-<li><a href="http://blog.csdn.net/yxz329130952/article/details/8725050" target="_blank" rel="external">android shell 内，sh:cp not found 解决方法</a></li>
-<li><a href="http://blog.csdn.net/w540982016044/article/details/7519114" target="_blank" rel="external">在android中安装busybox时“cp: not found”的解决办法</a></li>
-<li><a href="http://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html" target="_blank" rel="external">为Android安装BusyBox —— 完整的bash shell</a></li>
+<li><a href="http://wrox.cn/article/100066906/" target="_blank" rel="noopener">使用QtCreator加速Android NDK开发调试</a></li>
+<li><a href="http://hujiaweibujidao.github.io/blog/2014/10/22/android-ndk-and-opencv-development-with-android-studio/" target="_blank" rel="noopener">Android NDK and OpenCV development with Android Studio</a></li>
+<li><a href="http://stackoverflow.com/questions/1043322/why-do-i-get-access-denied-to-data-folder-when-using-adb" target="_blank" rel="noopener">Why do I get access denied to data folder when using adb?</a></li>
+<li><a href="http://mzywqwq.blog.163.com/blog/static/958701220134842449172/" target="_blank" rel="noopener">BAT脚本如何自动执行 adb shell 以后的命令 </a></li>
+<li><a href="http://blog.csdn.net/yxz329130952/article/details/8725050" target="_blank" rel="noopener">android shell 内，sh:cp not found 解决方法</a></li>
+<li><a href="http://blog.csdn.net/w540982016044/article/details/7519114" target="_blank" rel="noopener">在android中安装busybox时“cp: not found”的解决办法</a></li>
+<li><a href="http://www.cnblogs.com/xiaowenji/archive/2011/03/12/1982309.html" target="_blank" rel="noopener">为Android安装BusyBox —— 完整的bash shell</a></li>
 </ul>
 
       
@@ -963,24 +962,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

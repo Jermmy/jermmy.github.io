@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,19 +94,18 @@
 
 
 
-<meta name="description" content="背景
-最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
+<meta name="description" content="背景 最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
+<meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-WebView加载非Assets目录下的文件">
 <meta property="og:url" content="https://jermmy.github.io/2016/09/13/2016-9-13-Android-WebView加载非Asset目录下的文件/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="背景
-最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="背景 最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2016-09-23T15:42:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-WebView加载非Assets目录下的文件">
-<meta name="twitter:description" content="背景
-最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
+<meta name="twitter:description" content="背景 最近遇到这样一个需求：WebView里的文件需要定期更新，而且是在java层获取后台的json数据后，更新到原来的js文件中。由于之前app的html、js等文件都是放在Assets目录下的，所以最开始的想法当然是看能不能对Assets目录进行读写。google一番后，SO上有人给出了答复：You cannot write data’s to asset/Raw folder, since">
 
 
 
@@ -140,7 +139,7 @@
 
 
 
-  <title>Android-WebView加载非Assets目录下的文件 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Android-WebView加载非Assets目录下的文件 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -400,10 +399,10 @@
 <p>再次google一番，发现<code>WebView</code>的<code>loadUrl()</code>方法本身就可以加载不同路径下的文件。比如，加载raw目录下的文件，可以写成 <code>webView.loadUrl(&quot;file:///android_res/raw/your_file_name.html&quot;);</code>，形式和加载Assets下的文件差不多。</p>
 <p>考虑到html等文件不能被误删，我决定将这些文件转移到内部存储空间（也就是<code>data/data/packageName</code>）下面，这样需要更新的js文件也需要存储到内部存储空间。好在这些文件本身并不大，因此对存储器空间几乎没有影响。于是，在用户第一次进入app的时候，需要先通过 <code>Activity</code> 的 <code>openFileOutput()</code>方法将html等文件转移到<strong>data/data/packageName/files</strong>目录下，之后一旦有新的更新，也需要将更新应用到这个目录下的js等文件。在WebView中访问的方式：<code>webView.loadUrl(&quot;file:///data/data/packageName/files/your_file_name.html&quot;);</code>。如果是要访问外部存储器的文件，只需要将文件路径改为外部文件路径即可。</p>
 <h3 id="参考">参考</h3>
-<p><a href="http://stackoverflow.com/questions/14171316/load-html-files-from-raw-folder-in-web-view" target="_blank" rel="external">Load html files from raw folder in web view</a></p>
-<p><a href="http://stackoverflow.com/questions/3760626/how-to-write-files-to-assets-folder-or-raw-folder-in-android" target="_blank" rel="external">How to write files to assets folder or raw folder in android?</a></p>
-<p><a href="http://stackoverflow.com/questions/22687136/how-exactly-the-android-assets-are-stored-in-devices-storage" target="_blank" rel="external">How exactly the android assets are stored in device’s storage (closed)</a></p>
-<p><a href="http://stackoverflow.com/questions/20873749/loading-local-html-file-in-webview-android" target="_blank" rel="external">Loading local html file in webView android</a></p>
+<p><a href="http://stackoverflow.com/questions/14171316/load-html-files-from-raw-folder-in-web-view" target="_blank" rel="noopener">Load html files from raw folder in web view</a></p>
+<p><a href="http://stackoverflow.com/questions/3760626/how-to-write-files-to-assets-folder-or-raw-folder-in-android" target="_blank" rel="noopener">How to write files to assets folder or raw folder in android?</a></p>
+<p><a href="http://stackoverflow.com/questions/22687136/how-exactly-the-android-assets-are-stored-in-devices-storage" target="_blank" rel="noopener">How exactly the android assets are stored in device’s storage (closed)</a></p>
+<p><a href="http://stackoverflow.com/questions/20873749/loading-local-html-file-in-webview-android" target="_blank" rel="noopener">Loading local html file in webView android</a></p>
 
       
     </div>
@@ -930,24 +929,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

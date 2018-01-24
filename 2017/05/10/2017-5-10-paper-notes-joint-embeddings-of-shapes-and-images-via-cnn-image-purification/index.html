@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,29 +94,20 @@
 
 
 
-<meta name="description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。
-
-
-image query">
+<meta name="description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
+<meta name="keywords" content="计算机视觉,计算机图形学,深度学习,论文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
 <meta property="og:url" content="https://jermmy.github.io/2017/05/10/2017-5-10-paper-notes-joint-embeddings-of-shapes-and-images-via-cnn-image-purification/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。
-
-
-image query">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/image%20query.png">
-<meta property="og:image" content="https://jermmy.github.io/“/images/2017-5-10/embedding">
-<meta property="og:image" content="https://jermmy.github.io/“/images/2017-5-10/network.png”">
-<meta property="og:image" content="https://jermmy.github.io/“/images/2017-5-10/Shape-Guided">
+<meta property="og:image" content="https://jermmy.github.io/2017/05/10/2017-5-10-paper-notes-joint-embeddings-of-shapes-and-images-via-cnn-image-purification/“/images/2017-5-10/network.png”">
 <meta property="og:updated_time" content="2018-01-04T12:45:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
-<meta name="twitter:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。
-
-
-image query">
+<meta name="twitter:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-5-10/image%20query.png">
 
 
@@ -151,7 +142,7 @@ image query">
 
 
 
-  <title>论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +152,7 @@ image query">
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -404,16 +395,15 @@ image query">
 
       
         <p>今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。</p>
-<div class="figure">
-<img src="/images/2017-5-10/image%20query.png" alt="image query">
-<p class="caption">image query</p>
-</div>
+<figure>
+<img src="/images/2017-5-10/image%20query.png" alt="image query"><figcaption>image query</figcaption>
+</figure>
 <a id="more"></a>
 <h3 id="论文的思路">论文的思路</h3>
 <p>一开始看到论文的结果图的时候，觉得这个想法还是很有新意的。由于我刚刚踏入图形学的领域，对这类技术的认识还比较肤浅，就在网上搜了下相关的内容，发现十多年前就已经有人在研究相关的算法了。有利用 3D 形状的拓扑性质的，有提取一些特征算子的，也有通过图像检索的。总的来说，3D 形状的检索已经是一个较老的话题了。这篇论文也是从图像检索的角度出发，结合 3D 模型的投影图像，创造性地将图像和形状融合进一个空间中。通过空间中的点之间的距离，可以很方便地计算出图像与形状的相似度。</p>
 <p>论文最主要的工作就是构造一个可以嵌套图像和形状的空间。要将 3D 和 2D 统一在一起，难度是比较大的。一般来说，3D 模型包含的信息更多，而图像方面的技术则比较成熟。因此，论文选择找一块「二向箔」将 3D 投影成 2D 后，再通过图像特征提取技术构造出这个空间。</p>
 <p>具体流程分为四步：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>构造形状嵌套空间（Shape Embedding Space）；</li>
 <li>合成训练图片（训练 CNN）；</li>
 <li>通过 CNN 将图片映射进 Shape Embedding Space；</li>
@@ -431,7 +421,7 @@ image query">
 <h4 id="embedding-space">Embedding Space</h4>
 <p>有了这个基本的相似度计算方法后，我们可以开始着手构建这个空间了。</p>
 <p>论文中对这个空间提出了两点要求：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>空间中的距离要能够体现相似性程度；</li>
 <li>空间维度要尽可能低。</li>
 </ol>
@@ -439,7 +429,7 @@ image query">
 <p>但这个降维后的空间存在一个问题：虽然 <span class="math inline">\(F^{-}\)</span> 能够表示形状之间的相似度，但却难以体现不相似度。换句话说，相似的形状之间的距离都很相近，但不相似的形状（比如：椅子和汽车）之间的距离则完全没有意义（可能很近也可能很远）。论文中的说法是：<span class="math inline">\(F^{-}\)</span> does not respect this distinction between the greater importance of the samll distances and the lesser one of the larger ones. 由于我英语水平有限，对这句顺口溜不是特别理解，但不管怎样，<span class="math inline">\(F^{-}\)</span> 是存在不足的。</p>
 <p>因此，论文提出一个新的空间 <span class="math inline">\(D_{n\*n}\)</span>，代表一个距离矩阵：<span class="math inline">\(D(i, j) = d_{i, j}\)</span>。由于 <span class="math inline">\(F\)</span> 是原特征向量组成的空间，而 <span class="math inline">\(D\)</span> 则是一个距离矩阵，因此，对 <span class="math inline">\(D\)</span> 降维后，仍然可以很好地表达相似性和不相似性（这一点暂时不是很理解）。降维方面，作者比较了多种方法，最后发现，使用 non-linear Multi-Dimensional Scaling(MDS) 方法效果上最好。该方法的提出是在 1964 年，听起来相当的有格调又很有历史感，我暂时没有去了解，所以先姑且把它当作一个黑盒子吧。总之，我们通过这个方法，将距离矩阵 <span class="math inline">\(D_{n\*n}\)</span> 降维成 <span class="math inline">\(D^{-}\)</span>，维度同样保持 128 维（见下图）。然后，将降维后的矩阵 <span class="math inline">\(D^{-}\)</span> 的行向量当作形状的特征向量。这种用距离来表示特征的方法我是第一次遇到，还不是很理解。作者在论文的 PPT 中这样解释：如果两个形状跟其他所有形状之间的 distance 差不多，也就是说它们在 <span class="math inline">\(D^{-}\)</span> 的行向量很相似，那么这两个形状也应该是类似的。</p>
 <center>
-<img src="“/images/2017-5-10/embedding" space.png”="" width="“500px”">
+&lt;img src=“/images/2017-5-10/embedding space.png” width=“500px”&gt;
 </center>
 <h3 id="cnn-for-image-embedding">CNN for Image Embedding</h3>
 <p>构造出 <span class="math inline">\(D^{-}\)</span> 空间后，我们相当于把一个 3D 模型 <span class="math inline">\(S\_i\)</span> 映射到 <span class="math inline">\(D^{-}\)</span> 中的一个点 <span class="math inline">\(P_{S_{i}}\)</span>。下一步，就是要把图像也映射进这个空间，这相当于一个特征提取的工作，而 CNN 正是完成该工作的最佳选择之一。</p>
@@ -464,12 +454,12 @@ image query">
 <p>最容易想到的，自然是 3D 模型以及图片的检索上。而且，由于论文构造的空间将 3D 和 2D 融合在一起，因此，对<strong>以图搜形</strong>，<strong>以形搜图</strong>、<strong>以图搜图</strong>、<strong>以形搜形</strong>来说，都是通用的。不过，由于 CNN 只接收图片作为输入，如果想用形状来检索，就必须先把形状投影成图片才行。</p>
 <p>论文还提到另一种好玩的应用 <strong>Shape-Guided Image Editing</strong>。</p>
 <center>
-<img src="“/images/2017-5-10/Shape-Guided" image="" editing.png”="" width="“500px”">
+&lt;img src=“/images/2017-5-10/Shape-Guided Image Editing.png” width=“500px”&gt;
 </center>
 <p>比如，我们想在图片中为椅子增加一个台灯照射下的阴影效果，这个时候，直接基于图像处理的方法是比较难做到的，而换个角度，可以先用一个类似的 3D 模型投射出这个阴影后，再把阴影加入到原图中。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Distance_matrix" target="_blank" rel="external">Distance matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Distance_matrix" target="_blank" rel="noopener">Distance matrix</a></li>
 </ul>
 
       
@@ -1003,24 +993,7 @@ image query">
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

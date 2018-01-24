@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,27 +94,20 @@
 
 
 
-<meta name="description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
-N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
-\] 拓展到高维时，就变成： \[
-N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta name="description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[ N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2] \] 拓展到高维时，就变成： \[ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta name="keywords" content="机器学习,线性代数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多维高斯分布">
 <meta property="og:url" content="https://jermmy.github.io/2017/10/28/2017-10-28-mutil-modal-gaussian/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
-N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
-\] 拓展到高维时，就变成： \[
-N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[ N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2] \] 拓展到高维时，就变成： \[ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-28/360px-Normal_Distribution_PDF.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-28/Gaussian_2d.png">
 <meta property="og:updated_time" content="2017-11-05T08:50:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多维高斯分布">
-<meta name="twitter:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[
-N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2]
-\] 拓展到高维时，就变成： \[
-N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
+<meta name="twitter:description" content="高中的时候我们便学过一维正态（高斯）分布的公式： \[ N(x|u,\sigma^2)=\frac{1}{\sqrt{2\pi \sigma^2}}exp[-\frac{1}{2\sigma^2}(x-u)^2] \] 拓展到高维时，就变成： \[ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-10-28/360px-Normal_Distribution_PDF.png">
 
 
@@ -149,7 +142,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
 
 
 
-  <title>多维高斯分布 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>多维高斯分布 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -159,7 +152,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma">
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -487,7 +480,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="https://jermmy.github.io/2017/03/19/2017-3-19-covariance-matrix/">协方差矩阵</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Gaussian_function" target="_blank" rel="external">Gaussian function</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Gaussian_function" target="_blank" rel="noopener">Gaussian function</a></li>
 </ul>
 
       
@@ -1017,24 +1010,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

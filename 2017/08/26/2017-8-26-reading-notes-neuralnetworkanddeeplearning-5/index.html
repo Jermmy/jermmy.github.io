@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,28 +94,27 @@
 
 
 
-<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
-在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
 <meta property="og:url" content="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
-在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_2_layers.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_3_layers.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/training_speed_4_layers.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz37.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz38.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/sigma'.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/sigma%27.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz39.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz40.png">
 <meta property="og:updated_time" content="2017-12-13T03:00:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
-<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减)
-在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-8-26/gradient.png">
 
 
@@ -150,7 +149,7 @@
 
 
 
-  <title>读书笔记：neuralnetworkanddeeplearning chapter5 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>读书笔记：neuralnetworkanddeeplearning chapter5 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -160,7 +159,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -402,7 +401,7 @@
       
 
       
-        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第五章<a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="external">Why are deep neural networks hard to train?</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第五章<a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="noopener">Why are deep neural networks hard to train?</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一两个隐藏层，而一旦网络层数增加，有很多问题将不可避免地暴露出来。今天，我们就来认识一个最蛋疼的问题：深度神经网络非常难训练。</p>
 <a id="more"></a>
 <h3 id="网络越深效果越好">网络越深效果越好</h3>
@@ -412,15 +411,14 @@
 <h3 id="消失的梯度">消失的梯度</h3>
 <p>沿袭之前 MNIST 的例子，我们先做几组实验，来看看什么是梯度消失。</p>
 <p>这几组实验中，我们的网络结构分别如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div><div class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">10</span>])</span><br><span class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</span><br><span class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</span><br><span class="line">net = network2.Network([<span class="number">784</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>, <span class="number">10</span>])</span><br></pre></td></tr></table></figure>
 <p>这几个网络的唯一区别是，每一个网络都比前面的多了一个包含 30 个神经元的隐藏层。实验中，其他参数，包括训练数据完全一样。在 MNIST 数据集上，得出这四个实验的准确率分别为：96.48%，96.90%，96.57%，96.53%。</p>
 <p>看得出来，第二个网络训练的结果比第一个好一些，但当隐藏层继续增加时，效果反而下降了。这让我们很惊奇，不是说网络层数越深，效果越好吗？况且，即使中间的网络什么都没有学习到，也总不至于其负作用吧。</p>
 <p>为了进一步了解背后的原因，我们打算跟踪一下网络的参数，确认网络是否真的得到训练。</p>
 <p>简单起见，我们分析一下第二个网络 <code>([784, 30, 30, 10])</code> 中两个隐藏层的梯度。下图演示了当训练开始时，这两个层里面每个神经元的梯度值，为了方便，只摘取了前六个神经元：</p>
-<div class="figure">
-<img src="/images/2017-8-26/gradient.png" alt="gradient">
-<p class="caption">gradient</p>
-</div>
+<figure>
+<img src="/images/2017-8-26/gradient.png" alt="gradient"><figcaption>gradient</figcaption>
+</figure>
 <p>图中神经元上的柱状图表示梯度值 <span class="math inline">\(\partial C/ \partial b\)</span>，在 BP 的<a href="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/">四个公式</a>中，我们知道：<span class="math inline">\(\frac{\partial C}{\partial b_j^{l}}=\delta_j^l \tag{BP3}\)</span> <span class="math inline">\(\frac{\partial C}{\partial w_{jk}^{l}}=a_{k}^{l-1}\delta_{j}^{l} \tag{BP4}\)</span></p>
 <p>所以，柱状图表示的除了是偏差 bias 的梯度外，也多少可以反应权重 weights 的梯度。</p>
 <p>由于权重的初始化是随机的，所以每个神经元的梯度都有所不同，不过很明显的一点是，第 2 个隐藏层的梯度总体上比第 1 个隐藏层要大，而梯度越大，学习速度也相对的越快。</p>
@@ -443,17 +441,15 @@
 <h3 id="梯度消失的原因">梯度消失的原因</h3>
 <p>这一节，我们来探讨一下：为什么网络的梯度会消失？或者说，为什么深度神经网络的梯度会如此不稳定。</p>
 <p>简单起见，我们来分析一个只有一个神经元的网络：</p>
-<div class="figure">
-<img src="/images/2017-8-26/tikz37.png" alt="tikz37">
-<p class="caption">tikz37</p>
-</div>
+<figure>
+<img src="/images/2017-8-26/tikz37.png" alt="tikz37"><figcaption>tikz37</figcaption>
+</figure>
 <p><span class="math inline">\(b\)</span> 和 <span class="math inline">\(w\)</span> 表示参数，<span class="math inline">\(C\)</span> 是代价函数，激活函数采用 sigmoid，每层网络的输出为 <span class="math inline">\(a_j=\sigma(z_j)\)</span>，<span class="math inline">\(z_j=w_ja_{j-1}+b_j\)</span>。</p>
 <p>下面，我们要求出 <span class="math inline">\(\partial C/\partial b_1\)</span>，看看是什么原因导致这个值很小。</p>
 <p>根据 BP 的公式可以推出：</p>
-<div class="figure">
-<img src="/images/2017-8-26/tikz38.png" alt="tikz38">
-<p class="caption">tikz38</p>
-</div>
+<figure>
+<img src="/images/2017-8-26/tikz38.png" alt="tikz38"><figcaption>tikz38</figcaption>
+</figure>
 <p>这个公式看起来略微比较复杂，不急，我们来看看它是怎么来的。由于网络十分简单（只有一条链），所以我们准备从另一个更形象的角度来推出这个式子（BP 也是完全可以推出该式子的）。</p>
 <p>假设有一个增量 <span class="math inline">\(\Delta b_1\)</span> 出现，由于 <span class="math inline">\(a_1=\sigma(z_1)=\sigma(w_1a_0+b_1)\)</span>，可以推出：</p>
 <p><span class="math inline">\(\Delta a_1 \approx \frac{\partial \sigma((w_1\ a_0+b_1)}{\partial b_1} \Delta b_1=\sigma&#39;(z_1)\Delta b_1\)</span>（注意 <span class="math inline">\(\Delta a_1\)</span> 不是导数，而是由 <span class="math inline">\(\Delta b_1\)</span> 引起的增量，所以是斜率乘以 <span class="math inline">\(\Delta b_1\)</span>）。</p>
@@ -472,20 +468,18 @@
 <p><img src="/images/2017-8-26/sigma'.png" width="500px"></p>
 </center>
 <p>这个函数最大值才 1/4。加上我们的参数 <span class="math inline">\(W\)</span> 是根据均值为 0，标准差为 1 的高斯分布初始化的，即 <span class="math inline">\(|w_j|&lt;1\)</span> ，所以<span class="math inline">\(|w_j \sigma&#39;(z_j)&lt;1/4|\)</span>。这些项累乘起来，最后的结果就会越来越小。再注意看下面这幅图，由于不同隐藏层的导数累乘的数量不同，因此对应的梯度也就有了高低之分。</p>
-<div class="figure">
-<img src="/images/2017-8-26/tikz39.png" alt="tikz39">
-<p class="caption">tikz39</p>
-</div>
+<figure>
+<img src="/images/2017-8-26/tikz39.png" alt="tikz39"><figcaption>tikz39</figcaption>
+</figure>
 <p>以上的推导虽然不是很正式，但它已经足够阐明问题的根源。</p>
 <p>梯度爆炸的问题这里就不再赘述了，原理和梯度消失一样，当每一项的值都大于 1 时，累乘起来就会变得很大。</p>
-<p>记得在之前的<a href="http://jermmy.xyz/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" target="_blank" rel="external">学习笔记</a>的最后，我曾经提出一个问题：尽管交叉熵函数解决了网络学习速度下降的问题，但它针对的只是最后一层，对于前面的隐藏层，学习速度依然可能下降。作者之前之所以避而不谈这个问题，是因为之前针对的网络层数都很少，而本文中也已经显示地点出并分析了问题的根源。</p>
+<p>记得在之前的<a href="http://jermmy.xyz/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" target="_blank" rel="noopener">学习笔记</a>的最后，我曾经提出一个问题：尽管交叉熵函数解决了网络学习速度下降的问题，但它针对的只是最后一层，对于前面的隐藏层，学习速度依然可能下降。作者之前之所以避而不谈这个问题，是因为之前针对的网络层数都很少，而本文中也已经显示地点出并分析了问题的根源。</p>
 <h3 id="复杂网络中的梯度同样不稳定">复杂网络中的梯度同样不稳定</h3>
 <p>上面的例子中我们只是用了一个简单的例子来解释原因，在更复杂的网络中，我们仍然可以用类似的方法解释梯度的不稳定现象。</p>
 <p>例如，对于下面这个复杂的网络：</p>
-<div class="figure">
-<img src="/images/2017-8-26/tikz40.png" alt="tikz40">
-<p class="caption">tikz40</p>
-</div>
+<figure>
+<img src="/images/2017-8-26/tikz40.png" alt="tikz40"><figcaption>tikz40</figcaption>
+</figure>
 <p>我们可以借助 BP 公式推出： <span class="math display">\[
 \begin{eqnarray}
   \delta^l = \Sigma&#39;(z^l) (w^{l+1})^T \Sigma&#39;(z^{l+1}) (w^{l+2})^T \ldots
@@ -495,12 +489,12 @@
 <p>这个式子尽管许多，但形式上依然是一样的，最后矩阵相乘的累积效应依然会导致梯度消失或者爆炸。</p>
 <h3 id="深度学习的其他障碍">深度学习的其他障碍</h3>
 <p>虽然这一章中我们只是提到梯度不稳定的问题，但事实上，有很多研究显示：深度学习同样存在很多其他的障碍。</p>
-<p>比如：激活函数的选择会影响网络的学习（参见论文：<a href="http://jmlr.org/proceedings/papers/v9/glorot10a/glorot10a.pdf" target="_blank" rel="external">Understanding the difficulty of training deep feedforward neural networks</a>）。</p>
-<p>又比如：参数的初始化也会影响网络的训练（参见论文：<a href="http://www.cs.toronto.edu/~hinton/absps/momentum.pdf" target="_blank" rel="external">On the importance of initialization and momentum in deep learning</a>）。</p>
+<p>比如：激活函数的选择会影响网络的学习（参见论文：<a href="http://jmlr.org/proceedings/papers/v9/glorot10a/glorot10a.pdf" target="_blank" rel="noopener">Understanding the difficulty of training deep feedforward neural networks</a>）。</p>
+<p>又比如：参数的初始化也会影响网络的训练（参见论文：<a href="http://www.cs.toronto.edu/~hinton/absps/momentum.pdf" target="_blank" rel="noopener">On the importance of initialization and momentum in deep learning</a>）。</p>
 <p>可见，关于深度神经网络的训练障碍，目前还是一个复杂的问题，需要更进一步的研究。在下一章中，我们将继续学习一些深度学习的方法，这些方法在某种程度上，可以克服深度神经网络的这些学习障碍。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="external">Why are deep neural networks hard to train?</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="noopener">Why are deep neural networks hard to train?</a></li>
 </ul>
 
       
@@ -1028,24 +1022,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

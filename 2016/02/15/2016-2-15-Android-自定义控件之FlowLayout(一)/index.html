@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,11 +95,13 @@
 
 
 <meta name="description" content="（首先声明，这篇文章是博主在 mooc 上学习了 hyman 的视频打造Android流式布局和热门标签后总结的小知识）">
+<meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-自定义控件之FlowLayout(一)">
 <meta property="og:url" content="https://jermmy.github.io/2016/02/15/2016-2-15-Android-自定义控件之FlowLayout(一)/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="（首先声明，这篇文章是博主在 mooc 上学习了 hyman 的视频打造Android流式布局和热门标签后总结的小知识）">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-03-23T01:29:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-自定义控件之FlowLayout(一)">
@@ -137,7 +139,7 @@
 
 
 
-  <title>Android-自定义控件之FlowLayout(一) | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Android-自定义控件之FlowLayout(一) | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -389,25 +391,25 @@
       
 
       
-        <p>（首先声明，这篇文章是博主在 mooc 上学习了 hyman 的视频<a href="http://mooc.guokr.com/career/3170/%E6%89%93%E9%80%A0Android%E6%B5%81%E5%BC%8F%E5%B8%83%E5%B1%80%E5%92%8C%E7%83%AD%E9%97%A8%E6%A0%87%E7%AD%BE/" target="_blank" rel="external">打造Android流式布局和热门标签</a>后总结的小知识）</p>
+        <p>（首先声明，这篇文章是博主在 mooc 上学习了 hyman 的视频<a href="http://mooc.guokr.com/career/3170/%E6%89%93%E9%80%A0Android%E6%B5%81%E5%BC%8F%E5%B8%83%E5%B1%80%E5%92%8C%E7%83%AD%E9%97%A8%E6%A0%87%E7%AD%BE/" target="_blank" rel="noopener">打造Android流式布局和热门标签</a>后总结的小知识）</p>
 <a id="more"></a>
 <h3 id="onmeasure的两个参数">onMeasure()的两个参数</h3>
-<p>Android 自定义容器控件时，通常都会继承 ViewGroup 。继承后主要的工作便是覆写 onMeasure 和 onLayout 方法，重新制定布局文件测量以及显示子控件位置的策略。下面的 onMesure 函数摘自官网教程<a href="http://developer.android.com/intl/zh-cn/reference/android/view/ViewGroup.html" class="uri" target="_blank" rel="external">http://developer.android.com/intl/zh-cn/reference/android/view/ViewGroup.html</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Ask all children to measure themselves and compute the measurement of this</div><div class="line"> * layout based on the children.</div><div class="line"> */</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span></span></div></pre></td></tr></table></figure>
+<p>Android 自定义容器控件时，通常都会继承 ViewGroup 。继承后主要的工作便是覆写 onMeasure 和 onLayout 方法，重新制定布局文件测量以及显示子控件位置的策略。下面的 onMesure 函数摘自官网教程<a href="http://developer.android.com/intl/zh-cn/reference/android/view/ViewGroup.html" class="uri" target="_blank" rel="noopener">http://developer.android.com/intl/zh-cn/reference/android/view/ViewGroup.html</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Ask all children to measure themselves and compute the measurement of this</span></span><br><span class="line"><span class="comment"> * layout based on the children.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span></span></span><br></pre></td></tr></table></figure>
 <p>这个函数需要调用 <code>measureChild</code> 等方法来测量各种子 View 的宽高，以此来决定 ViewGroup 的宽高。这篇文章主要关注方法中传入的两个参数。以 widthMeasureSpec 为例，它包含的信息不仅仅包括 ViewGroup 的宽度（这个宽高是 ViewGroup 的父控件提供的建议宽高， ViewGroup 可以直接采纳，也可以根据实际情况调整），同时包括宽度的测量模式。什么叫测量模式呢？比方说，如果你设定的 ViewGroup 的宽度为 200 dp，那么这个模式就是精确模式「EXACTLY」，如果宽度为 wrap_content，则对应「AT_MOST」模式，表示要根据子 View 的内容撑到最大。事实上，Android 提供的模式只有三中：「EXACTLY」、「AT_MOST」、「UNSPECIFIED」。对于指定了具体数值或设置为 match_parent 、 fill_parent 的，测量模式均为「EXACTLY」，而 wrap_content 则是「AT_MOST」模式，「UNSPECIFIED」暂不清楚什么时候被使用。</p>
 <p>这些模式有什么作用呢？ onMeasure 方法不是要测量 ViewGroup 的宽高吗，如果测量模式是“确切”的(「EXACTLY」)，那我们其实不用做任何处理，直接从 widthMeasureSpec 和 heightMeasureSpec 这两个参数直接获取宽高即可，但如果是「AT_MOST」模式，就需要我们去测量各个子 View 的宽高，并按照我们的规则去计算 ViewGroup 最终的宽高。</p>
 <p>那这些模式该如何得到呢？Android提供了一个类 <code>MeasureSpec</code>，可以从 onMeasure 的两个参数获得宽高或者测量模式。具体做法是：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> sizeWidth = MeasureSpec.getSize(widthMeasureSpec);   <span class="comment">// 获得宽度</span></div><div class="line"><span class="keyword">int</span> modeWidth = MeasureSpec.getMode(widthMeasureSpec);   <span class="comment">// 获得宽度的测量模式</span></div><div class="line"><span class="keyword">int</span> sizeHeight = MeasureSpec.getSize(heightMeasureSpec);</div><div class="line"><span class="keyword">int</span> modeHeight = MeasureSpec.getMode(heightMeasureSpec);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sizeWidth = MeasureSpec.getSize(widthMeasureSpec);   <span class="comment">// 获得宽度</span></span><br><span class="line"><span class="keyword">int</span> modeWidth = MeasureSpec.getMode(widthMeasureSpec);   <span class="comment">// 获得宽度的测量模式</span></span><br><span class="line"><span class="keyword">int</span> sizeHeight = MeasureSpec.getSize(heightMeasureSpec);</span><br><span class="line"><span class="keyword">int</span> modeHeight = MeasureSpec.getMode(heightMeasureSpec);</span><br></pre></td></tr></table></figure>
 <p>如果 modeWidth 和 modeHeight 的值都是 <code>MeasureSpec.EXACTLY</code>，那么我们可以直接调用 <code>setMeasuredDimension(sizeWidth, sizeHeight)</code> 来设定 ViewGroup 的宽高（ setMeasuredDimension 是 ViewGroup 提供的用于设置其宽高的方法，一般在 onMeasure 方法的最后使用）。如果是「AT_MOST」模式，则需要在代码中重新测量宽高，最后再设进去，具体做法后面的文章再讲。</p>
 <h3 id="三个构造函数">三个构造函数</h3>
 <p>继承 ViewGroup 后一般会提供三个构造函数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">  <span class="keyword">super</span>(context);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">  <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyle)</span> </span>&#123;</div><div class="line">  <span class="keyword">super</span>(context, attrs, defStyle);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">super</span>(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CustomLayout</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyle)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">super</span>(context, attrs, defStyle);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这三个函数的用途分别是什么？第一个构造函数一般是用户在代码中用 new 来定义一个实例会使用。第二个构造函数则是用户在 xml 中声明了该控件，且没有使用到自定义属性时用到。第三个构造函数同第二个类似，但它会在使用到自定义属性时被调用，第三个参数 defStyle 表示我们自定义的属性的资源索引(在 R.java 这个类中)。</p>
 <h3 id="getlayoutparams">getLayoutParams</h3>
 <p>通常我们用 View 类的 getLayoutParams 方法得到 LayoutParams ，对应的是这个子 View 所在 ViewGroup 的 LayoutParams。例如，如果子 View 在 LinearLayout 内，那这个 LayoutParams 就是 LinearLayout.LayoutParams。那我们自己定义的 ViewGroup 的 LayoutParams 是怎么来的？ ViewGroup 提供了一个方法给开发者覆写</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Returns a new set of layout parameters based on the supplied attributes set.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> attrs the attributes to build the layout parameters from</div><div class="line"> *</div><div class="line"> * <span class="doctag">@return</span> an instance of &#123;<span class="doctag">@link</span> android.view.ViewGroup.LayoutParams&#125; or one</div><div class="line"> *         of its descendants</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(AttributeSet attrs)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LayoutParams(getContext(), attrs);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns a new set of layout parameters based on the supplied attributes set.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> attrs the attributes to build the layout parameters from</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> an instance of &#123;<span class="doctag">@link</span> android.view.ViewGroup.LayoutParams&#125; or one</span></span><br><span class="line"><span class="comment"> *         of its descendants</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LayoutParams(getContext(), attrs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>我们可以根据自己的需求，返回一个我们需要的 <code>LayoutParams</code> (可以是 <code>LayoutParams</code> 也可以是它的子类)。在 FlowLayout 中，我们只需要知道子 View 之间的间隔，因此返回一个 <code>MarginLayoutParams</code>。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 与当前ViewGroup对应的LayoutParams</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(AttributeSet attrs)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MarginLayoutParams(getContext(), attrs);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 与当前ViewGroup对应的LayoutParams</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MarginLayoutParams(getContext(), attrs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -934,24 +936,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

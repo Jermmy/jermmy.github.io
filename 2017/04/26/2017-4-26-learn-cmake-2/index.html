@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,25 +94,18 @@
 
 
 
-<meta name="description" content="学习目标
-之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。
-引用文件夹
-随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
+<meta name="description" content="学习目标 之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。 引用文件夹 随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
+<meta name="keywords" content="工具,cmake">
 <meta property="og:type" content="article">
 <meta property="og:title" content="cmake学习笔记(2)——引用文件夹">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/26/2017-4-26-learn-cmake-2/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="学习目标
-之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。
-引用文件夹
-随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="学习目标 之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。 引用文件夹 随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-04-29T06:42:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cmake学习笔记(2)——引用文件夹">
-<meta name="twitter:description" content="学习目标
-之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。
-引用文件夹
-随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
+<meta name="twitter:description" content="学习目标 之前的文章中，我们介绍了 cmake 的 HelloWorld 程序，并了解了执行 cmake 的一般套路。今天，我们稍微深入一下，学习如何引用多个文件夹下的代码。 引用文件夹 随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。">
 
 
 
@@ -146,7 +139,7 @@
 
 
 
-  <title>cmake学习笔记(2)——引用文件夹 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>cmake学习笔记(2)——引用文件夹 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -404,10 +397,10 @@
 <p>随着功能的增加，我们的项目也变得越来越大了。这个时候，为了更好地管理代码，我们将工程拆分成各个模块，每个模块的代码文件单独放在一个文件夹下以便管理。在这种情况下，cmake 将带来更多的便利。</p>
 <a id="more"></a>
 <p>现在，我们将 HelloWorld 单独封装成一个类，并把头文件放到 include 文件夹，源代码放在 src 文件夹，同时将 main 函数单独放在 app.cpp 文件中作为应用程序的入口。工程目录如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</div><div class="line">.</div><div class="line">├── CMakeLists.txt</div><div class="line">├── build</div><div class="line">├── include</div><div class="line">│   └── helloworld.h</div><div class="line">└── src</div><div class="line">    ├── app.cpp</div><div class="line">    └── helloworld.cpp</div><div class="line"></div><div class="line">3 directories, 4 files</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</span><br><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── build</span><br><span class="line">├── include</span><br><span class="line">│   └── helloworld.h</span><br><span class="line">└── src</span><br><span class="line">    ├── app.cpp</span><br><span class="line">    └── helloworld.cpp</span><br><span class="line"></span><br><span class="line">3 directories, 4 files</span><br></pre></td></tr></table></figure>
 <p>注意，我在项目根目录下新建了一个 build 文件夹。这个文件夹用来存放 cmake 产生的临时文件以及最终的可执行程序。</p>
 <p>下面，我们看看 CMakeList.txt 怎么写：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">cmake_minimum_required(VERSION 2.8.9)</div><div class="line">project (hello)</div><div class="line"></div><div class="line"># Bring the headers, such as helloworld.h into the project</div><div class="line">include_directories(include)</div><div class="line"></div><div class="line"># Can manually add the sources using the set command as follows:</div><div class="line"># set(SOURCES src/app.cpp src/helloworld.cpp)</div><div class="line"></div><div class="line"># Add all the file in directory</div><div class="line"># aux_source_directory(src SOURCES)</div><div class="line"></div><div class="line"># However, the file(GLOB...) allows for wildcard additions:</div><div class="line">file(GLOB SOURCES &quot;src/*.cpp&quot;)</div><div class="line"></div><div class="line">add_executable(hello $&#123;SOURCES&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8.9)</span><br><span class="line">project (hello)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Bring the headers, such as helloworld.h into the project</span><br><span class="line">include_directories(include)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Can manually add the sources using the set command as follows:</span><br><span class="line"><span class="meta">#</span> set(SOURCES src/app.cpp src/helloworld.cpp)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Add all the file in directory</span><br><span class="line"><span class="meta">#</span> aux_source_directory(src SOURCES)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> However, the file(GLOB...) allows for wildcard additions:</span><br><span class="line">file(GLOB SOURCES "src/*.cpp")</span><br><span class="line"></span><br><span class="line">add_executable(hello $&#123;SOURCES&#125;)</span><br></pre></td></tr></table></figure>
 <p>我们分析一下几条重要的命令：</p>
 <ul>
 <li><code>include_directories(include)</code> 这条命令将 include 文件夹下的头文件添加到编译环境中；</li>
@@ -417,19 +410,19 @@
 <li><code>add_executable(hello ${SOURCES})</code> 这条命令在之前的教程中已经介绍过了，不过这一次我们传入一个 <code>SOURCES</code> 变量，这个变量包含所有源文件的路径。</li>
 </ul>
 <p>写完 <code>CMakeList.txt</code> 后，我们同样要用 cmake 来执行。如果你执行过上一篇文章的 cmake 程序，你会发现 cmake 输出了很多临时文件。所以，为了方便管理，我们这次要将所有 cmake 临时文件输出到 <code>build</code> 文件夹。具体做法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd build</div><div class="line">cmake ..</div><div class="line">make</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
 <p>首先我们先进入 build 文件夹，然后执行 cmake 程序，不过，由于 <code>CMakeList.txt</code> 文件在 <code>build</code> 目录上一层，所以需要执行 <code>cmake ..</code>，之后，cmake 会在当前文件夹下生成临时文件以及 <code>Makefile</code>，然后我们 <code>make</code> 一下就可以了，你会看到 <code>build</code> 目录下生成的可执行文件。</p>
 <p>如果我们想重新执行 cmake，只需要删掉 <code>build</code> 下的所有文件，然后再重复之前的操作即可。</p>
 <h3 id="总结">总结</h3>
 <p>这一篇教程主要介绍了三个新命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># Bring the headers, such as helloworld.h into the project</div><div class="line">include_directories(include)</div><div class="line"></div><div class="line"># Can manually add the sources using the set command as follows:</div><div class="line">set(SOURCES src/app.cpp src/helloworld.cpp)</div><div class="line"></div><div class="line"># Add all the file in directory</div><div class="line">aux_source_directory(src SOURCES)</div><div class="line"></div><div class="line"># However, the file(GLOB...) allows for wildcard additions:</div><div class="line">file(GLOB SOURCES &quot;src/*.cpp&quot;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Bring the headers, such as helloworld.h into the project</span><br><span class="line">include_directories(include)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Can manually add the sources using the set command as follows:</span><br><span class="line">set(SOURCES src/app.cpp src/helloworld.cpp)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Add all the file in directory</span><br><span class="line">aux_source_directory(src SOURCES)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> However, the file(GLOB...) allows for wildcard additions:</span><br><span class="line">file(GLOB SOURCES "src/*.cpp")</span><br></pre></td></tr></table></figure>
 <p>第一条 <code>include_directories()</code> 命令用于引用头文件的目录，我们可以添加多个参数，中间用空格隔开；</p>
 <p>第二条 <code>set()</code> 在 cmake 中很常见，通常用于定义和设置变量。；</p>
 <p>第三条 <code>aux_source_directory()</code> 可以添加指定文件夹下所有的文件；</p>
 <p>第四条 <code>file()</code> 可以批量引用代码文件，并通过子命令 <code>GLOB</code> 转成文件列表存到变量中。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://derekmolloy.ie/hello-world-introductions-to-cmake/" target="_blank" rel="external">Introduction to CMake by Example</a></li>
+<li><a href="http://derekmolloy.ie/hello-world-introductions-to-cmake/" target="_blank" rel="noopener">Introduction to CMake by Example</a></li>
 </ul>
 
       
@@ -959,24 +952,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

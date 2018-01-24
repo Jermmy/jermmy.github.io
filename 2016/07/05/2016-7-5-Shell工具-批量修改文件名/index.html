@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,11 +95,13 @@
 
 
 <meta name="description" content="Mac 有自带的工具 Automator 可以批量修改文件名，但对程序员这种需要经常周游在各种 *nix 系统的生物来说，会用 shell 显然是更好的。">
+<meta name="keywords" content="Shell,Sed">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Shell工具－Mac批量修改文件名">
 <meta property="og:url" content="https://jermmy.github.io/2016/07/05/2016-7-5-Shell工具-批量修改文件名/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="Mac 有自带的工具 Automator 可以批量修改文件名，但对程序员这种需要经常周游在各种 *nix 系统的生物来说，会用 shell 显然是更好的。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-5/屏幕快照%202016-07-05%20下午7.40.05.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-5/屏幕快照%202016-07-05%20下午8.23.57.png">
 <meta property="og:updated_time" content="2017-03-24T01:03:56.000Z">
@@ -140,7 +142,7 @@
 
 
 
-  <title>Shell工具－Mac批量修改文件名 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Shell工具－Mac批量修改文件名 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +152,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -397,21 +399,19 @@
 <h3 id="sed">SED</h3>
 <p>这里面起主要作用的 shell 工具是 SED（Stream Editor），这是一款擅长正则表达式处理的工具。</p>
 <p>假设我们有如下命名类似的文件：</p>
-<div class="figure">
-<img src="/images/2016-7-5/屏幕快照%202016-07-05%20下午7.40.05.png" alt="屏幕快照 2016-07-05 下午7.40.05">
-<p class="caption">屏幕快照 2016-07-05 下午7.40.05</p>
-</div>
+<figure>
+<img src="/images/2016-7-5/屏幕快照%202016-07-05%20下午7.40.05.png" alt="屏幕快照 2016-07-05 下午7.40.05"><figcaption>屏幕快照 2016-07-05 下午7.40.05</figcaption>
+</figure>
 <p>现在需要把这些文件名改为 eye_21.png ~ eye_37.png，</p>
 <p>下面直接上一段 shell 代码，看看 sed 怎么用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">for file in `ls *.png`</div><div class="line">do</div><div class="line"> mv &quot;$file&quot; `echo &quot;$file&quot; | sed &apos;s/\(.*\_.*\_\)\(.*\)/\eye_\2/g&apos;`</div><div class="line">done</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for file in `ls *.png`</span><br><span class="line">do</span><br><span class="line"> mv "$file" `echo "$file" | sed 's/\(.*\_.*\_\)\(.*\)/\eye_\2/g'`</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
 <p>（ Shell 里面用到命令时一定要用``包起来）</p>
 <p>奇怪的是 mac 没有提供 rename 命令，所以只能用 mv 来修改文件名。现在具体看 sed 指令的用法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &apos;s/\(.*\_.*\_\)\(.*\)/eye_\2/g&apos;</div></pre></td></tr></table></figure>
-<p>sed 后面跟着一段正则表达式，用 s/{reg}/g 包围，双斜杆里面的 {reg} 就是正则表达式了，就本例子而言，需要把文件名前面的 pic_s4_ 更换为 eye_。具体的做法是将字符串分成两部分（即两个括号的内容）。第一个括号的内容表示 pic_s4_，第二个括号则表示任意字符。但是怎么替换字符串呢？注意到正则表达式后面的内容(使用正则表达式时要注意用 ‘\’ 转义)，“eye_” 表示替换规则。“eye_” 表示替换后的文件名字符串中以 eye_ 开始， 表示引用第二个括号的内容(注意需要使用 \ 转义)。替换后的文件名如下：</p>
-<div class="figure">
-<img src="/images/2016-7-5/屏幕快照%202016-07-05%20下午8.23.57.png" alt="屏幕快照 2016-07-05 下午8.23.57">
-<p class="caption">屏幕快照 2016-07-05 下午8.23.57</p>
-</div>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed 's/\(.*\_.*\_\)\(.*\)/eye_\2/g'</span><br></pre></td></tr></table></figure>
+<p>sed 后面跟着一段正则表达式，用 s/{reg}/g 包围，双斜杆里面的 {reg} 就是正则表达式了，就本例子而言，需要把文件名前面的 pic_s4_ 更换为 eye_。具体的做法是将字符串分成两部分（即两个括号的内容）。第一个括号的内容表示 pic_s4_，第二个括号则表示任意字符。但是怎么替换字符串呢？注意到正则表达式后面的内容(使用正则表达式时要注意用 ‘\’ 转义)，“eye_\2” 表示替换规则。“eye_” 表示替换后的文件名字符串中以 eye_ 开始，\2 表示引用第二个括号的内容(注意需要使用 \ 转义)。替换后的文件名如下：</p>
+<figure>
+<img src="/images/2016-7-5/屏幕快照%202016-07-05%20下午8.23.57.png" alt="屏幕快照 2016-07-05 下午8.23.57"><figcaption>屏幕快照 2016-07-05 下午8.23.57</figcaption>
+</figure>
 <p>sed 还有一个 ‘-r’ 的参数可以让正则表达式更加简洁，但我在 mac 发现这个参数没法使用。</p>
 <p>sed 更多具体方法，之后有用到时再补充。</p>
 
@@ -942,24 +942,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

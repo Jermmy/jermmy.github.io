@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,18 +94,14 @@
 
 
 
-<meta name="description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
-什么是拉格朗日乘子法
-按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
-\u">
+<meta name="description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。 什么是拉格朗日乘子法 按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[ \u">
+<meta name="keywords" content="机器学习,优化理论">
 <meta property="og:type" content="article">
 <meta property="og:title" content="拉格朗日乘子法">
 <meta property="og:url" content="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
-什么是拉格朗日乘子法
-按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
-\u">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。 什么是拉格朗日乘子法 按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[ \u">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/lagrange1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/orange-gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-27/black-gradient.png">
@@ -114,10 +110,7 @@
 <meta property="og:updated_time" content="2017-12-25T05:33:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉格朗日乘子法">
-<meta name="twitter:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。
-什么是拉格朗日乘子法
-按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[
-\u">
+<meta name="twitter:description" content="最近在学习 SVM 的过程中，遇到关于优化理论中拉格朗日乘子法的知识，本文是根据几篇文章总结得来的笔记。由于是刚刚接触，难免存在错误，还望指出😁。另外，本文不会聊到深层次的数学推导，仅仅是介绍拉格朗日乘子法的内容，应用，以及个人对它的感性理解。 什么是拉格朗日乘子法 按照维基百科的定义，拉格朗日乘数法是一种寻找多元函数在其变量受到一个或多个条件的约束时的极值的方法。用数学式子表达为： \[ \u">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-27/lagrange1.png">
 
 
@@ -152,7 +145,7 @@
 
 
 
-  <title>拉格朗日乘子法 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>拉格朗日乘子法 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -162,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -474,11 +467,11 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
 <p>另外，在写作本文时，我仍然有一个疑惑没有解决：拉格朗日乘子法在哪些情况下无解（也就是上面的方程组 <span class="math inline">\(\nabla L\)</span> 无解）？换句话说，约束条件和函数没有切点时，我们要怎么求出最低点或最高点。这个问题留待之后想通再补上。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="external">wiki: Lagrange multiplier</a></li>
-<li><a href="http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html" target="_blank" rel="external">An Introduction to Lagrange Multipliers</a></li>
-<li><a href="https://danstronger.wordpress.com/2015/08/08/lagrange-multipliers/" target="_blank" rel="external">Understanding Lagrange Multipliers</a></li>
-<li><a href="https://www.zhihu.com/question/38586401/answer/134473412" target="_blank" rel="external">拉格朗日乘子法如何理解？</a></li>
-<li><a href="https://www.svm-tutorial.com/2016/09/duality-lagrange-multipliers/" target="_blank" rel="external">SVM - Understanding the math - Duality and Lagrange multipliers</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">wiki: Lagrange multiplier</a></li>
+<li><a href="http://www.slimy.com/~steuard/teaching/tutorials/Lagrange.html" target="_blank" rel="noopener">An Introduction to Lagrange Multipliers</a></li>
+<li><a href="https://danstronger.wordpress.com/2015/08/08/lagrange-multipliers/" target="_blank" rel="noopener">Understanding Lagrange Multipliers</a></li>
+<li><a href="https://www.zhihu.com/question/38586401/answer/134473412" target="_blank" rel="noopener">拉格朗日乘子法如何理解？</a></li>
+<li><a href="https://www.svm-tutorial.com/2016/09/duality-lagrange-multipliers/" target="_blank" rel="noopener">SVM - Understanding the math - Duality and Lagrange multipliers</a></li>
 </ul>
 
       
@@ -1008,24 +1001,7 @@ L(x_1,\dots,x_n,\lambda_1,\dots,\lambda_k)=f(x_1,\dots,x_n)-\sum_{j=1}^k{\lambda
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

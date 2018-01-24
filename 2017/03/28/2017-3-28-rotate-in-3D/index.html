@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,16 +94,14 @@
 
 
 
-<meta name="description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。
-旋转的要素
-所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
+<meta name="description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。 旋转的要素 所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
+<meta name="keywords" content="计算机图形学,线性代数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="3D中的旋转变换">
 <meta property="og:url" content="https://jermmy.github.io/2017/03/28/2017-3-28-rotate-in-3D/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。
-旋转的要素
-所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。 旋转的要素 所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-x-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-y-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-z-axis.png">
@@ -111,9 +109,7 @@
 <meta property="og:updated_time" content="2017-10-18T09:17:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3D中的旋转变换">
-<meta name="twitter:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。
-旋转的要素
-所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
+<meta name="twitter:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。 旋转的要素 所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-3-28/rotate-x-axis.png">
 
 
@@ -148,7 +144,7 @@
 
 
 
-  <title>3D中的旋转变换 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>3D中的旋转变换 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +154,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -415,7 +411,7 @@
 <h4 id="绕-z-轴旋转">绕 z 轴旋转</h4>
 <p>同理，这里不再赘述。 <img src="/images/2017-3-28/rotate-z-axis.png" alt="rotate-z-axis"></p>
 <h3 id="绕通过原点的直线旋转">绕通过原点的直线旋转</h3>
-<p><strong>以下所引用的例子来自文末链接<a href="http://blog.miskcoo.com/2016/12/rotation-in-3d-space" target="_blank" rel="external">三维空间中的旋转：旋转矩阵、欧拉角</a></strong></p>
+<p><strong>以下所引用的例子来自文末链接<a href="http://blog.miskcoo.com/2016/12/rotation-in-3d-space" target="_blank" rel="noopener">三维空间中的旋转：旋转矩阵、欧拉角</a></strong></p>
 <p>现在，假设我们要绕旋转轴 <span class="math inline">\(P\)</span> 旋转 <span class="math inline">\(\theta\)</span> 角（如下图所示），那又该如何？ <img src="/images/2017-3-28/3d-angle-rotation.png" alt="3d-angle-rotation"> 目前我们已有的工具只是绕 x / y / z 轴旋转的矩阵而已。回想 2D 中绕任意点旋转的情况，我们是将任意点变换到原点，绕原点旋转后，再变换回原来的位置。所以，同样的道理，这次我们也将绕 <span class="math inline">\(P\)</span> 轴的旋转分解为三步（跟原文例子的解释稍有不同，但本质上是一样的）:</p>
 <ul>
 <li>将 <span class="math inline">\(P\)</span> 轴旋转到与 z 轴重合，此时物体跟着旋转到新位置；</li>
@@ -440,9 +436,9 @@ R(\theta)=R_z^T(\psi)R_y^T(\phi)R_z(\theta)R_y(\phi)R_z(\psi)
 R(\theta)=T(x_1, y_1, z_1)R_z^T(\psi)R_y^T(\phi)R_z(\theta)R_y(\phi)R_z(\psi)T(-x_1, -y_1, -z_1)
 \]</span></p>
 <h3 id="参考">参考</h3>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Interactive Computer Graphics - A Top-Down Approach 6e By Edward Angel and Dave Shreiner (Pearson, 2012)</li>
-<li><a href="http://blog.miskcoo.com/2016/12/rotation-in-3d-space" target="_blank" rel="external">三维空间中的旋转：旋转矩阵、欧拉角</a></li>
+<li><a href="http://blog.miskcoo.com/2016/12/rotation-in-3d-space" target="_blank" rel="noopener">三维空间中的旋转：旋转矩阵、欧拉角</a></li>
 </ol>
 
       
@@ -972,24 +968,7 @@ R(\theta)=T(x_1, y_1, z_1)R_z^T(\psi)R_y^T(\phi)R_z(\theta)R_y(\phi)R_z(\psi)T(-
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

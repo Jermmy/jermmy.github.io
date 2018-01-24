@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,19 +94,18 @@
 
 
 
-<meta name="description" content="学习目标
-上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
+<meta name="description" content="学习目标 上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
+<meta name="keywords" content="工具,cmake">
 <meta property="og:type" content="article">
 <meta property="og:title" content="cmake学习笔记(3)——编译和引用链接库">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/26/2017-4-27-learn-cmake-3/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="学习目标
-上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="学习目标 上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-06-04T17:04:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cmake学习笔记(3)——编译和引用链接库">
-<meta name="twitter:description" content="学习目标
-上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
+<meta name="twitter:description" content="学习目标 上一篇文章我们介绍了如何用 cmake 去 build 一个小型的工程项目。在实际开发中，我们有时候只是想编译生成一些链接库，而不是编译一个完整的项目。今天，我们来学习如何用 cmake 构建链接库。">
 
 
 
@@ -140,7 +139,7 @@
 
 
 
-  <title>cmake学习笔记(3)——编译和引用链接库 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>cmake学习笔记(3)——编译和引用链接库 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -398,10 +397,10 @@
 <h3 id="编译动态链接库.sodylibdll">编译动态链接库(.so/dylib/dll)</h3>
 <p>接下来我们沿用上一篇文章的例子，编写一个 HelloWorld 类，并将这个类编译成动态链接库。</p>
 <p>项目目录如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</div><div class="line">.</div><div class="line">├── CMakeLists.txt</div><div class="line">├── build</div><div class="line">├── include</div><div class="line">│   └── helloworld.h</div><div class="line">└── src</div><div class="line">    └── helloworld.cpp</div><div class="line"></div><div class="line">3 directories, 3 files</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</span><br><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── build</span><br><span class="line">├── include</span><br><span class="line">│   └── helloworld.h</span><br><span class="line">└── src</span><br><span class="line">    └── helloworld.cpp</span><br><span class="line"></span><br><span class="line">3 directories, 3 files</span><br></pre></td></tr></table></figure>
 <p><code>helloworld.*</code> 文件的代码和之前的教程一样。</p>
 <p>下面，我们还是先编写 CMakeList.txt 文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">cmake_minimum_required(VERSION 2.8.9)</div><div class="line">project (hello)</div><div class="line">set(CMAKE_BUILD_TYPE Release)</div><div class="line"></div><div class="line"># Bring the headers, such as helloworld.h into the project</div><div class="line">include_directories(include)</div><div class="line"></div><div class="line"># However, the file(GLOB...) allows for wildcard additions:</div><div class="line">file(GLOB SOURCES &quot;src/*.cpp&quot;)</div><div class="line"></div><div class="line"># Generate the shared library from the sources</div><div class="line">add_library(hello SHARED $&#123;SOURCES&#125;)</div><div class="line"></div><div class="line"># Set the location for library installation -- i.e., /usr/local/lib</div><div class="line"># not really necessary in this example. Use &quot;sudo make install&quot; to apply</div><div class="line">install(TARGETS hello DESTINATION /usr/local/lib)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8.9)</span><br><span class="line">project (hello)</span><br><span class="line">set(CMAKE_BUILD_TYPE Release)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Bring the headers, such as helloworld.h into the project</span><br><span class="line">include_directories(include)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> However, the file(GLOB...) allows for wildcard additions:</span><br><span class="line">file(GLOB SOURCES "src/*.cpp")</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Generate the shared library from the sources</span><br><span class="line">add_library(hello SHARED $&#123;SOURCES&#125;)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Set the location for library installation -- i.e., /usr/local/lib</span><br><span class="line"><span class="meta">#</span> not really necessary in this example. Use "sudo make install" to apply</span><br><span class="line">install(TARGETS hello DESTINATION /usr/local/lib)</span><br></pre></td></tr></table></figure>
 <p>下面介绍几条新命令的含义：</p>
 <ul>
 <li><code>set(CMAKE_BUILD_TYPE Release)</code> 表示此次编译为正式版本的编译，一般来说照抄即可；</li>
@@ -409,19 +408,19 @@
 <li><code>install(TARGETS hello DESTINATION /usr/local/lib)</code> 这条命令表示会将动态链接库 <code>hello</code> 安装到 <code>/usr/local/lib</code> 这个目录下。我们需要使用 <code>sudo make install</code> 来激发这个 TARGET。</li>
 </ul>
 <p>之后，我们按照之前的方式执行 cmake 和 make：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd build</div><div class="line">cmake ..</div><div class="line">make</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
 <p>make 完成后，你会在 <code>build</code> 文件夹下看到一个 <code>libhello.dylib</code> 文件（不同系统命名可能不同，Linux 下的后缀名是<code>.so</code>，Windows 下是<code>.dll</code> ）。</p>
 <p>而如果要把链接库安装到系统中，还需要执行一步 <code>sudo make install</code>。你会在 <code>shell</code> 里面看到安装位置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">xyzdeMacBook-Pro:build xyz$ make install</div><div class="line">[100%] Built target hello</div><div class="line">Install the project...</div><div class="line">-- Install configuration: &quot;&quot;</div><div class="line">-- Installing: /usr/local/lib/libhello.dylib</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">xyzdeMacBook-Pro:build xyz$ make install</span><br><span class="line"><span class="meta">[100%</span>] Built target hello</span><br><span class="line">Install the project...</span><br><span class="line">-- Install configuration: ""</span><br><span class="line">-- Installing: /usr/local/lib/libhello.dylib</span><br></pre></td></tr></table></figure>
 <p>如果还不放心，可以亲自到 <code>/usr/local/lib</code> 目录下查看是否有 <code>libhello</code> 这个链接库。</p>
 <p>在类 Unix 系统中，只要链接库在 <code>/usr/local/lib</code> 或 <code>/usr/lib</code> 目录下，我们就可以在链接时用 <code>-l</code> 来链接这些库了。</p>
 <p>当然，上面的程序很简单，没有用到一些依赖库。如果动态库本身需要依赖其他外部库，那我们需要将这些依赖库的路径信息包含进去。</p>
 <p>cmake 提供了一个 <code>find_package()</code> 指令来帮助搜寻这些依赖库。比如，如果我们需要引用到 OpenGL，可以加入以下几条命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">find_package(OpenGL REQUIRED)</div><div class="line">include_directories($&#123;OPENGL_INCLUDE_DIRS&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find_package(OpenGL REQUIRED)</span><br><span class="line"><span class="meta">include_directories($</span>&#123;OPENGL_INCLUDE_DIRS&#125;)</span><br></pre></td></tr></table></figure>
 <p>然后在 <code>add_library()</code> 之后链接库文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">target_link_libraries(hello $&#123;OPENGL_LIBRARIES&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target_link_libraries(hello $&#123;OPENGL_LIBRARIES&#125;)</span><br></pre></td></tr></table></figure>
 <p>不过，<code>find_package()</code>并不保证一定能找到这个依赖库，这个时候就需要手动添加文件路径了，比如，如果需要用到 <code>freeglut</code> 作为依赖，我们可以设置 <code>freeglut</code> 的库文件位置（类 Unix 系统一般都在 <code>/usr/local/include</code> 和 <code>/usr/local/lib</code>下），其他操作和 <code>find_package()</code> 一样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">include_directories(/usr/local/include)</div><div class="line">link_directories(/usr/local/lib)</div><div class="line">...</div><div class="line">target_link_libraries(hello glut)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">include_directories(/usr/local/include)</span><br><span class="line">link_directories(/usr/local/lib)</span><br><span class="line">...</span><br><span class="line">target_link_libraries(hello glut)</span><br></pre></td></tr></table></figure>
 <h3 id="编译静态链接库.a">编译静态链接库(.a)</h3>
 <p>讲完如何构建动态链接库，下面依葫芦画瓢，看看如何构建静态链接库。</p>
 <p>不同于动态链接库的是，静态链接库是在编译的时候被「链接」进编译器的。换句话说，静态链接库中包含所有需要用到的源代码（当然是被编译器处理过的源代码），所以它的体积比动态链接库要大许多。但也由于它包含的是高级的代码形式，所以跨平台性比动态链接库好，而且也没有运行时加载库文件的时间开销。不过，由于动态链接库中的代码冗余更少，而且可以在不编译整个工程的情况下动态更新代码，因此动态链接库的使用场景更广。</p>
@@ -429,11 +428,11 @@
 <h3 id="引用链接库">引用链接库</h3>
 <p>好了，前面虽然扯了这么多，但我们还没验证生成的库文件是否正确。所以，接下来，我们再用 cmake 来引用我们生成的链接库。</p>
 <p>为了调用 HelloWorld 函数库，我们先创建一个 main 函数的代码文件（app.cpp）：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"helloworld.h"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</div><div class="line">	HelloWorld h;</div><div class="line">	h.print();</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"helloworld.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	HelloWorld h;</span><br><span class="line">	h.print();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>然后我们把 helloworld.cpp 文件删掉。这样，我们的项目就变成下面这个样子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</div><div class="line">.</div><div class="line">├── CMakeLists.txt</div><div class="line">├── build</div><div class="line">│   └── libhello.dylib</div><div class="line">├── include</div><div class="line">│   └── helloworld.h</div><div class="line">└── src</div><div class="line">    └── app.cpp</div><div class="line"></div><div class="line">3 directories, 4 files</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">xyzdeMacBook-Pro:my_cmake_code xyz$ tree</span><br><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── build</span><br><span class="line">│   └── libhello.dylib</span><br><span class="line">├── include</span><br><span class="line">│   └── helloworld.h</span><br><span class="line">└── src</span><br><span class="line">    └── app.cpp</span><br><span class="line"></span><br><span class="line">3 directories, 4 files</span><br></pre></td></tr></table></figure>
 <p>现在，helloworld.h 文件的实现就以 libhello.dylib 的形式存在了。之后我们要重新编写 CMakeList.txt 文件，让 app.cpp 可以引用到 libhello.dylib 链接库。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">cmake_minimum_required(VERSION 2.8.9)</div><div class="line">project (hello)</div><div class="line"></div><div class="line"># For the shared library:</div><div class="line">set(PROJECT_LINK_LIBS libhello.dylib)</div><div class="line">link_directories(build)</div><div class="line"></div><div class="line"># For the static library:</div><div class="line">#set(PROJECT_LINK_LIBS libhello.a)</div><div class="line">#link_directories(build)</div><div class="line"></div><div class="line">include_directories(include)</div><div class="line">file(GLOB SOURCES src/*cpp)</div><div class="line">add_executable(hello $&#123;SOURCES&#125;)</div><div class="line">target_link_libraries(hello $&#123;PROJECT_LINK_LIBS&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8.9)</span><br><span class="line">project (hello)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> For the shared library:</span><br><span class="line">set(PROJECT_LINK_LIBS libhello.dylib)</span><br><span class="line">link_directories(build)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> For the static library:</span><br><span class="line"><span class="meta">#</span>set(PROJECT_LINK_LIBS libhello.a)</span><br><span class="line"><span class="meta">#</span>link_directories(build)</span><br><span class="line"></span><br><span class="line">include_directories(include)</span><br><span class="line">file(GLOB SOURCES src/*cpp)</span><br><span class="line">add_executable(hello $&#123;SOURCES&#125;)</span><br><span class="line">target_link_libraries(hello $&#123;PROJECT_LINK_LIBS&#125;)</span><br></pre></td></tr></table></figure>
 <p>同样的，我们要分析一下上面的命令是如何链接到 <code>libhello.dylib</code> 的（注释中提供了静态链接库的链接代码，和动态链接库的几乎一样，不再赘述）：</p>
 <ul>
 <li><code>set(PROJECT_LINK_LIBS libhello.dylib)</code> 这条命令定义了一个 <code>PROJECT_LINK_LIBS</code> 变量，该变量表示我们要链接的库为 <code>libhello.dylib</code>；</li>
@@ -441,16 +440,16 @@
 <li><code>target_link_libraries(hello ${PROJECT_LINK_LIBS})</code> 这条命令会将我们的程序和库函数链接起来。</li>
 </ul>
 <p>然后，我们执行 cmake 和 make 程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd build</div><div class="line">cmake ..</div><div class="line">make</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
 <p>前面的步骤指令都正确的话，我们会在 <code>build</code> 文件夹下看到一个 <code>hello</code> 程序。执行这个程序，如果输出如下结果，证明链接成功了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">xyzdeMacBook-Pro:build xyz$ ./hello</div><div class="line">Hello World!</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xyzdeMacBook-Pro:build xyz$ ./hello</span><br><span class="line">Hello World!</span><br></pre></td></tr></table></figure>
 <h3 id="总结">总结</h3>
 <p>这一篇教程我们主要介绍了四条新命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">add_library(hello SHARED(STATIC) $&#123;SOURCES&#125;)</div><div class="line">install(TARGETS hello DESTINATION /usr/local/lib)</div><div class="line"></div><div class="line">link_directories(build)</div><div class="line">target_link_libraries(hello $&#123;PROJECT_LINK_LIBS&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">add_library(hello SHARED(STATIC) $&#123;SOURCES&#125;)</span><br><span class="line">install(TARGETS hello DESTINATION /usr/local/lib)</span><br><span class="line"></span><br><span class="line">link_directories(build)</span><br><span class="line">target_link_libraries(hello $&#123;PROJECT_LINK_LIBS&#125;)</span><br></pre></td></tr></table></figure>
 <p>前两条用于生成和安装动/静态链接库，后两条用于链接这些库文件。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://derekmolloy.ie/hello-world-introductions-to-cmake/" target="_blank" rel="external">Introduction to CMake by Example</a></li>
+<li><a href="http://derekmolloy.ie/hello-world-introductions-to-cmake/" target="_blank" rel="noopener">Introduction to CMake by Example</a></li>
 </ul>
 
       
@@ -980,24 +979,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

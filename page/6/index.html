@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -96,12 +96,13 @@
 
 <meta name="description" content="In me the tiger sniffs the rose.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Jermmy's Lazy Blog">
+<meta property="og:title" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:url" content="https://jermmy.github.io/page/6/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="In me the tiger sniffs the rose.">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jermmy's Lazy Blog">
+<meta name="twitter:title" content="Jermmy&#39;s Lazy Blog">
 <meta name="twitter:description" content="In me the tiger sniffs the rose.">
 
 
@@ -136,7 +137,7 @@
 
 
 
-  <title>Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -146,7 +147,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -398,7 +399,7 @@
             <h3 id="mac常用的命令行工具">Mac常用的命令行工具：</h3>
 <h4 id="which">1. which</h4>
 <p>查看某个命令行工具的位置，比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">which node</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">which node</span><br></pre></td></tr></table></figure>
 
           
         
@@ -871,17 +872,14 @@
         
           <p>一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在<code>ImageView</code>或者其他<code>View</code>上实现放大镜的方法，但当我把同样的思路用在<code>SurfaceView</code>上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。</p>
 <p>简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现在手指左上方。</p>
-<div class="figure">
-<img src="/images/2016-10-23/ezgif.com-video-to-gif.gif" alt="ezgif.com-video-to-gif" />
-<p class="caption">ezgif.com-video-to-gif</p>
-</div>
+<figure>
+<img src="/images/2016-10-23/ezgif.com-video-to-gif.gif" alt="ezgif.com-video-to-gif"><figcaption>ezgif.com-video-to-gif</figcaption>
+</figure>
 <h4 id="预备知识">预备知识</h4>
-<ol style="list-style-type: decimal">
-<li>Android canvas基本用法，推荐这篇文章：</li>
-</ol>
-<p>http://blog.csdn.net/harvic880925/article/details/39080931</p>
-<ol start="2" style="list-style-type: decimal">
-<li>SurfaceView的初级使用</li>
+<ol type="1">
+<li><p>Android canvas基本用法，推荐这篇文章：</p>
+<p>http://blog.csdn.net/harvic880925/article/details/39080931</p></li>
+<li><p>SurfaceView的初级使用</p></li>
 </ol>
           <!--noindex-->
           <div class="post-button text-center">
@@ -1043,10 +1041,9 @@
 <h3 id="activity">Activity</h3>
 <h4 id="activity的生命周期"><code>Activity</code>的生命周期</h4>
 <p>说起<code>Activity</code>的生命周期，很多人都会马上想起下面这张图：</p>
-<div class="figure">
-<img src="/images/2016-10-15/Activity生命周期.gif" alt="Activity生命周期" />
-<p class="caption">Activity生命周期</p>
-</div>
+<figure>
+<img src="/images/2016-10-15/Activity生命周期.gif" alt="Activity生命周期"><figcaption>Activity生命周期</figcaption>
+</figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/15/2016-10-15-Android生命周期的那些事/#more" rel="contents">
@@ -1206,7 +1203,7 @@
           <p>这篇博文总结一下最近开发中遇到的内存泄漏的场景，并提供一些我所能找到的解决方案。</p>
 <h3 id="静态全局类">静态全局类</h3>
 <p>说起静态全局类，在Android里面用的最多的要数全局单例类（单例模式）。大多数人在构造单例类的时候，都会毫不犹豫地使用这种模板：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">null</span>;</div><div class="line">  </div><div class="line">    <span class="keyword">private</span> Context mContext;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (instance != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> instance;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">synchronized</span> (Singleton.class) &#123;</div><div class="line">            <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                instance = <span class="keyword">new</span> Singleton(context);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> instance;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.mContext = context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">null</span>;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">            <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                instance = <span class="keyword">new</span> Singleton(context);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.mContext = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/04/2016-10-4-Android-内存泄漏那些事/#more" rel="contents">
@@ -1366,10 +1363,9 @@
           <p>容器已经是现代编程语言必备的组件了。（注：由于一些常用容器的使用已经非常熟悉，因此本文着眼于我不熟悉的容器）</p>
 <h3 id="完整的容器分类法">完整的容器分类法</h3>
 <p>下面这张图摘自《Thinking in Java》，是Java中容器类很好的概览图</p>
-<div class="figure">
-<img src="/images/2016-9-25/full_container_taxonomy_thinking_in_java.png" alt="full_container_taxonomy_thinking_in_java" />
-<p class="caption">full_container_taxonomy_thinking_in_java</p>
-</div>
+<figure>
+<img src="/images/2016-9-25/full_container_taxonomy_thinking_in_java.png" alt="full_container_taxonomy_thinking_in_java"><figcaption>full_container_taxonomy_thinking_in_java</figcaption>
+</figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/#more" rel="contents">
@@ -1843,7 +1839,7 @@
         
           <p>今天温习一下Java多线程的知识（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。</p>
 <p><code>Runnable</code>，<code>Thread</code>的简单使用表过不谈，只总结一下不熟悉的知识点。</p>
-<p><br\></p>
+<p>&lt;br&gt;</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/10/2016-9-10-Thinking-In-Java-并发/#more" rel="contents">
@@ -2295,24 +2291,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,26 +95,30 @@
 
 
 <meta name="description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
+<meta name="keywords" content="深度学习,论文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Deep Residual Learning">
 <meta property="og:url" content="https://jermmy.github.io/2017/09/25/2017-9-25-paper-notes-deep-residual-learning/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual network.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity mapping block.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity mapping block1.png">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual%20learning.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/simple%20chain.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual%20chain.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/residual%20network.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity%20mapping%20block.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/identity%20mapping%20block1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference2.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/inference3.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/experiment.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/validation error.png">
-<meta property="og:updated_time" content="2017-12-13T03:00:46.000Z">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-25/validation%20error.png">
+<meta property="og:updated_time" content="2018-01-24T03:59:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Deep Residual Learning">
 <meta name="twitter:description" content="之前提到，深度神经网络在训练中容易遇到梯度消失/爆炸的问题，这个问题产生的根源详见之前的读书笔记。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种">
-<meta name="twitter:image" content="https://jermmy.github.io/images/2017-9-25/residual learning.png">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2017-9-25/residual%20learning.png">
 
 
 
@@ -148,7 +152,7 @@
 
 
 
-  <title>论文笔记：Deep Residual Learning | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>论文笔记：Deep Residual Learning | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +162,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -400,7 +404,7 @@
       
 
       
-        <p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="(https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5)">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
+        <p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
 <center>
 <p><img src="/images/2017-9-25/residual learning.png" width="400px"></p>
 </center>
@@ -408,12 +412,52 @@
 <h3 id="基本思想">基本思想</h3>
 <p>回到最开始的问题，为什么深度神经网络会难以训练？根源在于 BP 的时候我们需要逐层计算导数并将这些导数相乘。这些导数如果太小，梯度就容易消失，反之，则会爆炸。我们没法从 BP 算法的角度出发让这个相乘的导数链消失，因此，可行的方法就是控制每个导数的值，让它们尽量靠近 1，这样，连乘后的结果不会太小，也不会太大。</p>
 <p>现在，我们就从导数入手，看看如何实现上面的要求。由于梯度消失的问题比梯度爆炸更常见，因此只针对梯度消失这一点进行改进。</p>
-<p>假设我们理想中想让网络学习出来的函数是 <span class="math inline">\(F(x; {W_i})\)</span>，但由于它的导数 <span class="math inline">\(\frac{\partial F}{\partial x}\)</span> 太小，所以训练的时候梯度就消失了。所谓太小，就是说 <span class="math inline">\(\frac{\partial F}{\partial x} \approx 0\)</span>，那么，我们何不在这个导数的基础上加上 1 或者减去 1，这样梯度不就变大了吗？（这里的 1 是为了满足之前提到的梯度靠近 1 这一要求，事实上，只要能防止梯度爆炸，其他数值也是可以的，不过作者在之后的实验中证明，1 的效果最好）</p>
-<p>按照这种思路，我们现在想构造一个新的函数，让它的导数等于 <span class="math inline">\(\frac{\partial F}{\partial x}+1\)</span>。由这个导数反推回去，很自然地就得到一个我们想要的函数：<span class="math inline">\(H(x)=F(x)+x\)</span>，它的导数为：<span class="math inline">\(\frac{\partial H}{\partial x} = \frac{\partial F}{\partial x}+1\)</span>。这个时候你可能会想，如果将原来的 <span class="math inline">\(F(x)\)</span> 变成 <span class="math inline">\(H(x)\)</span>，那网络想要提取的特征不就不正确了吗，这个网络还有什么用？不错，我们想要的最终函数是 <span class="math inline">\(F(x; {W_i})\)</span>，这个时候再加个 <span class="math inline">\(x\)</span> 上去，结果肯定不是我们想要的。但是，为什么一定要让网络学出 <span class="math inline">\(F(x; {W_i})\)</span>？为什么不用 <span class="math inline">\(H(x)\)</span> 替换原本的 <span class="math inline">\(F(x;{W_i})\)</span>，而将网络学习的目标调整为：<span class="math inline">\(F(x)=H(x)-x\)</span>？要知道，神经网络是可以近似任何函数的，只要让网络学出这个新的 <span class="math inline">\(F(x)\)</span>，那么我们自然也就可以通过 <span class="math inline">\(H(x)=F(x)+x\)</span> 得到最终想要的函数形式。作者认为，通过这种方式学习得到的 <span class="math inline">\(H(x)\)</span> 函数，跟当初直接让网络学习出的 <span class="math inline">\(F(x, {W_i})\)</span>，效果上是等价的，但前者却更容易训练。</p>
+<p><del>假设我们理想中想让网络学习出来的函数是 <span class="math inline">\(F(x; {W_i})\)</span>，但由于它的导数 <span class="math inline">\(\frac{\partial F}{\partial x}\)</span> 太小，所以训练的时候梯度就消失了。所谓太小，就是说 <span class="math inline">\(\frac{\partial F}{\partial x} \approx 0\)</span>，那么，我们何不在这个导数的基础上加上 1 或者减去 1，这样梯度不就变大了吗？（这里的 1 是为了满足之前提到的梯度靠近 1 这一要求，事实上，只要能防止梯度爆炸，其他数值也是可以的，不过作者在之后的实验中证明，1 的效果最好）</del></p>
+<p><del>按照这种思路，我们现在想构造一个新的函数，让它的导数等于 <span class="math inline">\(\frac{\partial F}{\partial x}+1\)</span>。由这个导数反推回去，很自然地就得到一个我们想要的函数：<span class="math inline">\(H(x)=F(x)+x\)</span>，它的导数为：<span class="math inline">\(\frac{\partial H}{\partial x} = \frac{\partial F}{\partial x}+1\)</span>。这个时候你可能会想，如果将原来的 <span class="math inline">\(F(x)\)</span> 变成 <span class="math inline">\(H(x)\)</span>，那网络想要提取的特征不就不正确了吗，这个网络还有什么用？不错，我们想要的最终函数是 <span class="math inline">\(F(x; {W_i})\)</span>，这个时候再加个 <span class="math inline">\(x\)</span> 上去，结果肯定不是我们想要的。但是，为什么一定要让网络学出 <span class="math inline">\(F(x; {W_i})\)</span>？为什么不用 <span class="math inline">\(H(x)\)</span> 替换原本的 <span class="math inline">\(F(x;{W_i})\)</span>，而将网络学习的目标调整为：<span class="math inline">\(F(x)=H(x)-x\)</span>？要知道，神经网络是可以近似任何函数的，只要让网络学出这个新的 <span class="math inline">\(F(x)\)</span>，那么我们自然也就可以通过 <span class="math inline">\(H(x)=F(x)+x\)</span> 得到最终想要的函数形式。作者认为，通过这种方式学习得到的 <span class="math inline">\(H(x)\)</span> 函数，跟当初直接让网络学习出的 <span class="math inline">\(F(x, {W_i})\)</span>，效果上是等价的，但前者却更容易训练。</del></p>
+<p><strong>==================== UPDATE 2018.1.23 =====================</strong></p>
+<p>时隔几个月重新看这篇文章，发现当初的理解存在一个巨大的问题，在此，对那些被我误导的同学深深道歉🙇。</p>
+<p>这里的问题在于，BP 算法中我们要计算的是参数 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的导数，所以导数的形式不应该是 <span class="math inline">\(\frac{\partial F}{\partial x}\)</span>，而是 <span class="math inline">\(\frac{F}{W_i}\)</span>（bias 同理）。这样一来，我之前对残差网络改进梯度消失问题的理解就错了。不过，我依然固执地认为，残差学习是为了解决深度网络中梯度消失的问题，只是要换种方式理解。</p>
+<p>对于最简单的神经网络（假设退化成一条链）：</p>
+<center>
+<p><img src="/images/2017-9-25/simple chain.png" width="400px"></p>
+</center>
+<p><span class="math inline">\(C\)</span> 是网络的 loss 函数，<span class="math inline">\(z^l\)</span> 表示第 l 层激活函数的输入，<span class="math inline">\(a^l\)</span> 表示第 l 层激活函数的输出（<span class="math inline">\(a^0\)</span> 就是网络最开始的输入了），则 <span class="math inline">\(a^l = \sigma(z^l)\)</span>，<span class="math inline">\(z^l=a^{l-1}*w^l\)</span>（<span class="math inline">\(W^l\)</span> 是第 l 层的权重参数，简单起见，不考虑 bias）。<span class="math inline">\(\delta^l\)</span> 是第 l 层的误差。</p>
+<p>根据 BP 算法，先计算误差项： <span class="math display">\[
+\delta^3=\frac{\partial C}{\partial a^3}\frac{\partial a^3}{\partial z^3}=\frac{\partial C}{\partial a^3}\sigma&#39;(z^3) \\
+\delta^2=\delta^3 \sigma&#39;(z^2)w^3=\frac{\partial C}{\partial a^3}\sigma&#39;(z^3)\sigma&#39;(z^2)w^3  \\
+\delta^1=\delta^2\sigma&#39;(z^1)w^2=\frac{\partial C}{\partial a^3}\sigma&#39;(z^3)\sigma&#39;(z^2)w^3\sigma&#39;(z^1)w^2
+\]</span> 然后根据误差项计算 <span class="math inline">\(w\)</span> 的导数： <span class="math display">\[
+\frac{\partial C}{\partial w^3}=\delta^3a^2 \\
+\frac{\partial C}{\partial w^2}=\delta^2a^1 \\
+\frac{\partial C}{\partial w^1}=\delta^1a^0
+\]</span> 一般来说，梯度的消失是这些项的累乘造成的：<span class="math inline">\(\sigma&#39;(z^3)\sigma&#39;(z^2)w^3\sigma&#39;(z^1)w^2\)</span>（因为 <span class="math inline">\(\sigma&#39;(z^l)\)</span> 和 <span class="math inline">\(w^l\)</span> 一般都小于 1）。</p>
+<p>那残差网络做了那些修改呢？其实就是简单地在激活函数的输出后面，加入上一层的输入：</p>
+<center>
+<p><img src="/images/2017-9-25/residual chain.png" width="400px"></p>
+</center>
+<p>假设原本的网络是要学习一个 <span class="math inline">\(H(x)\)</span> 函数，那现在这个网络依然是要学习 <span class="math inline">\(H(x)\)</span>。只不过，原本的网络要学习的是整个 <span class="math inline">\(H(x)\)</span>，而残差网络中，和原本网络相同的那部分结构，要学习的就只是 <span class="math inline">\(H(x)-x\)</span>。换句话说，它要学习的东西只是一个微小的变化，因此训练起来相对更容易一些。</p>
+<p>另一方面，我们沿用之前对导数的分析思路，看看残差网络的梯度会发生什么变化。</p>
+<p>首先，残差网络的前向传播发生了变化： <span class="math display">\[
+z^1=a^0  \\
+a^1=\sigma(z^1)+a^0 \\
+z^2=a^1w^2 \\
+a^2=\sigma(z^2)+a^1 \\
+z^3=a^2w^3 \\
+a^3=\sigma(z^3)+a^2
+\]</span> 反向传播计算的误差项为： <span class="math display">\[
+\delta^3=\frac{\partial C}{\partial z^3}=\frac{\partial C}{\partial a^3}\frac{\partial a^3}{\partial z^3}=\frac{\partial C}{\partial a^3}[\sigma&#39;(z^3)+\frac{\partial a^2}{\partial z^3}] \\
+\delta^2=\delta^3 w^3 \frac{\partial a^2}{\partial z^2}=\frac{\partial C}{\partial a^3}[\sigma&#39;(z^3)+\frac{\partial a^2}{\partial z^3}]w^3 [\sigma&#39;(z^2)+\frac{\partial a^1}{\partial z^2}] \\
+\vdots
+\]</span> 由于 <span class="math inline">\(z^3=a^2w^3\)</span>，所以 <span class="math inline">\(a^2=\frac{z^3}{w^3}\)</span>，故 <span class="math inline">\(\frac{\partial a^2}{\partial z^3}=\frac{1}{w^3}\)</span>，同理 <span class="math inline">\(\frac{\partial a^1}{\partial z^2}=\frac{1}{w^2}\)</span>。代入到上式中就变成： <span class="math display">\[
+\delta^3=\frac{\partial C}{\partial a^3}[\sigma&#39;(z^3)+\frac{1}{w^3}] \\
+\delta^2=\frac{\partial C}{\partial a^3}[\sigma&#39;(z^3)+\frac{1}{w^3}]w^3 [\sigma&#39;(z^2)+\frac{1}{w^2}]=\frac{\partial C}{\partial a^3}[\sigma&#39;(z^3)w^3+1] [\sigma&#39;(z^2)+\frac{1}{w^2}] \\
+\vdots
+\]</span> 对比之前没加残差结构的网络，这个新的网络结构中，误差项 <span class="math inline">\(\delta^l\)</span> 减小为 0 的可能性降低了。以 <span class="math inline">\(\delta^2\)</span> 为例，原本的 <span class="math inline">\(\delta^2=\frac{\partial C}{\partial a^3}\sigma&#39;(z^3)\sigma&#39;(z^2)w^3\)</span>，而现在，连乘的项变成了 <span class="math inline">\([\sigma&#39;(z^3)w^3+1]\)</span> 和 <span class="math inline">\([\sigma&#39;(z^2)+\frac{1}{w^2}]\)</span>，由于 <span class="math inline">\(\sigma&#39;(z^l)\)</span> 和 <span class="math inline">\(w^l\)</span> 一般都小于 1，所以这两项的值会略大于 1，这样，无论连乘多少项，梯度都不会缩小到 0。</p>
+<p><strong>==================================================</strong></p>
 <p>上面所说的 <span class="math inline">\(F(x)=H(x)-x\)</span> 就是所谓的残差 (residual)，而式子内的 <span class="math inline">\(x\)</span> 在论文中被称为 <strong>Identity Mapping</strong>，因为 x 可以看作是由自己到自己的映射函数。基于此，我们可以得到一个新的网络结构，如同开篇的图片所示，这个网络结构跟普通的网络结构类似，但在输出那里多加了一个 Identity Mapping，相当于在网络原有输出的基础上加一个 x，这样便得到我们想要的函数 <span class="math inline">\(H(x)\)</span>。作者将这种相加称为 <strong>shortcut connection</strong>，意思就是说，<span class="math inline">\(x\)</span> 没有经过中间的变换操作，像「短路」一样直接跳到输出那里和 <span class="math inline">\(F(x)\)</span> 相加。需要注意的是，这个网络结构的输入并不一定是原始的数据，它可以是前面一层网络的输出结果。同理，网络的输出也可以继续输入到后面层的网络中。</p>
 <p>我们用一个式子来表示这个网络：<span class="math inline">\(y=F(x,{W_i})+x\)</span>，其中 <span class="math inline">\(F(x,{W_i})=W_2 \sigma(W_1x)\)</span> （这里忽略了 bias）。在论文中，这里的 <span class="math inline">\(\sigma\)</span> 函数采用的是 ReLu。得到 <span class="math inline">\(y\)</span> 后，作者又对其做了一次 ReLu 操作，然后再进入下一层网络。</p>
 <p>Talk is cheap，show you the code（这里用 tensorflow 表示一下上图那个网络结构）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 假设 x 是该网络结构的输入</span></div><div class="line">c1 = tf.layers.conv2d(x, kernel, [w, h], strides=[s,s])</div><div class="line">b1 = tf.layers.batch_normalization(c1, training=is_training)</div><div class="line">h1 = tf.nn.relu(b1)</div><div class="line">c2 = tf.layers.conv2d(h1, kernel, [w, h], strides=[s,s])</div><div class="line">b2 = tf.layers.batch_normalization(c2, training=is_training)</div><div class="line">r = b2 + x</div><div class="line">y = tf.nn.relu(r)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设 x 是该网络结构的输入</span></span><br><span class="line">c1 = tf.layers.conv2d(x, kernel, [w, h], strides=[s,s])</span><br><span class="line">b1 = tf.layers.batch_normalization(c1, training=is_training)</span><br><span class="line">h1 = tf.nn.relu(b1)</span><br><span class="line">c2 = tf.layers.conv2d(h1, kernel, [w, h], strides=[s,s])</span><br><span class="line">b2 = tf.layers.batch_normalization(c2, training=is_training)</span><br><span class="line">r = b2 + x</span><br><span class="line">y = tf.nn.relu(r)</span><br></pre></td></tr></table></figure>
 <p>因为 <span class="math inline">\(x\)</span> 和 <span class="math inline">\(F(x)\)</span> 是直接相加的，所以它们的维度必须相同，不同的情况下，需要对 <span class="math inline">\(x\)</span> 的维度进行调整。可以通过做一次线性变换将它投影到所需的维度空间，也可以用其他简单粗暴的方法。比如，当维度太高时，可以用 pooling 的方法降低维度。而维度较低时，作者在实验中则是直接补 0 来扩展维度。</p>
 <h3 id="深度残差网络">深度残差网络</h3>
 <p>好了，了解了残差网络的基本思路和简单的网络结构后，下面我们可以将它拓展到更深的网络结构中。</p>
@@ -447,7 +491,7 @@
 <p><img src="/images/2017-9-25/gradient.png" width="500px"></p>
 </center>
 <p>我们发现，导数的形式也很类似，也是最后一层的导数加上前面的一堆「残差」导数，而这一步是残差网络中梯度不容易消失的原因。</p>
-<p>作者经过对比实验发现，identity mapping 的效果要好于其他的 mapping，具体的实验细节请参考 <a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="external">tutorial</a> 和后续的一篇论文 <a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="external">Identity Mappings in Deep Residual Networks</a>。换句话说，使用 residual network 时，最好用上 identity mapping。</p>
+<p>作者经过对比实验发现，identity mapping 的效果要好于其他的 mapping，具体的实验细节请参考 <a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="noopener">tutorial</a> 和后续的一篇论文 <a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="noopener">Identity Mappings in Deep Residual Networks</a>。换句话说，使用 residual network 时，最好用上 identity mapping。</p>
 <h3 id="论文中的实验">论文中的实验</h3>
 <p>实验部分，我只讲一下 ImageNet 的结果。</p>
 <p>作者分别用 18 层和 34 层的网络做了两组对比实验（两组网络除了残差外，其他结构相同，并且都加了 BN 层。在对 <span class="math inline">\(x\)</span> 升维时，直接使用 0 进行 padding，换句话说，残差网络的参数和 plain 的一样。34 层的网络见上一部分的说明），并分析了它们在 ImageNet 训练集上的误差下降情况：</p>
@@ -461,9 +505,9 @@
 <p>这个结果表明，当网络层数不多时，plain 网络和残差网络除了训练速度不一样外，对最终的结果影响不大。但如果层数比较深，残差网络可以提升准确率。作者在这里提出一个问题：既然我们已经在网络中加了 BN，那导致 plain 网络准确率降不下来的原因应该不会是梯度消失。但又会是其他什么原因呢？作者在论文中称这种问题为 <strong>degradation problem</strong>，即退化问题。它指的是随着网络层数增加，在梯度没有消失的情况下导致的网络训练缓慢或训练停止的问题。当然啦，按照我自己的理解和猜测，就如这篇文章开篇所讲的那样，梯度消失是由两个方面导致，而 BN 只是将数据从激活函数的收敛区调整到梯度更大的区域，但导数相乘后的累积效应仍然会使梯度变小，所以才导致这里所说的退化问题。不过具体的原因，还有待进一步研究。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="external">何恺明的tutorial</a></li>
-<li><a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="external">Identity Mappings in Deep Residual Networks</a></li>
-<li><a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="external">Deep Residual Learning for Image Recognition</a></li>
+<li><a href="http://icml.cc/2016/tutorials/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="noopener">何恺明的tutorial</a></li>
+<li><a href="https://arxiv.org/abs/1603.05027" target="_blank" rel="noopener">Identity Mappings in Deep Residual Networks</a></li>
+<li><a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">Deep Residual Learning for Image Recognition</a></li>
 </ul>
 
       
@@ -993,24 +1037,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,20 +94,23 @@
 
 
 
-<meta name="description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。
-简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
+<meta name="description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。 简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
+<meta name="keywords" content="Android,SurfaceView">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android：在SurfaceView上做放大镜效果">
 <meta property="og:url" content="https://jermmy.github.io/2016/10/23/2016-10-23-Android-SurfaceView做放大镜效果/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。
-简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。 简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-10-23/ezgif.com-video-to-gif.gif">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-10-23/屏幕快照%202016-10-24%20上午10.29.35.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-10-23/屏幕快照%202016-10-24%20上午10.33.27.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-10-23/屏幕快照%202016-10-24%20上午10.52.59.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-10-23/屏幕快照%202016-10-24%20上午11.05.18.png">
 <meta property="og:updated_time" content="2016-10-24T03:58:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android：在SurfaceView上做放大镜效果">
-<meta name="twitter:description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。
-简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
+<meta name="twitter:description" content="一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在ImageView或者其他View上实现放大镜的方法，但当我把同样的思路用在SurfaceView上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。 简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2016-10-23/ezgif.com-video-to-gif.gif">
 
 
@@ -142,7 +145,7 @@
 
 
 
-  <title>Android：在SurfaceView上做放大镜效果 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Android：在SurfaceView上做放大镜效果 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -152,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -396,68 +399,71 @@
       
         <p>一开始遇到这个需求的时候，觉得应该是一个再普通不过的功能，于是上网查了下怎么实现放大镜效果。果不其然，很快就google出一堆如何在<code>ImageView</code>或者其他<code>View</code>上实现放大镜的方法，但当我把同样的思路用在<code>SurfaceView</code>上时，却遇到一个极坑的问题。于是特意写这篇文章记录实现的思路。</p>
 <p>简单起见，我们要实现的是下图展示的功能，当手指触及SurfaceView时，放大手指所指的位置，放大镜出现在手指左上方。</p>
-<div class="figure">
-<img src="/images/2016-10-23/ezgif.com-video-to-gif.gif" alt="ezgif.com-video-to-gif">
-<p class="caption">ezgif.com-video-to-gif</p>
-</div>
+<figure>
+<img src="/images/2016-10-23/ezgif.com-video-to-gif.gif" alt="ezgif.com-video-to-gif"><figcaption>ezgif.com-video-to-gif</figcaption>
+</figure>
 <h4 id="预备知识">预备知识</h4>
-<ol style="list-style-type: decimal">
-<li>Android canvas基本用法，推荐这篇文章：</li>
-</ol>
-<p>http://blog.csdn.net/harvic880925/article/details/39080931</p>
-<ol start="2" style="list-style-type: decimal">
-<li>SurfaceView的初级使用</li>
+<ol type="1">
+<li><p>Android canvas基本用法，推荐这篇文章：</p>
+<p>http://blog.csdn.net/harvic880925/article/details/39080931</p></li>
+<li><p>SurfaceView的初级使用</p></li>
 </ol>
 <a id="more"></a>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="普通view的实现思路">普通View的实现思路</h4>
 <p><code>SurfaceView</code>放大镜的实现思路和普通<code>View</code>基本一样，所以有必要了解普通<code>View</code>的放大镜如何实现。</p>
 <p>其实归根到底是<code>Canvas</code>的作用。</p>
 <p>思路是这样的：当用户手指触碰到View时，捕获指尖位置(<code>onTouch()</code>方法)，然后用<code>Canvas</code>在该位置左上角裁减出一个圆形区域作为放大镜的位置，在该位置画出放大后的图片。当用户移动手指时，就不断刷新<code>View</code>（通过<code>invalidate()</code>方法调用<code>onDraw()</code>），这样就实现了放大镜效果。</p>
 <p>接下来细化每一个细节问题。</p>
-<ol style="list-style-type: decimal">
-<li>如何裁出那个圆？</li>
-</ol>
+<ol type="1">
+<li><p>如何裁出那个圆？</p>
 <p><code>Canvas</code>表示一个图层，在这个图层上可以进行任意的平移旋转等操作，同时可以通过<code>clipXXX()</code>等方面裁减这个图层。因此，我们可以事先定义好一个圆形的<code>Path</code>，并通过<code>clipPath()</code>方法在指尖左上角的位置裁出一个圆形区域。</p>
 <p>当然，在这之前，你要把<code>Canvas</code>移动到裁减的位置。<code>Canvas</code>的操作默认都是以(0,0)坐标为起点执行的，对应到手机UI的坐标系，也就是屏幕左上角。而移动的操作可以通过<code>translate()</code>函数来完成。</p>
 <p>为了方便理解，我简陋地做了几张图：</p>
-<pre><code>![屏幕快照 2016-10-24 上午10.29.35](/images/2016-10-23/屏幕快照 2016-10-24 上午10.29.35.png)</code></pre>
+<figure>
+<img src="/images/2016-10-23/屏幕快照%202016-10-24%20上午10.29.35.png" alt="屏幕快照 2016-10-24 上午10.29.35"><figcaption>屏幕快照 2016-10-24 上午10.29.35</figcaption>
+</figure>
 <p>假设上图中，绿色部分代表<code>View</code>，图中那个红点是用户指尖的位置。</p>
 <p>接下来，我们要平移<code>Canvas</code>到合适的位置，并裁剪出放大镜的区域。</p>
-<pre><code>  ![屏幕快照 2016-10-24 上午10.33.27](/images/2016-10-23/屏幕快照 2016-10-24 上午10.33.27.png)</code></pre>
+<figure>
+<img src="/images/2016-10-23/屏幕快照%202016-10-24%20上午10.33.27.png" alt="屏幕快照 2016-10-24 上午10.33.27"><figcaption>屏幕快照 2016-10-24 上午10.33.27</figcaption>
+</figure>
 <p>上面这张图，假设带虚线的绿色框是移动后的<code>Canvas</code>，至于为什么要移动到这个位置，跟我的<code>Path</code>的设置有关：</p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mPath = <span class="keyword">new</span> Path();</div><div class="line">mPath.addCircle(RADIUS, RADIUS, RADIUS, Path.Direction.CW);</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPath = <span class="keyword">new</span> Path();</span><br><span class="line">mPath.addCircle(RADIUS, RADIUS, RADIUS, Path.Direction.CW);</span><br></pre></td></tr></table></figure>
 <p>如果以（0，0）点作为标准，这个<code>Path</code>会以（RADIUS，RADIUS）这个点为圆心，以RADIUS为半径形成一个圆。因此，如果<code>Canvas</code>移动到上图的位置，<code>Path</code>对应的就是那个蓝色圆的位置。</p>
 <p>接下来，用<code>Canvas</code>裁剪出这个<code>Path</code>，</p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">canvas.clipPath(mPath);</div></pre></td></tr></table></figure></p>
-<p>这个时候，<code>Canvas</code>会在图层上裁出图中那个蓝色圆。也就是说，下次做画的时候，只有那个蓝色圆的位置会被绘制。</p>
-<ol start="2" style="list-style-type: decimal">
-<li>如何制作放大效果？</li>
-</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.clipPath(mPath);</span><br></pre></td></tr></table></figure>
+<p>这个时候，<code>Canvas</code>会在图层上裁出图中那个蓝色圆。也就是说，下次做画的时候，只有那个蓝色圆的位置会被绘制。</p></li>
+<li><p>如何制作放大效果？</p>
 <p>这一步使用了<code>Matrix</code>的作用。简单来讲，只要我们将<code>Bitmap</code>绘制成n倍大小，同时保证蓝色圆的圆心与红点对应原<code>Bitmap</code>同一位置即可。后一步保证放大的区域确实是手指触碰的区域。</p>
 <p>简单起见，这里以放大两倍为例。</p>
 <p>假设<code>Canvas</code>仍然在（0，0）位置，那么放大两倍后的<code>Canvas</code>就如下面的蓝色区域所示，注意原来的红点坐标也被放大了：</p>
-<pre><code> ![屏幕快照 2016-10-24 上午10.52.59](/images/2016-10-23/屏幕快照 2016-10-24 上午10.52.59.png)</code></pre>
+<figure>
+<img src="/images/2016-10-23/屏幕快照%202016-10-24%20上午10.52.59.png" alt="屏幕快照 2016-10-24 上午10.52.59"><figcaption>屏幕快照 2016-10-24 上午10.52.59</figcaption>
+</figure>
 <p>需要注意的是，裁减出来的那个蓝色圆是不会动的（我觉得这个API的设计有点奇怪）。</p>
 <p>接下来要做的就是让蓝色区域的红点和蓝色圆的圆心重合，这样当<code>Canvas</code>绘制放大两倍的<code>Bitmap</code>的时候，就相当于把指尖位置的区域放大后，再画到蓝色圆的区域，也就是放大镜的效果。</p>
 <p>移动的操作其实很简单，按照上图的标示，横坐标要左移<code>x+RADIUS</code>，纵坐标上移<code>y+RADIUS</code>，换成向量表示就是<code>translate(-x-RADIUS, -y-RADIUS)</code>。</p>
 <p>但要注意，我们之前已经平移过<code>Canvas</code>了，所以要把之前平移的距离算上（如下图所示）</p>
-<pre><code>![屏幕快照 2016-10-24 上午11.05.18](/images/2016-10-23/屏幕快照 2016-10-24 上午11.05.18.png)</code></pre>
+<figure>
+<img src="/images/2016-10-23/屏幕快照%202016-10-24%20上午11.05.18.png" alt="屏幕快照 2016-10-24 上午11.05.18"><figcaption>屏幕快照 2016-10-24 上午11.05.18</figcaption>
+</figure>
 <p>所以最后总的平移向量为：<code>translate(-2*x+RADIUS, -2*y+RADIUS)</code>。</p>
 <p><code>onDraw()</code>函数如下：</p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">  canvas.drawBitmap(bitmap, matrix, <span class="keyword">null</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (isTouching) &#123;</div><div class="line">    <span class="comment">// 剪切出放大区域</span></div><div class="line">    canvas.translate(mX - <span class="number">2</span> * RADIUS, mY - <span class="number">2</span> * RADIUS);</div><div class="line">    canvas.clipPath(mPath);</div><div class="line">    <span class="comment">// 画放大后的图</span></div><div class="line">    canvas.translate(RADIUS - mX * <span class="number">2</span>, RADIUS - mY * <span class="number">2</span>);</div><div class="line">    canvas.drawBitmap(bitmap, scaleMatrix, <span class="keyword">null</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><br\></br\></p>
-<p>#### <code>SurfaceView</code>的放大镜实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">  canvas.drawBitmap(bitmap, matrix, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isTouching) &#123;</span><br><span class="line">    <span class="comment">// 剪切出放大区域</span></span><br><span class="line">    canvas.translate(mX - <span class="number">2</span> * RADIUS, mY - <span class="number">2</span> * RADIUS);</span><br><span class="line">    canvas.clipPath(mPath);</span><br><span class="line">    <span class="comment">// 画放大后的图</span></span><br><span class="line">    canvas.translate(RADIUS - mX * <span class="number">2</span>, RADIUS - mY * <span class="number">2</span>);</span><br><span class="line">    canvas.drawBitmap(bitmap, scaleMatrix, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&lt;br&gt;</p>
+<h4 id="surfaceview的放大镜实现"><code>SurfaceView</code>的放大镜实现</h4>
 <p>完成了普通<code>View</code>的放大镜效果后，<code>SurfaceView</code>照理来说应该也就不是问题，毕竟<code>SurfaceView</code>也是<code>View</code>的子类。但真正实现的时候，却遇到一个很大的问题。</p>
 <p>仔细观察上面<code>onDraw()</code>的代码，可以发现，放大效果最终是通过<code>Matrix</code>将<code>Bitmap</code>放大后再重绘一遍。但应用到<code>SurfaceView</code>时，我发现根本无法拿到<code>SurfaceView</code>的<code>Bitmap</code>。后来查了各种资料，发现大家普遍遇到这个问题，有人甚至通过Linux底层的驱动来获取这个<code>SurfaceView</code>的Frame，不过这要在手机root的前提下实现。后来我尝试通过截屏的思路获取<code>SurfaceView</code>的截图，却发现截图是一片漆黑。导致该问题的根本原因在于<code>SurfaceView</code>的实现机制与普通的<code>View</code>完全是两码事。于是，只能另辟蹊径去获得这个<code>Bitmap</code>。思路其实也很简单，我们自己实例化一个<code>Canvas</code>和<code>Bitmap</code>，将<code>SurfaceView</code>上绘制的结果重新画一遍，这样就相当于间接获得了<code>SurfaceView</code>的<code>Bitmap</code>，绘制函数的代码如下：</p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">     <span class="keyword">try</span> &#123;</div><div class="line">         Canvas canvas = surfaceHolder.lockCanvas();</div><div class="line">         <span class="comment">// 画一层底色,防止SurfaceView闪烁</span></div><div class="line">         canvas.drawColor(Color.BLACK);</div><div class="line"></div><div class="line">         <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</div><div class="line">             canvas.drawBitmap(bitmap, matrix, <span class="keyword">null</span>);</div><div class="line">         &#125;</div><div class="line">         <span class="keyword">if</span> (isTouching) &#123;</div><div class="line">            <span class="comment">// 将SurfaceView上的结果在自己的Bitmap上重新画一遍</span></div><div class="line">            drawSurfaceToBitmap();</div><div class="line"></div><div class="line">            <span class="comment">// 剪切出放大区域</span></div><div class="line">            canvas.translate(mX - <span class="number">2</span> * RADIUS, mY - <span class="number">2</span> * RADIUS);</div><div class="line">            canvas.clipPath(mPath);</div><div class="line">            <span class="comment">// 画放大后的图</span></div><div class="line">            canvas.translate(RADIUS - mX * <span class="number">2</span>, RADIUS - mY * <span class="number">2</span>);</div><div class="line">            <span class="comment">// magBitmap是我们自己的Bitmap</span></div><div class="line">            canvas.drawBitmap(magBitmap, magMatrix, <span class="keyword">null</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        surfaceHolder.unlockCanvasAndPost(canvas);</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (NullPointerException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         Canvas canvas = surfaceHolder.lockCanvas();</span><br><span class="line">         <span class="comment">// 画一层底色,防止SurfaceView闪烁</span></span><br><span class="line">         canvas.drawColor(Color.BLACK);</span><br><span class="line"></span><br><span class="line">         <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</span><br><span class="line">             canvas.drawBitmap(bitmap, matrix, <span class="keyword">null</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (isTouching) &#123;</span><br><span class="line">            <span class="comment">// 将SurfaceView上的结果在自己的Bitmap上重新画一遍</span></span><br><span class="line">            drawSurfaceToBitmap();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 剪切出放大区域</span></span><br><span class="line">            canvas.translate(mX - <span class="number">2</span> * RADIUS, mY - <span class="number">2</span> * RADIUS);</span><br><span class="line">            canvas.clipPath(mPath);</span><br><span class="line">            <span class="comment">// 画放大后的图</span></span><br><span class="line">            canvas.translate(RADIUS - mX * <span class="number">2</span>, RADIUS - mY * <span class="number">2</span>);</span><br><span class="line">            <span class="comment">// magBitmap是我们自己的Bitmap</span></span><br><span class="line">            canvas.drawBitmap(magBitmap, magMatrix, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        surfaceHolder.unlockCanvasAndPost(canvas);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (NullPointerException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
 <p>当然，由于这个例子里绘制的图片是一张静态的背景图，所以可以直接使用这张背景图的<code>Bitmap</code>，但如果绘制的是一张动图，就只能将所有绘制的操作重新画在自己的<code>Bitmap</code>上了。</p>
 <p>另外，如果<code>SurfaceView</code>的绘制流程过于复杂，可能会导致不流畅（毕竟画了两次），需要使用多线程来执行<code>draw()</code>函数，这应该也是使用<code>SurfaceView</code>的正确姿势。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="参考">参考</h4>
-<p><a href="http://chroya.iteye.com/blog/924577" target="_blank" rel="external">Android放大镜的实现</a></p>
-<p><a href="http://blog.csdn.net/harvic880925/article/details/39080931" target="_blank" rel="external">自定义控件之绘图篇（四）：canvas变换与操作</a></p>
-<p><a href="http://www.eoeandroid.com/blog-659748-5465.html" target="_blank" rel="external">setScale,preScale和postScale的区别</a></p>
+<p><a href="http://chroya.iteye.com/blog/924577" target="_blank" rel="noopener">Android放大镜的实现</a></p>
+<p><a href="http://blog.csdn.net/harvic880925/article/details/39080931" target="_blank" rel="noopener">自定义控件之绘图篇（四）：canvas变换与操作</a></p>
+<p><a href="http://www.eoeandroid.com/blog-659748-5465.html" target="_blank" rel="noopener">setScale,preScale和postScale的区别</a></p>
 
       
     </div>
@@ -685,7 +691,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#预备知识"><span class="nav-number">1.</span> <span class="nav-text">预备知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#普通view的实现思路"><span class="nav-number">2.</span> <span class="nav-text">普通View的实现思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#预备知识"><span class="nav-number">1.</span> <span class="nav-text">预备知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#普通view的实现思路"><span class="nav-number">2.</span> <span class="nav-text">普通View的实现思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#surfaceview的放大镜实现"><span class="nav-number">3.</span> <span class="nav-text">SurfaceView的放大镜实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -986,24 +992,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

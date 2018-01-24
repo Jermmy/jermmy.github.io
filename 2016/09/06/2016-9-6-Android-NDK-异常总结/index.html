@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,11 +95,13 @@
 
 
 <meta name="description" content="开发 NDK 时，由于大量用到指针等，在失去 Java 虚拟机保护（异常抛出）的情况下，常常面临崩溃闪退却不知道哪里出错的问题。更有甚者，这种情况还具有随机性，非常麻烦！本文记录一下我开发 NDK 时遇到的各种蛋疼问题，方便以后查找使用。">
+<meta name="keywords" content="Android,NDK">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android NDK-异常总结">
 <meta property="og:url" content="https://jermmy.github.io/2016/09/06/2016-9-6-Android-NDK-异常总结/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="开发 NDK 时，由于大量用到指针等，在失去 Java 虚拟机保护（异常抛出）的情况下，常常面临崩溃闪退却不知道哪里出错的问题。更有甚者，这种情况还具有随机性，非常麻烦！本文记录一下我开发 NDK 时遇到的各种蛋疼问题，方便以后查找使用。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-04-23T05:41:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android NDK-异常总结">
@@ -137,7 +139,7 @@
 
 
 
-  <title>Android NDK-异常总结 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Android NDK-异常总结 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -394,7 +396,7 @@
 <h3 id="alibc3347-fatal-signal-11-sigsegv-at-0xdeadbaad-code1">1.  A/libc(3347): Fatal signal 11 (SIGSEGV) at 0xdeadbaad (code=1)</h3>
 <p>这个异常会导致 app 闪退。我开发的时候是随机遇到的，当时调了一个早上。网上 google 后发现遇到问题的原因各种各样，但大多数是访问了不该访问的内存（如：数组越界）。在仔细查看了代码后，我对所有可能越界的地方做了改善，并打了断点，结果还是遇到这种问题，但同样的数据在电脑上跑完全正常。后来我猜想是否是栈空间不足导致的，于是将所有数组的内存分配到堆上，之后便一切顺利了。不管原因是否是栈空间不足导致的，总算是找到了一种解决方案。</p>
 <h4 id="参考">参考</h4>
-<p><a href="http://blog.csdn.net/lancees/article/details/8896711" target="_blank" rel="external">Fatal signal 11 (SIGSEGV) at 0xdeadbaad (code=1) 错误 解决方案(android-ndk)</a></p>
+<p><a href="http://blog.csdn.net/lancees/article/details/8896711" target="_blank" rel="noopener">Fatal signal 11 (SIGSEGV) at 0xdeadbaad (code=1) 错误 解决方案(android-ndk)</a></p>
 
       
     </div>
@@ -923,24 +925,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

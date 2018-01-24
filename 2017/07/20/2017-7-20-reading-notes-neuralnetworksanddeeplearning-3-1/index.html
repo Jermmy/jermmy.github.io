@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,16 +94,14 @@
 
 
 
-<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
-这些方法">
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
 <meta property="og:url" content="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
-这些方法">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/tikz28.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation1.gif">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation2.gif">
@@ -115,9 +113,7 @@
 <meta property="og:updated_time" content="2018-01-06T08:28:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
-<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。
-这些方法">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-20/tikz28.png">
 
 
@@ -152,7 +148,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter3（1） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>读书笔记：neuralnetworksanddeeplearning chapter3（1） | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -162,7 +158,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -404,7 +400,7 @@
       
 
       
-        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。</p>
 <p>这些方法包括：</p>
 <ul>
@@ -418,21 +414,18 @@
 <h3 id="交叉熵函数cross-entropy">交叉熵函数(cross-entropy)</h3>
 <p>实际生活中，我们都会有这样的经验：当遇到错误的时候，往往是我们学到东西最多的时候，而如果我们对自己的错误模糊不清，进步反而会变慢。</p>
 <p>同样地，我们希望神经网络能够从错误中更快地学习。那实际情况是怎样的呢？来看一个简单的例子。</p>
-<div class="figure">
-<img src="/images/2017-7-20/tikz28.png" alt="tikz28">
-<p class="caption">tikz28</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/tikz28.png" alt="tikz28"><figcaption>tikz28</figcaption>
+</figure>
 <p>这个例子只包含一个神经元，并且只有一个输入。我们会训练这个神经元，使得：当输入为 1 时，输出为 0。我们将权重和偏差分别初始化为 0.6 和 0.9。当输入为 1 时，网络输出为 0.82 (<span class="math inline">\(\frac{1}{1+e^{-1.5}} \approx 0.82\)</span>)。我们采用<strong>平方差函数</strong>来训练网络，并将学习率设为 0.15。</p>
 <p>这个网络其实已经退化成一个线性回归模型。下面用一个动画来演示网络的训练过程：</p>
-<div class="figure">
-<img src="/images/2017-7-20/saturation1.gif" alt="saturation1">
-<p class="caption">saturation1</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/saturation1.gif" alt="saturation1"><figcaption>saturation1</figcaption>
+</figure>
 <p>从中我们可以看到，神经元快速地学习参数，最终输出 0.09 (已经很接近 0 了)。现在，我们将参数和偏差初始化为 2.0，网络的初始输出为 0.98 (跟我们想要的结果相差甚远)，学习率依然为 0.15。看看这一次网络会如何学习：</p>
-<div class="figure">
-<img src="/images/2017-7-20/saturation2.gif" alt="saturation2">
-<p class="caption">saturation2</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/saturation2.gif" alt="saturation2"><figcaption>saturation2</figcaption>
+</figure>
 <p>虽然学习率和上次一样，但网络一开始学习的速度却很慢，在最开始的 150 次学习里，参数和偏差几乎没有改变，之后，学习速度突然提高，神经元的输出快速降到接近 0.0。这一点很令人差异，因为当神经元的输出严重错误时，学习的速度反而不是很快。</p>
 <p>下面我们需要了解问题发生的根源。神经元在训练的时候，学习速度除了受学习率影响外，还受偏导数 <span class="math inline">\(\partial C/ \partial w\)</span> 和 <span class="math inline">\(\partial C / \partial b\)</span> 影响。所以，学习速度很慢，也就是偏导数的值太小。根据 <span class="math display">\[
 C=\frac{(y-a)^2}{2}    \tag{54}
@@ -443,19 +436,17 @@ C=\frac{(y-a)^2}{2}    \tag{54}
 \frac{\partial C}{\partial b} = (a-y)\sigma&#39;(z)=a\sigma&#39;(z)   \tag{56}
 \]</span></p>
 <p>要想深入理解这两个式子，我们需要回顾一下 sigmoid 函数的内容，如下图：</p>
-<div class="figure">
-<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid">
-<p class="caption">sigmoid</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid"><figcaption>sigmoid</figcaption>
+</figure>
 <p>从函数图像我们可以发现，当函数值接近于 1 或 0 时，函数导数趋于 0，从而导致 (55) 和 (56) 两个式子的值趋于 0。这也是为什么神经元一开始的学习速率会那么慢，而中间部分学习速度会突然提升。</p>
 <h4 id="引入交叉熵代价函数">引入交叉熵代价函数</h4>
 <p>要解决学习速度下降的问题，我们需要从两个偏导数上面做文章。要么换一个代价函数，要么更换 <span class="math inline">\(\sigma\)</span> 函数。这里，我们采用第一种做法，将代价函数更换为交叉熵函数(cross-entropy)。</p>
 <p>首先用一个例子来介绍交叉熵函数。</p>
 <p>假设我们有如下神经元：</p>
-<div class="figure">
-<img src="/images/2017-7-20/tikz29.png" alt="tikz29">
-<p class="caption">tikz29</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/tikz29.png" alt="tikz29"><figcaption>tikz29</figcaption>
+</figure>
 <p>则交叉熵函数被定义为（这里假定 y 是个概率值，在 0～1 之间，这样才能跟 a 相搭）： <span class="math display">\[
 C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
 \]</span> 当然，直觉上看不出这个函数能解决学习速率下降的问题，甚至看不出这可以成为一个代价函数。</p>
@@ -476,16 +467,14 @@ C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
 \frac{\partial C}{\partial b}=\frac{1}{n}\sum_x{(\sigma(z)-y)} \tag{62}
 \]</span> 现在，我们将交叉熵应用到之前的例子中，看看神经元的训练有什么变化。</p>
 <p>首先是权重和偏差的初始值为 0.6 和 0.9 的例子：</p>
-<div class="figure">
-<img src="/images/2017-7-20/saturation3.gif" alt="saturation3">
-<p class="caption">saturation3</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/saturation3.gif" alt="saturation3"><figcaption>saturation3</figcaption>
+</figure>
 <p>可以看到网络的训练速度近乎完美。</p>
 <p>然后是权重和偏差初始值均为 2.0 的例子：</p>
-<div class="figure">
-<img src="/images/2017-7-20/saturation4.gif" alt="saturation4">
-<p class="caption">saturation4</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/saturation4.gif" alt="saturation4"><figcaption>saturation4</figcaption>
+</figure>
 <p>这一次，正如我们期望的那样，神经元学习得非常快。</p>
 <p>这两次实验中，采用的学习率是 0.005。事实上，对于不同的代价函数，学习率要作出相应的调整。</p>
 <p>上面对交叉熵函数的讨论都只针对一个神经元，其实很容易将它延伸到多层神经元的网络结构。假设 <span class="math inline">\(y=y_1, y_2, \dots\)</span> 是想要的网络输出，而 <span class="math inline">\(a_1^L, a_2^L, \dots\)</span> 是网络的实际输出，则 cross-entropy 函数可以定义为： <span class="math display">\[
@@ -515,10 +504,9 @@ C=-\frac{1}{n}\sum_x{[y\ln a+(1-y)\ln(1-a)]}+constant \tag{77}
 <p>Softmax 的功能和 sigmoid 类似，只不过前者的函数形式是这样的： <span class="math display">\[
 a_j^L=\frac{e^{z_j^L}}{\sum_k{e^{z_k^L}}} \tag{78}
 \]</span> ⚠️分母是所有输出神经元的总和。这意味着，经过 Softmax 函数后，所有神经元的输出会呈现出概率分布的样式。</p>
-<div class="figure">
-<img src="/images/2017-7-20/softmax.gif" alt="softmax">
-<p class="caption">softmax</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/softmax.gif" alt="softmax"><figcaption>softmax</figcaption>
+</figure>
 <p>当增大其中一个神经元输出时，其他神经元的输出值会变小，而且变小的总和等于前者增加的值。反之亦然。这是因为所有神经元的输出值总和始终为 1。</p>
 <p>另外，Softmax 的输出始终为正值。</p>
 <h4 id="softmax-解决学习速率下降的问题">Softmax 解决学习速率下降的问题</h4>
@@ -537,7 +525,7 @@ C \equiv -\ln a_y^L \tag{80}
 <p>写了这么多，我们又要问一个类似的问题：什么时候用 sigmoid 和 cross-entropy，什么时候用 softmax 和 log-likelihood。事实上，大部分情况下这两个选择都能带来不错的结果，当然，如果想要输出结果呈现概率分布的话，Softmax 无疑会更好。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a></li>
 </ul>
 
       
@@ -1065,24 +1053,7 @@ C \equiv -\ln a_y^L \tag{80}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

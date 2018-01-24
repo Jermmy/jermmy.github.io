@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,16 +94,14 @@
 
 
 
-<meta name="description" content="RAM &amp;amp; ROM
-RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。
-RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
+<meta name="description" content="RAM &amp;amp; ROM RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。 RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
+<meta name="keywords" content="计算机系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="计算机系统">
 <meta property="og:url" content="https://jermmy.github.io/2016/11/23/2016-11-23-深入理解计算机系统/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="RAM &amp;amp; ROM
-RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。
-RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="RAM &amp;amp; ROM RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。 RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-11-24/obj.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-11-24/noshare.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-11-24/share.png">
@@ -117,9 +115,7 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 <meta property="og:updated_time" content="2017-04-23T05:40:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="计算机系统">
-<meta name="twitter:description" content="RAM &amp;amp; ROM
-RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。
-RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
+<meta name="twitter:description" content="RAM &amp;amp; ROM RAM(Read Access Memory)和ROM(Read Only Memory)是很多小白感到困惑的东西，只知道跟主存有关，傻傻分不清。 RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普通硬盘，访问速度以ns计算，目前已经可以到几十ns。SRAM速度更快，价格更贵，所以通常用作缓存(Cache，一种读写速度比主存更快的设备，用于缓解CP">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2016-11-24/obj.png">
 
 
@@ -154,7 +150,7 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 
 
 
-  <title>计算机系统 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>计算机系统 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -164,7 +160,7 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -413,40 +409,39 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 <p>Flash memory是基于EPROM的一种重要存储设备，在手机、电子照相机等设备中大量使用。SSD（固态硬盘）也是基于Flash memory的。</p>
 <p>ROM设备中存储的程序通常称为固件（firmware）。计算机启动的时候，会先执行ROM中的固件程序。有些系统会在固件中提供了一系列读写函数（比如BIOS）。</p>
 <a id="more"></a>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="gcc工作流程">GCC工作流程</h3>
 <p>gcc从编译源代码到生成可执行程序，要经过四个步骤：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>C preprocessor（cpp）预处理源文件（main.c），生成中间文件（main.i，ASCII字符）：这一过程中，cpp程序会替换文件中定义的宏，并将头文件拷贝到源文件中，最后生成中间文件（main.i）；</li>
 <li>C compiler（cc1）编译（main.i）生成汇编代码（main.s）；</li>
 <li>Assembler（as）编译（main.s）生成目标文件（main.o，relocatable object file）</li>
 <li>Linker program（ld）链接所有的目标文件，生成可执行程序。</li>
 </ol>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="static-linking">Static Linking</h3>
 <p>静态链接器（Static linker）会将可重定位的目标文件（relocatable object file）链接起来生成可执行文件。这个过程中它要执行两个很重要的任务：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>符号表（Symbol resolution）：目标文件中可能有符号引用了其他目标文件定义的内容，链接器要将符号的引用串接起来，并保证定义的唯一性；</li>
 <li>重定位（Relocation）：编译器和汇编器生成的代码段和数据段的位置都是从0开始的，链接器需要将这些目标文件组合起来，并重新生成地址。事实上，目标文件可以看作是字节块的集合，Linker只是把这些块重新编排，并分配新的地址给它们。</li>
 </ol>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="object-files">Object Files</h3>
 <p>目标文件分为三种类型：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>可重定位的目标文件（Relocatable object file）：包括二进制码和数据，可能被链接器链接起来生成可执行程序；</li>
 <li>可执行的目标文件（Executable object file）：包括二进制码和数据，可以直接载入内存并执行；</li>
 <li>可共享的目标文件（Shared object file）：一种特殊的relocatable object file，可以在加载或运行时被链接到程序中。</li>
 </ol>
 <p>Compiler和assembler生成的是第一和第三种文件。</p>
 <p>不同系统生成的目标文件的格式是不同的，例如：Linux使用的是ELF格式的目标文件。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="relocatable-object-files">Relocatable Object Files</h3>
 <p>这里以ELF格式为例，说明目标文件包含哪些内容：</p>
-<div class="figure">
-<img src="/images/2016-11-24/obj.png" alt="obj">
-<p class="caption">obj</p>
-</div>
-<ol style="list-style-type: decimal">
+<figure>
+<img src="/images/2016-11-24/obj.png" alt="obj"><figcaption>obj</figcaption>
+</figure>
+<ol type="1">
 <li>.text：机器码；</li>
 <li>.rodata：程序中的只读数据；</li>
 <li>.data：已经初始化的全局变量（c语言）；</li>
@@ -459,72 +454,67 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 </ol>
 <h4 id="symbols-and-symbol-table">Symbols and Symbol Table</h4>
 <p>每个目标文件（relocatable object file）中都包含一个符号表，记录该文件定义和引用的符号，包括函数和一下变量。具体来说，包括以下两类：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Global symbols：目标文件中定义的函数和全局变量（在c里面没有static修饰的符号），目标文件引用的在其他目标文件中定义的函数和全局变量；</li>
 <li>Local symbols：目标文件中定义的仅在该文件中使用的函数和变量（在c里面用static修饰的符号）。</li>
 </ol>
 <p>需要注意的是，local symbols中不包括程序中的局部变量，这些局部变量是在运行的时候在stack中生成的，而symbols中记录的变量是编译时在目标文件的.data或.bss段中生成的。对于前者，编译器可以保证符号名称的唯一性，对于后者，Linker需要保证其在所有目标文件中的唯一性。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="linking-with-static-libraries">Linking with Static Libraries</h3>
 <p>所谓静态链接库，就是事先将一些目标文件压缩打包而成的*.a文件。在链接的时候，Linker会根据应用程序代码中的引用，把静态链接库中需要用到的object modules拷贝到最终的可执行程序中。</p>
 <p>可以用ar工具生成静态链接库，例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">unix&gt; ar rcs lib.a lib1.o lib2.o</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">unix&gt;</span> ar rcs lib.a lib1.o lib2.o</span><br></pre></td></tr></table></figure>
 <p>然后在链接的时候将它们引入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">unix&gt; gcc -static -o main main.o lib.a</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">unix&gt;</span> gcc -static -o main main.o lib.a</span><br></pre></td></tr></table></figure>
 <p>Linker在解决链接时的符号引用问题时，采用从左向右扫描的方法，如果扫描一个目标文件时，发现一个未定义的符号，就记录下来（保存到未定义符号集），在之后扫描到的目标文件中查找，找到该符号则将其从未定义符号集中删除，并将对应的目标文件放入目标文件集合。</p>
 <p>这种方法需要保证目标文件的输入顺序，如果main.c引用了lib.a中的符号，但在编译的时候，把lib.a放在了main.c前面，这样链接将会出错。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="dynamic-linking-with-shared-libraries">Dynamic Linking with Shared Libraries</h3>
 <p>动态链接库链接到程序中的方法有两种：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li><p>程序被载入内存时，由loader控制dynamic linker加载动态链接库；</p></li>
-<li><p>在程序运行的时候，由程序自己调用dynamic linker加载并链接库，例如：Linux提供了接口来执行这样的操作</p></li>
+<li><p>在程序运行的时候，由程序自己调用dynamic linker加载并链接库，例如：Linux提供了接口来执行这样的操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">int</span> flag)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>JNI的工作原理与这种思路很类似。</p></li>
 </ol>
-<p><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">int</span> flag)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>JNI的工作原理与这种思路很类似。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="unix-io">Unix I/O</h3>
 <p>在unix中，文件就是一个字节序列。</p>
 <p>所有的I/O设备，例如：网络、硬盘、终端，都被当作是文件模型。所以，所有的输入输出都被当作是对特定文件的读写（比如键盘输入到终端）。</p>
 <p>每次应用程序打开文件的时候，kernel会返回一个descriptor，应用程序根据这个descriptor来跟踪文件状态，而文件的所有信息都是由kernel维护的（比如：改变当前文件的读写偏移位置，关闭文件等）。</p>
 <h4 id="共享文件">共享文件</h4>
 <p>Unix内核通过三种数据结构来表示打开的文件，从而实现文件共享的目的：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Descriptor table：由每个进程单独维护，表中的每个子项指向file table中的一个子项；</li>
 <li>File table：打开的文件的集合，由所有进程共享。每个子项包含当前文件的偏移位置、引用数目等。如果一个descriptor指向某个File table的子项，这个子项的引用数目会增加1，当引用数目为0的时候，内核会关闭该文件。同时，每个子项也包含一个指向v-node table子项的指针；</li>
 <li>v-node table：由所有进程共享，每个子项包含文件的绝大部分信息。</li>
 </ol>
 <p>具体的，通过三幅图了解其工作原理：</p>
-<div class="figure">
-<img src="/images/2016-11-24/noshare.png" alt="noshare">
-<p class="caption">noshare</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/noshare.png" alt="noshare"><figcaption>noshare</figcaption>
+</figure>
 <p>上图中，进程的descriptor table中，fd1和fd4指向两个不同的子项（File table），这两个子项指向两个不同的文件，所以不存在共享。</p>
-<div class="figure">
-<img src="/images/2016-11-24/share.png" alt="share">
-<p class="caption">share</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/share.png" alt="share"><figcaption>share</figcaption>
+</figure>
 <p>上图中，fd1和fd4同样指向两个子项，但这两个子项却指向同一个v-node table的子项，所以它们实际上使用了同一个文件。由于file table的两个子项维护两个File pos，所以fd1和fd4在读文件的时候是“隔离”的。</p>
-<div class="figure">
-<img src="/images/2016-11-24/process.png" alt="process">
-<p class="caption">process</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/process.png" alt="process"><figcaption>process</figcaption>
+</figure>
 <p>上图是父进程和子进程的文件共享模型，它们使用的是相同的文件，包括File pos。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h3 id="virtual-memory">Virtual Memory</h3>
 <p>虚拟内存是位于disk上面的用于模拟物理内存的空间。早期计算机没有虚拟内存，CPU直接通过物理内存地址访问Main Memory。有了虚拟内存后，CPU只拥有Virtual address(VA)，先通过MMU转换成物理内存，再访问Main Memory。<img src="/Users/xyz/GitCode/jermmy.github.io/source/images/2016-11-24/vm副本.png" alt="vm副本"></p>
 <p>（使用VM）</p>
-<div class="figure">
-<img src="/images/2016-11-24/vm.png" alt="vm">
-<p class="caption">vm</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/vm.png" alt="vm"><figcaption>vm</figcaption>
+</figure>
 <p>（没有使用VM）</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="vm-as-tool-for-caching">VM as Tool for Caching</h4>
-<div class="figure">
-<img src="/images/2016-11-24/vm副本%202.png" alt="vm副本 2">
-<p class="caption">vm副本 2</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/vm副本%202.png" alt="vm副本 2"><figcaption>vm副本 2</figcaption>
+</figure>
 <p>如图，虚拟内存和物理内存都是将空间分成block进行管理的。VM中的块称为virtual page，物理内存上的块称为physical page或page frame。</p>
 <p>virtual page有三种类型：</p>
 <ul>
@@ -533,13 +523,12 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 <li><strong>Uncached:</strong> 已经分配空间但还没有映射到物理内存的页（物理内存不够用），当CPU需要访问这块内存时，需要进行页调度。</li>
 </ul>
 <p>由于disk跟DRAM的读写速度存在巨大差异，所以VM的主要工作之一是减少页调度。通常来说，virtual page的大小为4KB到2KB（物理内存跟它一致）。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="page-tables">Page Tables</h4>
 <p>Page Tables是MMU的辅助工具，简单来讲，它是用来判断virtual page的状态的。</p>
-<div class="figure">
-<img src="/images/2016-11-24/vm副本%203.png" alt="vm副本 3">
-<p class="caption">vm副本 3</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/vm副本%203.png" alt="vm副本 3"><figcaption>vm副本 3</figcaption>
+</figure>
 <p>Page tables主要包括两个信息：<strong>valid bit</strong>，<strong>n-bit address</strong>。前者用来表示这块virtual page是否已经缓存到物理内存，后者表示这块virtual page在disk上对应的空间位置（即用户是否拥有使用权）。</p>
 <p>Page tables在CPU寻址的时候发挥作用。CPU访问一块virtual page，通常有三种状态：</p>
 <ul>
@@ -548,38 +537,30 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
 <li><strong>Allocating Pages: </strong>这个动作通常是malloc等系统调用导致的。先在vm上分配virtual pages，接下来的步骤跟Page Faults是一致。</li>
 </ul>
 <p>要知道，程序的内存调优基本上就是为了防止频繁的页调度。频繁的页调度又称为“抖动”，它受限于disk的读取速度。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="vm-as-a-tool-for-memory-management">VM as a Tool for Memory Management</h4>
 <p>事实上，操作系统为每个进程单独分配一张Page table，这么做的好处是，对于每个进程而言，它们的内存地址空间可以看作是从0开始的，至于具体对应哪一块物理地址，由MMU决定。</p>
-<div class="figure">
-<img src="/images/2016-11-24/vm副本%204.png" alt="vm副本 4">
-<p class="caption">vm副本 4</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/vm副本%204.png" alt="vm副本 4"><figcaption>vm副本 4</figcaption>
+</figure>
 <p>这种设计有多种好处：</p>
-<ol style="list-style-type: decimal">
-<li>简化linking：</li>
-</ol>
-<p>之前学linking的时候，提到linking就是将obj链接起来，为符号分配新的地址，这里的地址其实是相对地址，对于Linux而言，每个进程的起始地址（virtual address）都是一样的（例如：32bit系统是0x08048000），因此只要以这个地址为起点，计算往后的偏移地址，就知道程序运行时真正对应的地址是什么。而这个相同的起始地址其实就是每个进程的virtual address space的起始位置，对应到具体的物理内存肯定是不一样的（参见上图）。这样的工作大大简化了linker的设计。</p>
-<ol start="2" style="list-style-type: decimal">
-<li>简化loading：</li>
-</ol>
+<ol type="1">
+<li><p>简化linking：</p>
+<p>之前学linking的时候，提到linking就是将obj链接起来，为符号分配新的地址，这里的地址其实是相对地址，对于Linux而言，每个进程的起始地址（virtual address）都是一样的（例如：32bit系统是0x08048000），因此只要以这个地址为起点，计算往后的偏移地址，就知道程序运行时真正对应的地址是什么。而这个相同的起始地址其实就是每个进程的virtual address space的起始位置，对应到具体的物理内存肯定是不一样的（参见上图）。这样的工作大大简化了linker的设计。</p></li>
+<li><p>简化loading：</p>
 <p>加载程序的时候，会为目标文件中的变量（.text、.data）分配空间，但实际上，初次加载的时候，系统只是在disk的vm上为这些section分配一个virtual pages（没有复制内容，仅仅分配一大块空间，因此速度较快），然后在进程的Page tables中将这些vp的valid bit设为0（not cached），并将address指向obj files中的真正的section， 只有当程序真正引用到它们时，才会将它们载入内存。</p>
-<p>注：这种将连续的vp跟任意文件的任意地址映射起来的技术称为<strong>memory mapping</strong>。Unix提供了<strong>mmap</strong>系统调用给开发人员使用。</p>
-<ol start="3" style="list-style-type: decimal">
-<li>简化了sharing：</li>
+<p>注：这种将连续的vp跟任意文件的任意地址映射起来的技术称为<strong>memory mapping</strong>。Unix提供了<strong>mmap</strong>系统调用给开发人员使用。</p></li>
+<li><p>简化了sharing：</p>
+<p>如果两个进程都调用了系统函数，不必要将系统函数的代码都复制到进程空间，而是将它们的vp都指向相同的磁盘空间（空间上有相应的内核函数代码）即可。</p></li>
+<li><p>简化了memory allocation：</p>
+<p>当程序想分配新的heap空间时，系统可以分配连续的vps给进程（对应到进程的page tables），然后将这些vps映射到物理内存，这样就不用管在物理内存上如何分配连续空间了。</p></li>
 </ol>
-<p>如果两个进程都调用了系统函数，不必要将系统函数的代码都复制到进程空间，而是将它们的vp都指向相同的磁盘空间（空间上有相应的内核函数代码）即可。</p>
-<ol start="4" style="list-style-type: decimal">
-<li>简化了memory allocation：</li>
-</ol>
-<p>当程序想分配新的heap空间时，系统可以分配连续的vps给进程（对应到进程的page tables），然后将这些vps映射到物理内存，这样就不用管在物理内存上如何分配连续空间了。</p>
-<p><br\></br\></p>
+<p>&lt;br&gt;</p>
 <h4 id="vm-as-a-tool-for-memory-protection">VM as a Tool for Memory Protection</h4>
 <p>虚拟内存机制可以控制vp的访问权限，通过在PTE（Page table entry）中加入权限标识位来实现。</p>
-<div class="figure">
-<img src="/images/2016-11-24/vm副本%205.png" alt="vm副本 5">
-<p class="caption">vm副本 5</p>
-</div>
+<figure>
+<img src="/images/2016-11-24/vm副本%205.png" alt="vm副本 5"><figcaption>vm副本 5</figcaption>
+</figure>
 <p>例如：如果SUP标识位为NO，就表示这个vp内的程序没法访问内核代码。</p>
 <p>通过这种方法，可以防止程序在运行时修改代码，或者访问没有权限的区域。</p>
 
@@ -807,7 +788,7 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ram-rom"><span class="nav-number">1.</span> <span class="nav-text">RAM & ROM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gcc工作流程"><span class="nav-number">2.</span> <span class="nav-text">GCC工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#static-linking"><span class="nav-number">3.</span> <span class="nav-text">Static Linking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object-files"><span class="nav-number">4.</span> <span class="nav-text">Object Files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#relocatable-object-files"><span class="nav-number">5.</span> <span class="nav-text">Relocatable Object Files</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#symbols-and-symbol-table"><span class="nav-number">5.1.</span> <span class="nav-text">Symbols and Symbol Table</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linking-with-static-libraries"><span class="nav-number">6.</span> <span class="nav-text">Linking with Static Libraries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic-linking-with-shared-libraries"><span class="nav-number">7.</span> <span class="nav-text">Dynamic Linking with Shared Libraries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unix-io"><span class="nav-number">8.</span> <span class="nav-text">Unix I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#共享文件"><span class="nav-number">8.1.</span> <span class="nav-text">共享文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#virtual-memory"><span class="nav-number">9.</span> <span class="nav-text">Virtual Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-tool-for-caching"><span class="nav-number">9.1.</span> <span class="nav-text">VM as Tool for Caching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#page-tables"><span class="nav-number">9.2.</span> <span class="nav-text">Page Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-a-tool-for-memory-management"><span class="nav-number">9.3.</span> <span class="nav-text">VM as a Tool for Memory Management</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-a-tool-for-memory-protection"><span class="nav-number">9.4.</span> <span class="nav-text">VM as a Tool for Memory Protection</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ram-rom"><span class="nav-number">1.</span> <span class="nav-text">RAM &amp; ROM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gcc工作流程"><span class="nav-number">2.</span> <span class="nav-text">GCC工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#static-linking"><span class="nav-number">3.</span> <span class="nav-text">Static Linking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object-files"><span class="nav-number">4.</span> <span class="nav-text">Object Files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#relocatable-object-files"><span class="nav-number">5.</span> <span class="nav-text">Relocatable Object Files</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#symbols-and-symbol-table"><span class="nav-number">5.1.</span> <span class="nav-text">Symbols and Symbol Table</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linking-with-static-libraries"><span class="nav-number">6.</span> <span class="nav-text">Linking with Static Libraries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic-linking-with-shared-libraries"><span class="nav-number">7.</span> <span class="nav-text">Dynamic Linking with Shared Libraries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unix-io"><span class="nav-number">8.</span> <span class="nav-text">Unix I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#共享文件"><span class="nav-number">8.1.</span> <span class="nav-text">共享文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#virtual-memory"><span class="nav-number">9.</span> <span class="nav-text">Virtual Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-tool-for-caching"><span class="nav-number">9.1.</span> <span class="nav-text">VM as Tool for Caching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#page-tables"><span class="nav-number">9.2.</span> <span class="nav-text">Page Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-a-tool-for-memory-management"><span class="nav-number">9.3.</span> <span class="nav-text">VM as a Tool for Memory Management</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-as-a-tool-for-memory-protection"><span class="nav-number">9.4.</span> <span class="nav-text">VM as a Tool for Memory Protection</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1108,24 +1089,7 @@ RAM分为SRAM和DRAM。DRAM就是通常用作主存的设备，速度快于普�
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

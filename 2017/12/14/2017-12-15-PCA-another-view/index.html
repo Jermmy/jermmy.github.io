@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,14 +95,16 @@
 
 
 <meta name="description" content="很久以前写过一篇 PCA 的小白教程，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。">
+<meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PCA，到底在做什么">
 <meta property="og:url" content="https://jermmy.github.io/2017/12/14/2017-12-15-PCA-another-view/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="很久以前写过一篇 PCA 的小白教程，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-15/pca.jpeg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-15/transform.png">
-<meta property="og:updated_time" content="2017-12-14T16:28:19.000Z">
+<meta property="og:updated_time" content="2018-01-10T04:58:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCA，到底在做什么">
 <meta name="twitter:description" content="很久以前写过一篇 PCA 的小白教程，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。">
@@ -140,7 +142,7 @@
 
 
 
-  <title>PCA，到底在做什么 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>PCA，到底在做什么 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +152,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -392,7 +394,7 @@
       
 
       
-        <p>很久以前写过一篇 PCA 的小白<a href="http://jermmy.github.io/2017/03/25/2017-3-25-understand-PCA/">教程</a>，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。</p>
+        <p>很久以前写过一篇 PCA 的小白<a href="https://jermmy.github.io/2017/03/25/2017-3-25-understand-PCA/">教程</a>，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。</p>
 <center>
 <p><img src="/images/2017-12-15/pca.jpeg" width="400px"></p>
 </center>
@@ -941,24 +943,7 @@ C_y=\begin{bmatrix} \lambda_1 &amp; &amp; &amp; 0 \\ &amp; \lambda_2 &amp; &amp;
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -96,12 +96,13 @@
 
 <meta name="description" content="In me the tiger sniffs the rose.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Jermmy's Lazy Blog">
+<meta property="og:title" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:url" content="https://jermmy.github.io/page/2/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="In me the tiger sniffs the rose.">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jermmy's Lazy Blog">
+<meta name="twitter:title" content="Jermmy&#39;s Lazy Blog">
 <meta name="twitter:description" content="In me the tiger sniffs the rose.">
 
 
@@ -136,7 +137,7 @@
 
 
 
-  <title>Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -146,7 +147,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -712,7 +713,7 @@
 
       
         
-          <p>关于傅立叶变换，知乎上已经有一篇很好的<a href="https://zhuanlan.zhihu.com/p/19763358?columnSlug=wille">教程</a>，因此，这篇文章不打算细讲傅立叶的物理含义，只是想从图像的角度谈一谈傅立叶变换的本质和作用。</p>
+          <p>关于傅立叶变换，知乎上已经有一篇很好的<a href="https://zhuanlan.zhihu.com/p/19763358?columnSlug=wille" target="_blank" rel="noopener">教程</a>，因此，这篇文章不打算细讲傅立叶的物理含义，只是想从图像的角度谈一谈傅立叶变换的本质和作用。</p>
 <p>本文假设读者已经熟知欧拉公式： <span class="math display">\[
 e^{j\pi x}=\cos{\pi x}+j\sin{\pi x}
 \]</span> 并且知道高数课本中给出的傅立叶变换公式： <span class="math display">\[
@@ -1033,7 +1034,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
 
       
         
-          <p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="(https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5)">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
+          <p>之前提到，深度神经网络在训练中容易遇到梯度<strong>消失/爆炸</strong>的问题，这个问题产生的根源详见之前的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>。在 Batch Normalization 中，我们将输入数据由激活函数的收敛区调整到梯度较大的区域，在一定程度上缓解了这种问题。不过，当网络的层数急剧增加时，BP 算法中导数的累乘效应还是很容易让梯度慢慢减小直至消失。这篇文章中介绍的深度残差 (Deep Residual) 学习网络可以说根治了这种问题。下面我按照自己的理解浅浅地水一下 Deep Residual Learning 的基本思想，并简单介绍一下深度残差网络的结构。</p>
 <center>
 <p><img src="/images/2017-9-25/residual learning.png" width="400px"></p>
 </center>
@@ -1194,12 +1195,11 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
       
         
           <p>在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：</p>
-<div class="figure">
-<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid" />
-<p class="caption">sigmoid</p>
-</div>
+<figure>
+<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid"><figcaption>sigmoid</figcaption>
+</figure>
 <p>如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。</p>
-<p>之前的笔记虽然找到了原因，但并没有提出解决办法。最近在实战中遇到这个问题后，束手无策之际，在网上找到了这篇论文 <a href="https://arxiv.org/abs/1502.03167">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a>。原来早在 2015 年就有人提出了解决方案，而且基本已经成为神经网络的组成部分之一了。本文仅仅是对这篇论文做一些梳理，并总结一些我个人的理解。论文中还有很多不解的地方，因此总结的过程中难免存在错误，还请发现的同学指正☺️</p>
+<p>之前的笔记虽然找到了原因，但并没有提出解决办法。最近在实战中遇到这个问题后，束手无策之际，在网上找到了这篇论文 <a href="https://arxiv.org/abs/1502.03167" target="_blank" rel="noopener">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a>。原来早在 2015 年就有人提出了解决方案，而且基本已经成为神经网络的组成部分之一了。本文仅仅是对这篇论文做一些梳理，并总结一些我个人的理解。论文中还有很多不解的地方，因此总结的过程中难免存在错误，还请发现的同学指正☺️</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/#more" rel="contents">
@@ -1356,7 +1356,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
 
       
         
-          <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html">neuralnetworksanddeeplearning</a> 这本书的第五章<a href="http://neuralnetworksanddeeplearning.com/chap5.html">Why are deep neural networks hard to train?</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
+          <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第五章<a href="http://neuralnetworksanddeeplearning.com/chap5.html" target="_blank" rel="noopener">Why are deep neural networks hard to train?</a> 整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一两个隐藏层，而一旦网络层数增加，有很多问题将不可避免地暴露出来。今天，我们就来认识一个最蛋疼的问题：深度神经网络非常难训练。</p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -1514,7 +1514,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
 
       
         
-          <p>本文是根据 TensorFlow 官方<a href="https://www.tensorflow.org/versions/r0.12/how_tos/variable_scope/index.html">教程</a>翻译总结的学习笔记，主要介绍了在 TensorFlow 中如何共享参数变量。</p>
+          <p>本文是根据 TensorFlow 官方<a href="https://www.tensorflow.org/versions/r0.12/how_tos/variable_scope/index.html" target="_blank" rel="noopener">教程</a>翻译总结的学习笔记，主要介绍了在 TensorFlow 中如何共享参数变量。</p>
 <p>教程中首先引入共享变量的应用场景，紧接着用一个例子介绍如何实现共享变量（主要涉及到 <code>tf.variable_scope()</code>和<code>tf.get_variable()</code>两个接口），最后会介绍变量域 (Variable Scope) 的工作方式。</p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -1672,7 +1672,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
 
       
         
-          <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+          <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：<strong>权重初始化</strong>和<strong>超参数的选择</strong></p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -2287,24 +2287,7 @@ f(x) ～ \frac{a_0}{2}+\sum_{n=1}^{\infty}{[a_n \cos{nx}+b_n\sin{nx}]}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

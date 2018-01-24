@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,16 +94,14 @@
 
 
 
-<meta name="description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。
-需求
-在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
+<meta name="description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。 需求 在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
+<meta name="keywords" content="SVG,计算机图形学">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从贝塞尔曲线反推控制点">
 <meta property="og:url" content="https://jermmy.github.io/2016/08/01/2016-8-1-Bezier-Curve-SVG/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。
-需求
-在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。 需求 在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-8-1/屏幕快照%202016-08-02%20下午2.22.14.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-8-1/translate.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-8-1/scale.jpg">
@@ -111,9 +109,7 @@
 <meta property="og:updated_time" content="2017-09-03T09:46:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从贝塞尔曲线反推控制点">
-<meta name="twitter:description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。
-需求
-在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
+<meta name="twitter:description" content="由之前的文章我们可以得到贝塞尔曲线的方程，今天要通过贝塞尔曲线(三次)重新推出控制点。 需求 在得到并对贝塞尔曲线做完处理后，为了让浏览器重新渲染贝塞尔曲线，必须通过贝塞尔曲线重新取得控制点坐标。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2016-8-1/屏幕快照%202016-08-02%20下午2.22.14.png">
 
 
@@ -148,7 +144,7 @@
 
 
 
-  <title>从贝塞尔曲线反推控制点 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>从贝塞尔曲线反推控制点 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +154,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -445,32 +441,28 @@ x_{2}=3x_{c}-\frac{3}{2}x_{b}
 y_{2}=3y_{c}-\frac{3}{2}y_{b}
 \]</span></p>
 <h3 id="代码实现">代码实现</h3>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* 计算第二，第三个控制点的坐标</div><div class="line">**/</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_control_points</span><span class="params">(Point &amp;p1, Point &amp;thirdOne, Point &amp;thirdTwo, </span></span></div><div class="line">	Point &amp;p4, Point &amp;p2, Point &amp;p3) &#123;</div><div class="line">	<span class="keyword">double</span> xb1, yb1, xb2, yb2;   <span class="comment">// 计算的中间变量</span></div><div class="line">	<span class="keyword">double</span> f1 = <span class="number">0.037037037037037037037</span>; <span class="comment">// (1/3)^3</span></div><div class="line">    <span class="keyword">double</span> f2 = <span class="number">0.296296296296296296296</span>; <span class="comment">// (2/3)^3</span></div><div class="line">    <span class="keyword">double</span> x2, y2, x3, y3;    <span class="comment">// 返回的p2、p3的坐标</span></div><div class="line">	xb1 = thirdOne.x - f2 * p1.x - f1 * p4.x;</div><div class="line">	yb1 = thirdOne.y - f2 * p1.y - f1 * p4.y;</div><div class="line">	xb2 = thirdTwo.x - f1 * p1.x - f2 * p4.x;</div><div class="line">	yb2 = thirdTwo.y - f1 * p1.y - f2 * p4.y;</div><div class="line">	x2 = <span class="number">3</span> * xb1 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * xb2;</div><div class="line">	y2 = <span class="number">3</span> * yb1 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * yb2;</div><div class="line">	x3 = <span class="number">3</span> * xb2 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * xb1;</div><div class="line">	y3 = <span class="number">3</span> * yb2 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * yb1;</div><div class="line">	p2.x = (<span class="keyword">int</span>)x2;</div><div class="line">	p2.y = (<span class="keyword">int</span>)y2;</div><div class="line">	p3.x = (<span class="keyword">int</span>)x3;</div><div class="line">	p3.y = (<span class="keyword">int</span>)y3;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* points里面，除了贝塞尔曲线前后的端点外，还包括曲线上1/3和2/3位置的点。</div><div class="line">* 返回贝塞尔曲线的控制点</div><div class="line">*/</div><div class="line"><span class="built_in">vector</span>&lt;Point&gt; regain_new_points(<span class="built_in">vector</span>&lt;Point&gt;&amp; points) &#123;</div><div class="line">	<span class="built_in">vector</span>&lt;Point&gt; newPoints;</div><div class="line"></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; points.size()<span class="number">-1</span>; i+=<span class="number">3</span>) &#123;</div><div class="line">		Point p2, p3;</div><div class="line">		get_control_points(points[i], points[i+<span class="number">1</span>], points[i+<span class="number">2</span>], </div><div class="line">			points[i+<span class="number">3</span>], p2, p3);</div><div class="line">		<span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</div><div class="line">			newPoints.push_back(points[i]);</div><div class="line">		&#125;</div><div class="line">		newPoints.push_back(p2);</div><div class="line">		newPoints.push_back(p3);</div><div class="line">		newPoints.push_back(points[i+<span class="number">3</span>]);	</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> newPoints;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 计算第二，第三个控制点的坐标</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_control_points</span><span class="params">(Point &amp;p1, Point &amp;thirdOne, Point &amp;thirdTwo, </span></span></span><br><span class="line"><span class="function"><span class="params">	Point &amp;p4, Point &amp;p2, Point &amp;p3)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">double</span> xb1, yb1, xb2, yb2;   <span class="comment">// 计算的中间变量</span></span><br><span class="line">	<span class="keyword">double</span> f1 = <span class="number">0.037037037037037037037</span>; <span class="comment">// (1/3)^3</span></span><br><span class="line">    <span class="keyword">double</span> f2 = <span class="number">0.296296296296296296296</span>; <span class="comment">// (2/3)^3</span></span><br><span class="line">    <span class="keyword">double</span> x2, y2, x3, y3;    <span class="comment">// 返回的p2、p3的坐标</span></span><br><span class="line">	xb1 = thirdOne.x - f2 * p1.x - f1 * p4.x;</span><br><span class="line">	yb1 = thirdOne.y - f2 * p1.y - f1 * p4.y;</span><br><span class="line">	xb2 = thirdTwo.x - f1 * p1.x - f2 * p4.x;</span><br><span class="line">	yb2 = thirdTwo.y - f1 * p1.y - f2 * p4.y;</span><br><span class="line">	x2 = <span class="number">3</span> * xb1 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * xb2;</span><br><span class="line">	y2 = <span class="number">3</span> * yb1 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * yb2;</span><br><span class="line">	x3 = <span class="number">3</span> * xb2 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * xb1;</span><br><span class="line">	y3 = <span class="number">3</span> * yb2 - <span class="number">3</span> / (<span class="keyword">double</span>)<span class="number">2</span> * yb1;</span><br><span class="line">	p2.x = (<span class="keyword">int</span>)x2;</span><br><span class="line">	p2.y = (<span class="keyword">int</span>)y2;</span><br><span class="line">	p3.x = (<span class="keyword">int</span>)x3;</span><br><span class="line">	p3.y = (<span class="keyword">int</span>)y3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* points里面，除了贝塞尔曲线前后的端点外，还包括曲线上1/3和2/3位置的点。</span></span><br><span class="line"><span class="comment">* 返回贝塞尔曲线的控制点</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="built_in">vector</span>&lt;Point&gt; regain_new_points(<span class="built_in">vector</span>&lt;Point&gt;&amp; points) &#123;</span><br><span class="line">	<span class="built_in">vector</span>&lt;Point&gt; newPoints;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; points.size()<span class="number">-1</span>; i+=<span class="number">3</span>) &#123;</span><br><span class="line">		Point p2, p3;</span><br><span class="line">		get_control_points(points[i], points[i+<span class="number">1</span>], points[i+<span class="number">2</span>], </span><br><span class="line">			points[i+<span class="number">3</span>], p2, p3);</span><br><span class="line">		<span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">			newPoints.push_back(points[i]);</span><br><span class="line">		&#125;</span><br><span class="line">		newPoints.push_back(p2);</span><br><span class="line">		newPoints.push_back(p3);</span><br><span class="line">		newPoints.push_back(points[i+<span class="number">3</span>]);	</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newPoints;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="测试结果">测试结果</h4>
-<div class="figure">
-<img src="/images/2016-8-1/屏幕快照%202016-08-02%20下午2.22.14.png" alt="test">
-<p class="caption">test</p>
-</div>
+<figure>
+<img src="/images/2016-8-1/屏幕快照%202016-08-02%20下午2.22.14.png" alt="test"><figcaption>test</figcaption>
+</figure>
 <p>右图的脸为原 svg 在浏览器中的展示效果，左图的脸部轮廓白点为根据 svg 的控制点绘制出贝塞尔曲线后，再根据贝塞尔曲线反推的控制点坐标，而左图的脸部曲线则是根据这些控制点绘制出的贝塞尔曲线。从效果上看，两张人脸的轮廓基本很相似。</p>
 <p>接下来，我对贝塞尔曲线做了平移、缩放和旋转，看看重新推出的控制点以及贝塞尔曲线的情况：</p>
 <p>平移操作</p>
-<div class="figure">
-<img src="/images/2016-8-1/translate.jpg" alt="translate">
-<p class="caption">translate</p>
-</div>
+<figure>
+<img src="/images/2016-8-1/translate.jpg" alt="translate"><figcaption>translate</figcaption>
+</figure>
 <p>缩放操作</p>
-<div class="figure">
-<img src="/images/2016-8-1/scale.jpg" alt="scale">
-<p class="caption">scale</p>
-</div>
+<figure>
+<img src="/images/2016-8-1/scale.jpg" alt="scale"><figcaption>scale</figcaption>
+</figure>
 <p>旋转操作</p>
-<div class="figure">
-<img src="/images/2016-8-1/rotate.jpg" alt="rotate">
-<p class="caption">rotate</p>
-</div>
+<figure>
+<img src="/images/2016-8-1/rotate.jpg" alt="rotate"><figcaption>rotate</figcaption>
+</figure>
 <p>看得出，这些基本的线性变换都不会导致贝塞尔曲线「失真」:-)，这是个好消息。</p>
 <h3 id="参考">参考</h3>
-<p><a href="http://stackoverflow.com/questions/19217546/algorithm-for-deriving-control-points-of-a-bezier-curve-from-points-along-that-c" target="_blank" rel="external">Algorithm for deriving control points of a bezier curve from points along that curve?</a></p>
+<p><a href="http://stackoverflow.com/questions/19217546/algorithm-for-deriving-control-points-of-a-bezier-curve-from-points-along-that-c" target="_blank" rel="noopener">Algorithm for deriving control points of a bezier curve from points along that curve?</a></p>
 
       
     </div>
@@ -999,24 +991,7 @@ y_{2}=3y_{c}-\frac{3}{2}y_{b}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

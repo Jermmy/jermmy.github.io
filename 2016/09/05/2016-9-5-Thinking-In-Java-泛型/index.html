@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,19 +94,18 @@
 
 
 
-<meta name="description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。
-今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
+<meta name="description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。 今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Thinking in Java — 泛型">
 <meta property="og:url" content="https://jermmy.github.io/2016/09/05/2016-9-5-Thinking-In-Java-泛型/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。
-今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。 今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-09-03T09:52:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thinking in Java — 泛型">
-<meta name="twitter:description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。
-今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
+<meta name="twitter:description" content="刚开始学 JavaSE 的时候，买了一本业界经典的《Thinking in Java》，后来证明对于初学者来说完全是错误的决定。现在趁着大四有点时间，准备从头将一些重要的知识学一遍。 今天要学的是泛型（文中代码除非特别说明，否则均摘自《Thinking in Java》(第四版)）。">
 
 
 
@@ -140,7 +139,7 @@
 
 
 
-  <title>Thinking in Java — 泛型 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Thinking in Java — 泛型 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -400,14 +399,14 @@
 <h3 id="与c的比较">与C++的比较</h3>
 <p>书里关于泛型的介绍涵盖了整整一章，而且几乎是书里最厚的一章。初学时的我靠着一点 C++ 模板的基础，学了点语法糖就混过去了。然而事实上 Java 的泛型远不如 C++ 灵活，有点类似补丁的作用。</p>
 <p>C++ 泛型的代码一般是这样的：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="keyword">class</span> Manipulator &#123;</div><div class="line">	T obj;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	Manipulator(T x) &#123;</div><div class="line">		obj = x;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</div><div class="line">		obj.f();</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> HasF &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"HasF::f()"</span> &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	HasF hf;</div><div class="line">	Manipulator&lt;HasF&gt; manipulator(hf);</div><div class="line">	manipulator.manipulate();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">Manipulator</span> &#123;</span></span><br><span class="line">	T obj;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Manipulator(T x) &#123;</span><br><span class="line">		obj = x;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		obj.f();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasF</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"HasF::f()"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	HasF hf;</span><br><span class="line">	Manipulator&lt;HasF&gt; manipulator(hf);</span><br><span class="line">	manipulator.manipulate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果会输出：HasF::f()</p>
 <p>但如果同样翻译成Java版的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Manipulator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line">	<span class="keyword">private</span> T obj;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Manipulator</span><span class="params">(T x)</span> </span>&#123;</div><div class="line">		obj = x;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</div><div class="line">		obj.f();</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasF</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"HasF.f()"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Manipulation</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		HasF hf = <span class="keyword">new</span> HasF();</div><div class="line">		Manipulator&lt;HasF&gt; manipulator = <span class="keyword">new</span> Manipulator&lt;HasF&gt;(hf);</div><div class="line">		Manipulator.manipulate();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Manipulator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> T obj;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Manipulator</span><span class="params">(T x)</span> </span>&#123;</span><br><span class="line">		obj = x;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		obj.f();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasF</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"HasF.f()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Manipulation</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		HasF hf = <span class="keyword">new</span> HasF();</span><br><span class="line">		Manipulator&lt;HasF&gt; manipulator = <span class="keyword">new</span> Manipulator&lt;HasF&gt;(hf);</span><br><span class="line">		Manipulator.manipulate();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>编译器却会报错：Error: cannot find symbol: method f()</p>
 <p>为什么 C++ 里的泛型 <code>T</code> 可以找到 <code>f</code> 方法呢？很简单，当你实例化这个模板时，C++ 编译器会进行检查，因此在 <code>Manipulator\&lt;HasF\&gt;</code> 被实例化时，它检查到 <code>HasF</code> 存在一个 <code>f</code> 方法，所以编译通过，否则会报错。但 Java 的编译器却走了相反的道路：它干脆将类型信息「擦除」了。在 Java 的编译器看来，<code>Manipulator\&lt;T\&gt;</code> 中的 T 都被默认当作 <code>Object</code> 类型，因此找不到 <code>f</code> 方法。因此，为了实现上面的功能，我们要给定泛型的边界，以此告知编译器只能接受遵循这个边界的类型。具体做法是使用 <code>extends</code> 关键字，将上面代码中的 &lt;T&gt; 改为 &lt;T extends HasF&gt;。这样编译器知道T必须是 <code>HasF</code> 或其子类，因此可以调用 <code>f</code> 方法。</p>
 <p>但聪明的读者很快会发现，这种做法完全可以这样实现：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Manipulator3</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> HasF obj;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Manipulator3</span><span class="params">(HasF x)</span> </span>&#123;</div><div class="line">		obj = x;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</div><div class="line">		obj.f();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Manipulator3</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> HasF obj;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Manipulator3</span><span class="params">(HasF x)</span> </span>&#123;</span><br><span class="line">		obj = x;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">manipulate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		obj.f();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这样泛型还有什么卵用呢？</p>
 <p>Bruce 在书中说了这样一段话：只有当你希望使用的类型参数比某个具体类型（以及它的所有子类型）更加“泛化”时——也就是说，当你希望代码能够跨多个类工作时，使用泛型才有所帮助。</p>
 <p>而事实上，以我浅薄的见识，泛型的主要作用是可以利用编译器来检查类型。例如：ArrayList&lt;String&gt; 总比 ArrayList&lt;Object&gt; 的作用要强些吧，至少当你传入非 String 类型（包括 String 的子类）的对象时，前者能够报错。</p>
@@ -415,7 +414,7 @@
 <p>所谓「擦除」，我的理解是：在编译期间，Java 的编译器不会像 C++ 的编译器一样去将类型参数 T 实例化。为什么 Java 要提供这种看似鸡肋的泛型呢？根本原因在于 Java 从诞生之初就没考虑过引入泛型功能。因此，JavaSE5 之前的类库都不具有泛型功能。为了能够兼容之前的类库，不得不弱化泛型的能力。总之，这是为了减少 bug 而提出的折中方案。</p>
 <h3 id="擦除的问题">「擦除」的问题</h3>
 <p>因为「擦除」抹去了所有类型信息，所以转型、instanceof 操作都无法使用了。对于这样的代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line">    T var;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Foo&lt;Cat&gt; f = <span class="keyword">new</span> Foo&lt;Cat&gt;();</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    T var;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Foo&lt;Cat&gt; f = <span class="keyword">new</span> Foo&lt;Cat&gt;();</span><br></pre></td></tr></table></figure>
 <p>在编译器看来，你的 Cat 都是 Object 类型的，除非你使用 <code>extends</code>。</p>
 <p><br></p>
 <p><br></p>
@@ -947,24 +946,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

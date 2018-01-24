@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,11 +95,13 @@
 
 
 <meta name="description" content="Cross-Domain Visual Matching，即跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特">
+<meta name="keywords" content="计算机视觉,深度学习,论文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
 <meta property="og:url" content="https://jermmy.github.io/2017/12/12/2017-12-12-paper-notes-cross-domain-visual-matching/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="Cross-Domain Visual Matching，即跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/cross-domain.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/siamese.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
@@ -143,7 +145,7 @@
 
 
 
-  <title>论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -529,7 +531,7 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
 <p>最后，在训练样本对的生成上，论文采用如下方法： 每次迭代时，先随机挑选 K 个目录（每个目录都包含两个不同的域），然后从每个目录的两个域中，分别随机挑选 <span class="math inline">\(O_1\)</span> 和 <span class="math inline">\(O_2\)</span> 张图片。接着，对第一个域中的每张图片 <span class="math inline">\(A\)</span>，从第二个域中随机挑选若干图片和它组成样本对，注意，从第二个域中挑选的图片，有一半和 <span class="math inline">\(A\)</span> 属于同一目录，另一半与 <span class="math inline">\(A\)</span> 属于不同目录。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="https://arxiv.org/abs/1605.04039" target="_blank" rel="external">Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning</a></li>
+<li><a href="https://arxiv.org/abs/1605.04039" target="_blank" rel="noopener">Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning</a></li>
 </ul>
 
       
@@ -1061,24 +1063,7 @@ G(\Omega;Z)=&amp;L(\Omega;Z)+\Psi(\Omega) \notag \\
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

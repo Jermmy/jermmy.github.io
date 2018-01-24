@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,29 +94,19 @@
 
 
 
-<meta name="description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。
-需求
-我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点：
-1function(image, point1, point2, point3)
-简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
+<meta name="description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。 需求 我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点： 1function(image, point1, point2, point3) 简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
+<meta name="keywords" content="计算机视觉">
 <meta property="og:type" content="article">
 <meta property="og:title" content="绘制三角形">
 <meta property="og:url" content="https://jermmy.github.io/2016/07/11/2016-7-11-CV-绘制三角形/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。
-需求
-我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点：
-1function(image, point1, point2, point3)
-简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。 需求 我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点： 1function(image, point1, point2, point3) 简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-11/屏幕快照%202016-07-11%20下午9.57.48.png">
 <meta property="og:updated_time" content="2017-04-23T05:42:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="绘制三角形">
-<meta name="twitter:description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。
-需求
-我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点：
-1function(image, point1, point2, point3)
-简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
+<meta name="twitter:description" content="其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。 需求 我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点： 1function(image, point1, point2, point3) 简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2016-7-11/屏幕快照%202016-07-11%20下午9.57.48.png">
 
 
@@ -151,7 +141,7 @@
 
 
 
-  <title>绘制三角形 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>绘制三角形 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +151,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -406,17 +396,16 @@
         <p>其实这应该属于图像处理的入门内容，因为跟三角形相关所以 mark 一下。</p>
 <h3 id="需求">需求</h3>
 <p>我们要实现这样一个函数，输入参数是绘制的图片以及三角形三个点：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>(<span class="params">image, point1, point2, point3</span>)</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">image, point1, point2, point3</span>)</span></span><br></pre></td></tr></table></figure>
 <p>简单起见，不考虑输入的点超过图片范围等异常情况，假设输入都合法，并且输入图片是像素全为 0 的黑图。任务是将三个点构成的区域像素值设为 255，即白色。</p>
 <a id="more"></a>
 <h3 id="准备条件">准备条件</h3>
-<p>图像读取采用 <a href="http://cimg.eu/" target="_blank" rel="external">Cimg</a> 这个轻量级的库，编程语言采用 C++。</p>
+<p>图像读取采用 <a href="http://cimg.eu/" target="_blank" rel="noopener">Cimg</a> 这个轻量级的库，编程语言采用 C++。</p>
 <h3 id="思路">思路</h3>
-<p>绘制方法无非是遍历图片中的每个像素，判断该像素是否落在三角形内，是的话将像素值设为 255。那么重点便是如何判断一个像素是否在三角形内。这里参考了这篇文章中的第二种方法：<a href="http://www.blackpawn.com/texts/pointinpoly/default.html" target="_blank" rel="external">Point in triangle test</a> 。稍微讲解如下：</p>
-<div class="figure">
-<img src="/images/2016-7-11/屏幕快照%202016-07-11%20下午9.57.48.png" alt="屏幕快照 2016-07-11 下午9.57.48">
-<p class="caption">屏幕快照 2016-07-11 下午9.57.48</p>
-</div>
+<p>绘制方法无非是遍历图片中的每个像素，判断该像素是否落在三角形内，是的话将像素值设为 255。那么重点便是如何判断一个像素是否在三角形内。这里参考了这篇文章中的第二种方法：<a href="http://www.blackpawn.com/texts/pointinpoly/default.html" target="_blank" rel="noopener">Point in triangle test</a> 。稍微讲解如下：</p>
+<figure>
+<img src="/images/2016-7-11/屏幕快照%202016-07-11%20下午9.57.48.png" alt="屏幕快照 2016-07-11 下午9.57.48"><figcaption>屏幕快照 2016-07-11 下午9.57.48</figcaption>
+</figure>
 <p>假设我们的三角形长这样，现在要让程序判断 P 点是否在三角形内。这里要用到一点高中向量的知识。假设 A、B、C 三点坐标分别为 (x1, y1)，(x2, y2)，(x3, y3)，P 点坐标是 (x, y)。根据向量知识，有这样一个等式：<code>[PA]=u*[BA]+v*[CA]</code> (这里的[]表示一个向量，不知道怎么用 md 表示向量，先将就一下)，如果 <code>u+v&lt;=1 &amp;&amp; u&gt;=0 &amp;&amp; v&gt;=0</code> ，那么 P 就在三角形中，否则 P 在三角形外。因为 A、B、C、P 的坐标都是知道的，只要解出 u 和 v，就能判断出这个 P 点坐标的情况。那么如何求出这两个值呢？其实方法也非常简单，我们先把之前公式里的向量用坐标的形式表示，可以得出 <code>[x-x1, y-y1]=u*[x2-x1, y2-y1]+v*[x3-x1, y3-y1]</code> ，而后将 x、y 分离得到两个等式：<code>x-x1=u*(x2-x1)+v*(x3-x1)</code> 、<code>y-y1=u*(y2-y1)+v*(y3-y1)</code> ，两个方程两个未知数，可以求出： <span class="math display">\[
 u=\frac{(y-y1)(x3-x1)-(x-x1)(y3-y1)}{(y2-y1)(x3-x1)-(x2-x1)(y3-y1)}
 \]</span></p>
@@ -426,11 +415,11 @@ v=\frac{(y-y1)(x2-x1)-(x-x1)(y2-y1)}{(y3-y1)(x2-x1)-(x3-x1)(y2-y1)}
 <p>(可能有老眼昏花算错的地方)</p>
 <h3 id="代码">代码</h3>
 <p>简单把上面的思路翻译一下就是代码了</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw_triangle</span><span class="params">(CImg&lt;<span class="keyword">unsigned</span> <span class="keyword">char</span>&gt;&amp; srcImg, <span class="keyword">int</span> x1, <span class="keyword">int</span> y1, </span></span></div><div class="line">	<span class="keyword">int</span> x2, <span class="keyword">int</span> y2, <span class="keyword">int</span> x3, <span class="keyword">int</span> y3) &#123;</div><div class="line">    <span class="keyword">int</span> width = srcImg.width();</div><div class="line">    <span class="keyword">int</span> height = srcImg.height();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; width; i++) &#123;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; height; j++) &#123;</div><div class="line">        <span class="keyword">double</span> vx1 = x2 - x1, vy1 = y2 - y1, vx2 = x3 - x1, vy2 = y3 - y1;</div><div class="line">        <span class="keyword">double</span> vx0 = i - x1, vy0 = j - y1;</div><div class="line">        <span class="keyword">double</span> u = (vx2*vy0 - vx0*vy2) / (<span class="keyword">double</span>)(vx2*vy1 - vx1*vy2),</div><div class="line">        v = (vx1*vy0 - vx0*vy1) / (<span class="keyword">double</span>)(vx1*vy2 - vx2*vy1);</div><div class="line">        <span class="keyword">if</span> (u &gt;= <span class="number">0</span> &amp;&amp; v &gt;= <span class="number">0</span> &amp;&amp; u+v &lt;= <span class="number">1</span>) &#123;</div><div class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> channel = <span class="number">0</span>; channel &lt; <span class="number">3</span>; channel++) &#123;</div><div class="line">            srcImg(i, j, <span class="number">0</span>, channel) = <span class="number">0</span>;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw_triangle</span><span class="params">(CImg&lt;<span class="keyword">unsigned</span> <span class="keyword">char</span>&gt;&amp; srcImg, <span class="keyword">int</span> x1, <span class="keyword">int</span> y1, </span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> x2, <span class="keyword">int</span> y2, <span class="keyword">int</span> x3, <span class="keyword">int</span> y3)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> width = srcImg.width();</span><br><span class="line">    <span class="keyword">int</span> height = srcImg.height();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; width; i++) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; height; j++) &#123;</span><br><span class="line">        <span class="keyword">double</span> vx1 = x2 - x1, vy1 = y2 - y1, vx2 = x3 - x1, vy2 = y3 - y1;</span><br><span class="line">        <span class="keyword">double</span> vx0 = i - x1, vy0 = j - y1;</span><br><span class="line">        <span class="keyword">double</span> u = (vx2*vy0 - vx0*vy2) / (<span class="keyword">double</span>)(vx2*vy1 - vx1*vy2),</span><br><span class="line">        v = (vx1*vy0 - vx0*vy1) / (<span class="keyword">double</span>)(vx1*vy2 - vx2*vy1);</span><br><span class="line">        <span class="keyword">if</span> (u &gt;= <span class="number">0</span> &amp;&amp; v &gt;= <span class="number">0</span> &amp;&amp; u+v &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> channel = <span class="number">0</span>; channel &lt; <span class="number">3</span>; channel++) &#123;</span><br><span class="line">            srcImg(i, j, <span class="number">0</span>, channel) = <span class="number">0</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="缺陷">缺陷：</h3>
 <p>这种方法计算量不算大，但由于使用了除法，可能出现除数为 0 的情况（讲道理应该不可能，u、v 的值应该不会无穷大才对，不知道是否有前辈已经证明）。</p>
 <h3 id="参考">参考：</h3>
-<p><a href="http://www.blackpawn.com/texts/pointinpoly/default.html" target="_blank" rel="external">Point in triangle test</a></p>
+<p><a href="http://www.blackpawn.com/texts/pointinpoly/default.html" target="_blank" rel="noopener">Point in triangle test</a></p>
 
       
     </div>
@@ -957,24 +946,7 @@ v=\frac{(y-y1)(x2-x1)-(x-x1)(y2-y1)}{(y3-y1)(x2-x1)-(x3-x1)(y2-y1)}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

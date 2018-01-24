@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,27 +94,20 @@
 
 
 
-<meta name="description" content="今天要介绍一个翻墙工具 SwitchHosts。
-说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。
-SwitchHosts
-SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
+<meta name="description" content="今天要介绍一个翻墙工具 SwitchHosts。 说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。 SwitchHosts SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
+<meta name="keywords" content="工具,TensorFlow">
 <meta property="og:type" content="article">
 <meta property="og:title" content="翻墙神器SwitchHosts">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/22/2017-4-22-tool-switch-hosts/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="今天要介绍一个翻墙工具 SwitchHosts。
-说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。
-SwitchHosts
-SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天要介绍一个翻墙工具 SwitchHosts。 说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。 SwitchHosts SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-22/switchhosts.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-22/tensorflow.png">
 <meta property="og:updated_time" content="2017-04-22T06:27:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="翻墙神器SwitchHosts">
-<meta name="twitter:description" content="今天要介绍一个翻墙工具 SwitchHosts。
-说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。
-SwitchHosts
-SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
+<meta name="twitter:description" content="今天要介绍一个翻墙工具 SwitchHosts。 说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 SwitchHosts，结果真是太感人了。 SwitchHosts SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-4-22/switchhosts.png">
 
 
@@ -149,7 +142,7 @@ SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
 
 
 
-  <title>翻墙神器SwitchHosts | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>翻墙神器SwitchHosts | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -159,7 +152,7 @@ SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -405,22 +398,20 @@ SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
 <p>说真的，这个工具我已经听说很久了，但由于我一直都用着 Shadowsocks 纸飞机翻墙，就没怎么理睬它。直到今天，不得不去 TensorFlow 官网查点资料，却发现纸飞机也飞不到那里去，因此尝试了下 <strong>SwitchHosts</strong>，结果真是太感人了。</p>
 <h3 id="switchhosts">SwitchHosts</h3>
 <p><strong>SwitchHosts</strong> 的原理其实很简单，就是通过修改 host 文件，指定 IP 地址。只要 GFW 没有对 IP 进行封锁，那么我们就可以直接通过 IP 访问服务器，避开敏感词检测。</p>
-<p><strong>SwitchHosts</strong> 提供多种平台的版本，详情请移步<a href="https://github.com/oldj/SwitchHosts" target="_blank" rel="external">官网</a>。</p>
+<p><strong>SwitchHosts</strong> 提供多种平台的版本，详情请移步<a href="https://github.com/oldj/SwitchHosts" target="_blank" rel="noopener">官网</a>。</p>
 <a id="more"></a>
 <p>下面上个结果图，以示喜悦之情。</p>
-<div class="figure">
-<img src="/images/2017-4-22/switchhosts.png" alt="switchhosts">
-<p class="caption">switchhosts</p>
-</div>
-<div class="figure">
-<img src="/images/2017-4-22/tensorflow.png" alt="tensorflow">
-<p class="caption">tensorflow</p>
-</div>
+<figure>
+<img src="/images/2017-4-22/switchhosts.png" alt="switchhosts"><figcaption>switchhosts</figcaption>
+</figure>
+<figure>
+<img src="/images/2017-4-22/tensorflow.png" alt="tensorflow"><figcaption>tensorflow</figcaption>
+</figure>
 <p>有人可能会说，既然 <strong>SwitchHosts</strong>，那还要 Shadowsocks 等付费产品干嘛。其实这是两种不同的翻墙工具。<strong>SwitchHosts</strong> 属于「穿墙」的思路，而 Shadowsocks 则属于借助代理的「翻墙」思路。前者虽然速度更快，但毕竟你没法掌握世界上所有站点的 IP，因此更适合特殊网站的翻墙，比如 TensorFlow 这样的。而且，由于 GFW 会对某些 IP 进行封锁（e.g. Google, Facebook），并不是每个网站都能通过修改 host 穿出去。Shadowsocks 是通过加密混淆来防止被 GFW 识别，虽然速度上偏慢，但对大多数网站适用。因此，两者相互结合，才是翻墙的最佳姿势。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="https://github.com/oldj/SwitchHosts" target="_blank" rel="external">SwitchHosts官网</a></li>
-<li><a href="https://cokebar.info/archives/236" target="_blank" rel="external">目前热门科学上网方式介绍及优缺点简评</a></li>
+<li><a href="https://github.com/oldj/SwitchHosts" target="_blank" rel="noopener">SwitchHosts官网</a></li>
+<li><a href="https://cokebar.info/archives/236" target="_blank" rel="noopener">目前热门科学上网方式介绍及优缺点简评</a></li>
 </ul>
 
       
@@ -950,24 +941,7 @@ SwitchHosts 的原理其实很简单，就是通过修改 host 文件，指定">
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

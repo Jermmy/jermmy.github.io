@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -95,17 +95,19 @@
 
 
 <meta name="description" content="在一般的全联接神经网络中，我们通过反向传播算法计算参数的导数。BP 算法本质上可以认为是链式法则在矩阵求导上的运用。但 CNN 中的卷积操作则不再是全联接的形式，因此 CNN 的 BP 算法需要在原始的算法上稍作修改。这篇文章主要讲一下 BP 算法在卷积层和 pooling 层上的应用。">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CNN的反向传播">
 <meta property="og:url" content="https://jermmy.github.io/2017/12/16/2017-12-16-cnn-back-propagation/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="在一般的全联接神经网络中，我们通过反向传播算法计算参数的导数。BP 算法本质上可以认为是链式法则在矩阵求导上的运用。但 CNN 中的卷积操作则不再是全联接的形式，因此 CNN 的 BP 算法需要在原始的算法上稍作修改。这篇文章主要讲一下 BP 算法在卷积层和 pooling 层上的应用。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/network1.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/network2.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz16.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/convolution-mlp-mapping.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-16/pooling.png">
-<meta property="og:updated_time" content="2017-12-23T08:39:21.000Z">
+<meta property="og:updated_time" content="2018-01-10T05:00:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CNN的反向传播">
 <meta name="twitter:description" content="在一般的全联接神经网络中，我们通过反向传播算法计算参数的导数。BP 算法本质上可以认为是链式法则在矩阵求导上的运用。但 CNN 中的卷积操作则不再是全联接的形式，因此 CNN 的 BP 算法需要在原始的算法上稍作修改。这篇文章主要讲一下 BP 算法在卷积层和 pooling 层上的应用。">
@@ -143,7 +145,7 @@
 
 
 
-  <title>CNN的反向传播 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>CNN的反向传播 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -398,7 +400,7 @@
         <p>在一般的全联接神经网络中，我们通过反向传播算法计算参数的导数。BP 算法本质上可以认为是链式法则在矩阵求导上的运用。但 CNN 中的卷积操作则不再是全联接的形式，因此 CNN 的 BP 算法需要在原始的算法上稍作修改。这篇文章主要讲一下 BP 算法在卷积层和 pooling 层上的应用。</p>
 <a id="more"></a>
 <h2 id="原始的-bp-算法">原始的 BP 算法</h2>
-<p>首先，用两个例子回顾一下原始的 BP 算法。（不熟悉 BP 可以参考<a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="external">How the backpropagation algorithm works</a>，不介意的话可以看我的<a href="http://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/">读书笔记</a>）</p>
+<p>首先，用两个例子回顾一下原始的 BP 算法。（不熟悉 BP 可以参考<a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="noopener">How the backpropagation algorithm works</a>，不介意的话可以看我的<a href="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/">读书笔记</a>）</p>
 <h3 id="最简单的例子">最简单的例子</h3>
 <p>先看一个最简单的例子（偷个懒，搬个手绘图～囧～）：</p>
 <center>
@@ -512,7 +514,7 @@ z_{22} = a_{22}w_{11} + a_{23}w_{12} + a_{32}w_{21} +   a_{33}w_{22}
 \left( \begin{array}{ccc} a_{11}&amp;a_{12}&amp;a_{13}\\ a_{21}&amp;a_{22}&amp;a_{23}\\ a_{31}&amp;a_{32}&amp;a_{33} \end{array} \right) * \left( \begin{array}{ccc}  \delta_{11}&amp; \delta_{12}\\ \delta_{21}&amp;\delta_{22}\end{array} \right)   = \left( \begin{array}{ccc} \nabla w_{11}&amp;\nabla w_{12}\\ \nabla w_{21}&amp;\nabla w_{22} \end{array} \right)
 \]</span> 这样就得到了 <span class="math inline">\(\frac{\partial C}{\partial w^l}\)</span> 的公式： <span class="math display">\[
 \frac{\partial C}{\partial w^l}=a^{l-1}*\delta^l \tag{5}
-\]</span> 对于 <span class="math inline">\(\frac{\partial C}{\partial b^l}\)</span>，我参考了文末的<a href="http://www.cnblogs.com/pinard/p/6494810.html" target="_blank" rel="external">链接</a>，但对其做法仍然不太理解，我觉得在卷积层中，<span class="math inline">\(\frac{\partial C}{\partial b^l}\)</span> 和一般的全联接层是一样的，仍然可以用下面的式子得到： <span class="math display">\[
+\]</span> 对于 <span class="math inline">\(\frac{\partial C}{\partial b^l}\)</span>，我参考了文末的<a href="http://www.cnblogs.com/pinard/p/6494810.html" target="_blank" rel="noopener">链接</a>，但对其做法仍然不太理解，我觉得在卷积层中，<span class="math inline">\(\frac{\partial C}{\partial b^l}\)</span> 和一般的全联接层是一样的，仍然可以用下面的式子得到： <span class="math display">\[
 \frac{\partial C}{\partial b^l}=\delta^l \tag{6}
 \]</span> 理解不一定对，所以这一点上大家还是参考一下其他资料。</p>
 <h3 id="pooling-层">pooling 层</h3>
@@ -542,11 +544,11 @@ z_{22} = a_{22}w_{11} + a_{23}w_{12} + a_{32}w_{21} +   a_{33}w_{22}
 \]</span></p>
 <h2 id="参考">参考</h2>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="external">How the backpropagation algorithm works</a></li>
-<li><a href="http://www.cnblogs.com/pinard/p/6494810.html" target="_blank" rel="external">卷积神经网络(CNN)反向传播算法</a></li>
-<li><a href="https://grzegorzgwardys.wordpress.com/2016/04/22/8/#unique-identifier2" target="_blank" rel="external">Convolutional Neural Networks backpropagation: from intuition to derivation</a></li>
-<li><a href="https://www.zhihu.com/question/22298352/answer/228543288" target="_blank" rel="external">如何通俗易懂地解释卷积？ - 马同学的回答 - 知乎</a></li>
-<li><a href="https://www.slideshare.net/kuwajima/cnnbp" class="uri" target="_blank" rel="external">https://www.slideshare.net/kuwajima/cnnbp</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap2.html" target="_blank" rel="noopener">How the backpropagation algorithm works</a></li>
+<li><a href="http://www.cnblogs.com/pinard/p/6494810.html" target="_blank" rel="noopener">卷积神经网络(CNN)反向传播算法</a></li>
+<li><a href="https://grzegorzgwardys.wordpress.com/2016/04/22/8/#unique-identifier2" target="_blank" rel="noopener">Convolutional Neural Networks backpropagation: from intuition to derivation</a></li>
+<li><a href="https://www.zhihu.com/question/22298352/answer/228543288" target="_blank" rel="noopener">如何通俗易懂地解释卷积？ - 马同学的回答 - 知乎</a></li>
+<li><a href="https://www.slideshare.net/kuwajima/cnnbp" class="uri" target="_blank" rel="noopener">https://www.slideshare.net/kuwajima/cnnbp</a></li>
 </ul>
 
       
@@ -1074,24 +1076,7 @@ z_{22} = a_{22}w_{11} + a_{23}w_{12} + a_{32}w_{21} +   a_{33}w_{22}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

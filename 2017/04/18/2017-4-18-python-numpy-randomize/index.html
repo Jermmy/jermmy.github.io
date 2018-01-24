@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,22 +94,18 @@
 
 
 
-<meta name="description" content="今天发现一个用 numpy 随机化数组的技巧。
-需求
-我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
+<meta name="description" content="今天发现一个用 numpy 随机化数组的技巧。 需求 我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
+<meta name="keywords" content="Python,numpy">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python numpy 三行代码打乱训练数据">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/18/2017-4-18-python-numpy-randomize/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="今天发现一个用 numpy 随机化数组的技巧。
-需求
-我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天发现一个用 numpy 随机化数组的技巧。 需求 我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-04-20T07:04:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python numpy 三行代码打乱训练数据">
-<meta name="twitter:description" content="今天发现一个用 numpy 随机化数组的技巧。
-需求
-我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
+<meta name="twitter:description" content="今天发现一个用 numpy 随机化数组的技巧。 需求 我有两个数组（ ndarray ）：train_datasets 和 train_labels。其中，train_datasets 的每一行和 train_labels 是一一对应的。现在我要将数组打乱并用于训练，打乱后要求两者的行与行之间必须保持原来的对应关系。">
 
 
 
@@ -143,7 +139,7 @@
 
 
 
-  <title>python numpy 三行代码打乱训练数据 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>python numpy 三行代码打乱训练数据 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -402,14 +398,14 @@
 <h3 id="实现">实现</h3>
 <p>一般的实现思路，应该是先将 train_datasets（或 train_labels ）打乱，并记录被打乱的行号，再通过行号调整 train_labels （或 train_datasets ）的行次序，这样两者的对应关系能保持一致。但代码实现起来会很繁琐，而如果用上 <code>numpy</code> 的话，可以三行代码搞定。</p>
 <p>首先，假设我们用如下训练数据（训练数据和标签都是三个）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>train_data = np.ndarray(shape=(<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>), dtype=np.int32, buffer=np.asarray((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>), dtype=np.int32))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>train_label  = np.ndarray(shape=(<span class="number">3</span>,), dtype=np.int32, buffer=np.asarray((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>), dtype=np.int32))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>train_data</div><div class="line">array([[[<span class="number">1</span>, <span class="number">2</span>]],</div><div class="line"></div><div class="line">       [[<span class="number">3</span>, <span class="number">4</span>]],</div><div class="line"></div><div class="line">       [[<span class="number">5</span>, <span class="number">6</span>]]], dtype=int32)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>train_label</div><div class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], dtype=int32)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>train_data = np.ndarray(shape=(<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>), dtype=np.int32, buffer=np.asarray((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>), dtype=np.int32))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>train_label  = np.ndarray(shape=(<span class="number">3</span>,), dtype=np.int32, buffer=np.asarray((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>), dtype=np.int32))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>train_data</span><br><span class="line">array([[[<span class="number">1</span>, <span class="number">2</span>]],</span><br><span class="line"></span><br><span class="line">       [[<span class="number">3</span>, <span class="number">4</span>]],</span><br><span class="line"></span><br><span class="line">       [[<span class="number">5</span>, <span class="number">6</span>]]], dtype=int32)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>train_label</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], dtype=int32)</span><br></pre></td></tr></table></figure>
 <p>下面，我们用<strong>三行代码</strong>打乱样本数据：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>permutation = np.random.permutation(train_label.shape[<span class="number">0</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_dataset = train_data[permutation, :, :]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_labels = train_label[permutation]</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>permutation = np.random.permutation(train_label.shape[<span class="number">0</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_dataset = train_data[permutation, :, :]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_labels = train_label[permutation]</span><br></pre></td></tr></table></figure>
 <p>稍微解释一下代码：</p>
 <p>利用 <code>np.random.permutation</code> 函数，我们可以获得打乱后的行号，输出<code>permutation</code> 为：<code>array([2, 1, 0])</code>。</p>
 <p>然后，利用 <code>numpy array</code> 内置的操作 <code>train_data[permutation, :, :]</code> ，我们可以获得打乱行号后的新的训练数据。</p>
 <p>我们看看训练数据和标签是不是对应的：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_dataset</div><div class="line">array([[[<span class="number">5</span>, <span class="number">6</span>]],</div><div class="line"></div><div class="line">       [[<span class="number">3</span>, <span class="number">4</span>]],</div><div class="line"></div><div class="line">       [[<span class="number">1</span>, <span class="number">2</span>]]], dtype=int32)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_labels</div><div class="line">array([<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>], dtype=int32)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_dataset</span><br><span class="line">array([[[<span class="number">5</span>, <span class="number">6</span>]],</span><br><span class="line"></span><br><span class="line">       [[<span class="number">3</span>, <span class="number">4</span>]],</span><br><span class="line"></span><br><span class="line">       [[<span class="number">1</span>, <span class="number">2</span>]]], dtype=int32)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>shuffled_labels</span><br><span class="line">array([<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>], dtype=int32)</span><br></pre></td></tr></table></figure>
 <p>没错，完全按照 <code>permutation</code> [2, 1, 0] 的顺序重新调整了。</p>
 <p><strong>学会这种技巧，妈妈再也不担心我加班了🤓</strong></p>
 
@@ -940,24 +936,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

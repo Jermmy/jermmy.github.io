@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,21 +94,20 @@
 
 
 
-<meta name="description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
-这篇文">
+<meta name="description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。 这篇文">
+<meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GMM与EM共舞">
 <meta property="og:url" content="https://jermmy.github.io/2017/10/29/2017-10-29-GMM-and-EM/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
-这篇文">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。 这篇文">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/GMM.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/EM_for_GMM.png">
 <meta property="og:updated_time" content="2017-11-05T16:32:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GMM与EM共舞">
-<meta name="twitter:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。
-这篇文">
+<meta name="twitter:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。 这篇文">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-10-29/GMM.png">
 
 
@@ -143,7 +142,7 @@
 
 
 
-  <title>GMM与EM共舞 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>GMM与EM共舞 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +152,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -417,7 +416,7 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 <h4 id="参数估计">参数估计</h4>
 <p>不过，GMM 模型最难的地方在于，如何根据一堆数据点估计出模型的参数？</p>
 <p>GMM 需要确定的参数有三类：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>高斯模型的个数 <span class="math inline">\(K\)</span>，这个参数跟 K-means 的 <span class="math inline">\(K\)</span> 一样，需要人工事先设定，<span class="math inline">\(K\)</span> 越大，聚类的粒度也越细；</li>
 <li><span class="math inline">\(\pi_k\)</span>， 每个 Component 的概率分量，或者说在总样本中的占比；</li>
 <li><span class="math inline">\(\mu_k\)</span>、<span class="math inline">\(\Sigma_k\)</span>，各个 Component 的参数。</li>
@@ -437,7 +436,7 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 <h3 id="均值最大化算法-em">均值最大化算法 EM</h3>
 <h4 id="k-means-的启示">K-means 的启示</h4>
 <p>在正式开讲 EM 之前，我们先回忆一下，K-means 是怎么求出聚类中心的。其实，总共分三步进行：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>随机初始化 K 个聚类中心的位置；</li>
 <li>将所有样本点，按照跟各个聚类中心的距离进行归类；</li>
 <li>根据样本重新归类的结果，更新聚类中心的位置，重复步骤 2 直到收敛（即聚类中心重新调整的幅度小于某个阈值）。</li>
@@ -450,11 +449,11 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 \]</span> 这个求均值的公式，跟单个高斯模型不同的地方在于，我们用的是加权平均。因为每个样本点都有一定的概率属于聚类中心 <span class="math inline">\(C_k\)</span>，所以，每个样本对 <span class="math inline">\(C_k\)</span> 对应的高斯模型的均值也会产生一定的作用，只是由于 <span class="math inline">\(P(x_i\in C_k|x_i)\)</span> 的值不同，因此这种作用也会有显著差别。 <span class="math display">\[
 \Sigma_k=\frac{\sum_{i=1}^m{P(x_i\in C_k|x_i)(x_i-\mu_k)(x_i-\mu_k)^T}}{\sum_{i=1}^m{P(x_i\in C_k|x_i)}}  \tag{5}
 \]</span> 类似地，协方差也是用加权平均求出来的。</p>
-<p>（公式 (3) (4) (5) 其实是从极大似然函数推出来的，在周志华老师的<a href="https://book.douban.com/subject/26708119/" target="_blank" rel="external">西瓜书</a>和<a href="https://book.douban.com/subject/2061116/" target="_blank" rel="external">PRML</a>书中都有详细推导，不过这里我只想给出感性的认识）</p>
+<p>（公式 (3) (4) (5) 其实是从极大似然函数推出来的，在周志华老师的<a href="https://book.douban.com/subject/26708119/" target="_blank" rel="noopener">西瓜书</a>和<a href="https://book.douban.com/subject/2061116/" target="_blank" rel="noopener">PRML</a>书中都有详细推导，不过这里我只想给出感性的认识）</p>
 <p>不过，以上公式都是基于 <span class="math inline">\(P( x \in C_k| x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}\)</span>计算出来的，而这个公式本身又需要知道 <span class="math inline">\(P(C_k)\)</span>（即 <span class="math inline">\(\pi_k\)</span>）等参数，这就陷入一个鸡生蛋还是蛋生鸡的怪圈。</p>
 <p>但是，借助 K-means 的思路，我们可以事先随机初始化这些参数，然后计算出 <span class="math inline">\(P( x \in C_k| x)\)</span>，再用它更新 GMM 参数，然后再用更新的模型计算 <span class="math inline">\(P( x \in C_k| x)\)</span>，如此迭代下去，总有收敛的时候，这样，我们不就可以像 K-means 一样计算出参数了吗？！</p>
 <p>下面，我们就仿照 K-means 的方法，给出迭代计算 GMM 参数的步骤：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>随机初始化各个高斯模型的参数；</li>
 <li>根据参数，计算 <span class="math inline">\(P( x \in C_k| x)\)</span>，这一步其实是计算出每一个样本归属于每一个聚类中心的概率；</li>
 <li>根据第 2 步计算得到的 <span class="math inline">\(P( x \in C_k| x)\)</span>，按照公式 (3) (4) (5) 重新计算 GMM 参数，并重复步骤 2 直到收敛。</li>
@@ -462,7 +461,7 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 <h4 id="em-算法">EM 算法</h4>
 <p>其实，上面仿照 K-means 算法的计算步骤，就是 EM 算法的核心部分了。</p>
 <p>EM 算法主要分为 E 和 M 两步：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>E 指的是 Expectation，即计算均值的过程，对应的是上面的步骤 2，这一步主要是计算每个样本归属的聚类中心；</li>
 <li>M 指的是 Maximum，即对参数的最大似然估计，对应的是上面的步骤 3。我前面也说了，公式 (3) (4) (5) 计算参数的公式是用最大似然函数推出来的，所以，这一步其实是在根据步骤 2 的分类结果，重新用最大似然函数来估计参数。</li>
 </ol>
@@ -474,11 +473,11 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 <p>好了，本文到这里就不再深入下去了。EM 算法博大精深，吴军老师在《数学之美》称它为<strong>上帝的算法</strong>，可见这个算法的强大之处。EM 算法可以应用的场合非常多，从本文给出的 GMM 例子来看，它其实很类似梯度下降算法，在给定的目标函数很复杂、难以求解时，EM 算法用一种迭代的策略来优化初始参数，并逐步收敛到最优解。关于这个算法的具体内容，我想进一步深入理解后，再用一篇文章好好写一下。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://blog.pluskid.org/?p=39" target="_blank" rel="external">漫谈 Clustering (3): Gaussian Mixture Model</a></li>
-<li><a href="http://classes.engr.oregonstate.edu/eecs/fall2011/cs434/notes/GMM-14.pdf" target="_blank" rel="external">Mixture of Gaussian clustering</a></li>
-<li><a href="http://www.cnblogs.com/zhangchaoyang/articles/2624882.html" target="_blank" rel="external">EM及高斯混合模型</a></li>
-<li><a href="https://book.douban.com/subject/26708119/" target="_blank" rel="external">机器学习西瓜书</a></li>
-<li><a href="https://book.douban.com/subject/2061116/" target="_blank" rel="external">PRML</a></li>
+<li><a href="http://blog.pluskid.org/?p=39" target="_blank" rel="noopener">漫谈 Clustering (3): Gaussian Mixture Model</a></li>
+<li><a href="http://classes.engr.oregonstate.edu/eecs/fall2011/cs434/notes/GMM-14.pdf" target="_blank" rel="noopener">Mixture of Gaussian clustering</a></li>
+<li><a href="http://www.cnblogs.com/zhangchaoyang/articles/2624882.html" target="_blank" rel="noopener">EM及高斯混合模型</a></li>
+<li><a href="https://book.douban.com/subject/26708119/" target="_blank" rel="noopener">机器学习西瓜书</a></li>
+<li><a href="https://book.douban.com/subject/2061116/" target="_blank" rel="noopener">PRML</a></li>
 </ul>
 
       
@@ -1006,24 +1005,7 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

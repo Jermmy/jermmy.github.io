@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
-先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta name="description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。 先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta name="keywords" content="深度学习,NLP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="word2vec概述">
 <meta property="og:url" content="https://jermmy.github.io/2017/11/03/2017-11-3-word2vec-introduction/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
-先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。 先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/training_data_cbow.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/CBOW_network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-11-3/network_matrix.png">
@@ -114,8 +114,7 @@
 <meta property="og:updated_time" content="2017-12-13T02:53:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="word2vec概述">
-<meta name="twitter:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。
-先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
+<meta name="twitter:description" content="既然是概述，那么我也只会在文中谈一点关于 Word2Vec 的思想和大概的方法。对于这个算法，如果一开始学习就深入到算法细节中，反而会陷入局部极值点，最后甚至不知道这个算法是干嘛的。在了解算法大概的思路后，如果有进一步研究的必要，再去深究算法细节，这时一切都是水到渠成的。 先申明，由于我不是做 NLP 相关的，因此本文参考的主要是文末提供的博客，在算法理解上有很多不成熟的地方，还请见谅。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-11-3/training_data_cbow.png">
 
 
@@ -150,7 +149,7 @@
 
 
 
-  <title>word2vec概述 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>word2vec概述 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -160,7 +159,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -463,10 +462,9 @@
 <p><img src="/images/2017-11-3/skip-grams-network.png" width="300px"></p>
 </center>
 <p>我们再次用矩阵的形式看看这个过程（这里偷个懒，我就直接盗参考链接的图了）：</p>
-<div class="figure">
-<img src="/images/2017-11-3/skip.png" alt="skip-grams">
-<p class="caption">skip-grams</p>
-</div>
+<figure>
+<img src="/images/2017-11-3/skip.png" alt="skip-grams"><figcaption>skip-grams</figcaption>
+</figure>
 <p>这个图里只包括了隐藏层到输出层的部分，前面输出层到隐藏层的部分和一般的网络是一样的。</p>
 <p>注意到，我们这里同样将隐藏层的神经元数目设为 4。</p>
 <p>在 Output 的时候，根据输入单词对应的上下文单词数量，我们对应的要输出相同数量的向量，上图中，输出的向量个数是 2。当然，在一次前向中，这两个输出向量是相同的，不过，我们要的其实是用于反向传播的误差。比如，这两个输出向量对应的词是不同的，因此，对应的 Target 向量（也就是 one-hot）也是不同的，这样，用各自对应的 Target 向量减去 Softmax 得到的向量，我们可以得到两个不同的误差，然后，把这两个误差加起来作为总的误差，再反向传播回去。</p>
@@ -478,10 +476,10 @@
 <p>废话到此为止～囧～</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/" target="_blank" rel="external">Word2Vec Tutorial - The Skip-Gram Model</a></li>
-<li><a href="http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/" target="_blank" rel="external">Word2Vec Tutorial Part 2 - Negative Sampling</a></li>
-<li><a href="https://www.analyticsvidhya.com/blog/2017/06/word-embeddings-count-word2veec/" target="_blank" rel="external">An Intuitive Understanding of Word Embeddings: From Count Vectors to Word2Vec</a></li>
-<li><a href="https://zh.wikipedia.org/wiki/Word2vec" target="_blank" rel="external">Word2vec</a></li>
+<li><a href="http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/" target="_blank" rel="noopener">Word2Vec Tutorial - The Skip-Gram Model</a></li>
+<li><a href="http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/" target="_blank" rel="noopener">Word2Vec Tutorial Part 2 - Negative Sampling</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2017/06/word-embeddings-count-word2veec/" target="_blank" rel="noopener">An Intuitive Understanding of Word Embeddings: From Count Vectors to Word2Vec</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/Word2vec" target="_blank" rel="noopener">Word2vec</a></li>
 </ul>
 
       
@@ -1011,24 +1009,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

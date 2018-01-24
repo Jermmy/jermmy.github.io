@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,25 +94,21 @@
 
 
 
-<meta name="description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。
-构造的原则
-熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
+<meta name="description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。 构造的原则 熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
+<meta name="keywords" content="机器学习,决策树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="决策树生成算法">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/13/2017-4-13-decision-tree/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。
-构造的原则
-熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。 构造的原则 熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/eg.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/tree1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/tree2.png">
 <meta property="og:updated_time" content="2017-12-14T16:16:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="决策树生成算法">
-<meta name="twitter:description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。
-构造的原则
-熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
+<meta name="twitter:description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。 构造的原则 熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-4-13/eg.png">
 
 
@@ -147,7 +143,7 @@
 
 
 
-  <title>决策树生成算法 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>决策树生成算法 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -157,7 +153,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -399,7 +395,7 @@
       
 
       
-        <p>关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：<strong><a href="https://en.wikipedia.org/wiki/ID3_algorithm" target="_blank" rel="external">ID3</a></strong>，<strong><a href="https://en.wikipedia.org/wiki/C4.5_algorithm" target="_blank" rel="external">C4.5</a></strong> 以及 <strong><a href="https://en.wikipedia.org/wiki/Predictive_analytics#Classification_and_regression_trees_.28CART.29" target="_blank" rel="external">CART</a></strong>。</p>
+        <p>关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：<strong><a href="https://en.wikipedia.org/wiki/ID3_algorithm" target="_blank" rel="noopener">ID3</a></strong>，<strong><a href="https://en.wikipedia.org/wiki/C4.5_algorithm" target="_blank" rel="noopener">C4.5</a></strong> 以及 <strong><a href="https://en.wikipedia.org/wiki/Predictive_analytics#Classification_and_regression_trees_.28CART.29" target="_blank" rel="noopener">CART</a></strong>。</p>
 <h3 id="构造的原则">构造的原则</h3>
 <p>熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而决策树的生成其实是依次挑选这些属性组成自己的节点，到最终可以明确得出结论的时候（也就是叶子结点），整棵树便生成了。所以，我们的目标就是按照某种方法依次挑选出这些属性。</p>
 <p>我们挑选的原则是：每次选出这个属性后，可以最大限度地减小分类的可能性。回到 gay 这个问题，如果摆在我们眼前的属性有：「性取向」，「是否喜欢日漫」，「是否长发披肩」，那么，选择「性取向」这个属性，对我们之后的判断，帮助无疑是最大的。因为得知「性取向」之后，基本也就得到结论了。所以，对这个例子而言，「性取向」是我们优先挑选的属性。</p>
@@ -428,7 +424,7 @@ Remainder(A)=\sum_{j=1}^{v}\frac{|D_j|}{|D|}H(D_j)
 Gain(A)=H(D)-Remainder(A)
 \]</span> 之前对熵的说明告诉我们，熵越大，信息越少，反之，信息越多。<span class="math inline">\(Gain(A)\)</span>其实就是 A 对信息的确定作用，它是我们选出 A 属性后，信息的混乱程度减少的量。 好了，到这里，ID3 的关键部分已经讲完了。其实，每次挑选属性的时候，我们都是计算出所有属性的<strong>信息增益</strong>，选择最大的作为分裂的属性，将样本分成几个子集，然后，对每个子集，继续选出最好的属性，继续分裂，直到所有样本都属于同一类为止（都是 gay 或者都是正面朝上）</p>
 <h4 id="举个例子">举个例子</h4>
-<p>下面用的这个例子摘自文末的参考博客<a href="http://www.cnblogs.com/leoo2sk/archive/2010/09/19/decision-tree.html" target="_blank" rel="external">算法杂货铺——分类算法之决策树(Decision tree)</a>。 假设我们有以下这堆 SNS 社区的资料，我们想确定一个账号是否是真实。 <img src="/images/2017-4-13/eg.png" alt="example"> 其中，s 、m 和 l 分别表示小、中和大。 我们先计算出这堆样本的熵：</p>
+<p>下面用的这个例子摘自文末的参考博客<a href="http://www.cnblogs.com/leoo2sk/archive/2010/09/19/decision-tree.html" target="_blank" rel="noopener">算法杂货铺——分类算法之决策树(Decision tree)</a>。 假设我们有以下这堆 SNS 社区的资料，我们想确定一个账号是否是真实。 <img src="/images/2017-4-13/eg.png" alt="example"> 其中，s 、m 和 l 分别表示小、中和大。 我们先计算出这堆样本的熵：</p>
 <p><span class="math inline">\(H(D)=-(0.7*log_2{0.7}+0.3*log_2{0.3}) = 0.879\)</span></p>
 <p>然后，我们计算每个属性的信息增益：</p>
 <p><span class="math display">\[
@@ -458,7 +454,7 @@ Gain(L)=0.879-0.603=0.276
 </center>
 <p>剩下的只有 H 属性，因此最后加上 H 节点。由于剩下的样本中只有 H=no 的数据，因此 yes 节点的数据没法判断（这种情况在数据量很大的时候一般不会遇到，因为数据量越大，涵盖的情况会更多），而剩下的两个样本存在 yes 和 no 两种情况，因此 no 节点往下也只能随机选择一种类别进行判断（这种情况一般是根据进行「多数表决」，即选择出现次数最多的类别作为最终类别，在数据量很大的情况下，出现次数一样多的情况几乎不会发生）。</p>
 <h4 id="属性为连续值的情况">属性为连续值的情况</h4>
-<p>上面给出的例子中，样本的特征都是离散值（e.g. s，m，l），而 ID3 算法确实也只对离散值起作用。如果遇到特征为连续值的情况，一般需要先将其离散化，例如：可以选定几个阈值<span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2\)</span>，<span class="math inline">\(a_3\)</span>（<span class="math inline">\(a_1\)</span>&lt;<span class="math inline">\(a_2\)</span>&lt;<span class="math inline">\(a_3\)</span>），根据这些阈值，将样本特征分为四类：<span class="math inline">\(f &lt; a_1\)</span>，<span class="math inline">\(a_1 &lt; f &lt; a_2\)</span>，<span class="math inline">\(a_2 &lt; f &lt; a_3\)</span>，<span class="math inline">\(f &gt; a_3\)</span>。然后，便可以按照一般的思路构建决策树了。</p>
+<p>上面给出的例子中，样本的特征都是离散值（e.g. s，m，l），而 ID3 算法确实也只对离散值起作用。如果遇到特征为连续值的情况，一般需要先将其离散化，例如：可以选定几个阈值<span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2\)</span>，<span class="math inline">\(a_3\)</span>（<span class="math inline">\(a_1\)</span>&lt;<span class="math inline">\(a_2\)</span>&lt;<span class="math inline">\(a_3\)</span>），根据这些阈值，将样本特征分为四类：<span class="math inline">\(f &lt; a_1\)</span>，<span class="math inline">\(a_1 &lt; f &lt; a_2\)</span>，<span class="math inline">\(a_2 &lt; f &lt; a_3\)</span>，<span class="math inline">\(f &gt; a_3\)</span>。然后，便可以按照一般的思路构建决策树了。</p>
 <h3 id="c4.5算法">C4.5算法</h3>
 <p>C4.5 算法主要对 ID3 进行了改进，用「增益率」来衡量属性的信息增益效率。算法中定义了「分裂信息」：</p>
 <p><span class="math inline">\(SplitInfo(A)=-\sum_{j=1}^{v}{\frac{|D_j|}{|D|}log_2{\frac{|D_j|}{|D|}}}\)</span></p>
@@ -478,26 +474,26 @@ Gini(D, A) = \sum_{j}^{k}{\frac{|D_j|}{|D|}}
 <table>
 <thead>
 <tr class="header">
-<th align="center"><span class="math inline">\(X\)</span></th>
-<th align="center"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">(<span class="math inline">\(x_{11}\)</span>，<span class="math inline">\(x_{12}\)</span>，<span class="math inline">\(x_{13}\)</span>)</td>
-<td align="center"><span class="math inline">\(y_1\)</span></td>
+<td style="text-align: center;">(<span class="math inline">\(x_{11}\)</span>，<span class="math inline">\(x_{12}\)</span>，<span class="math inline">\(x_{13}\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(y_1\)</span></td>
 </tr>
 <tr class="even">
-<td align="center">(<span class="math inline">\(x_{21}\)</span>，<span class="math inline">\(x_{22}\)</span>，<span class="math inline">\(x_{23}\)</span>)</td>
-<td align="center"><span class="math inline">\(y_2\)</span></td>
+<td style="text-align: center;">(<span class="math inline">\(x_{21}\)</span>，<span class="math inline">\(x_{22}\)</span>，<span class="math inline">\(x_{23}\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(y_2\)</span></td>
 </tr>
 <tr class="odd">
-<td align="center">(<span class="math inline">\(x_{31}\)</span>，<span class="math inline">\(x_{32}\)</span>，<span class="math inline">\(x_{33}\)</span>)</td>
-<td align="center"><span class="math inline">\(y_3\)</span></td>
+<td style="text-align: center;">(<span class="math inline">\(x_{31}\)</span>，<span class="math inline">\(x_{32}\)</span>，<span class="math inline">\(x_{33}\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(y_3\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>上面的表中一共有三个样本，每个样本有三个特征，为了解说方便，我们分别命名为特征 1、特征 2、特征 3（比如：<span class="math inline">\(x_{11}\)</span>，<span class="math inline">\(x_{21}\)</span>，<span class="math inline">\(x_{31}\)</span> 就属于特征 1）。 <br\> 与分类树类似，回归树每次也需要从样本 <span class="math inline">\(X\)</span> 选取特征，并根据特征值将数据集切分为两份。在分类树中，我们是用「熵」或者「基尼系数」来确定分裂特征，但回归树中的 <span class="math inline">\(X\)</span> 和 <span class="math inline">\(Y\)</span> 都是连续值，因此需要采用新的特征挑选方式。 <br\> 首先，我们先简单明确一下回归树的分裂原则：<strong>每次分裂后，每个样本集合内的数据要尽可能相似</strong>。这一点与分类树是不谋而合的，尽可能相似就是说，类别上要尽量统一。而为了做到这一点，最常用的方法便是「最小二乘法」。下面，我们定义「最小二乘法」的代价函数（可以简单认为就是回归树的信息熵）：</br\></br\></p>
+<p>上面的表中一共有三个样本，每个样本有三个特征，为了解说方便，我们分别命名为特征 1、特征 2、特征 3（比如：<span class="math inline">\(x_{11}\)</span>，<span class="math inline">\(x_{21}\)</span>，<span class="math inline">\(x_{31}\)</span> 就属于特征 1）。 &lt;br&gt; 与分类树类似，回归树每次也需要从样本 <span class="math inline">\(X\)</span> 选取特征，并根据特征值将数据集切分为两份。在分类树中，我们是用「熵」或者「基尼系数」来确定分裂特征，但回归树中的 <span class="math inline">\(X\)</span> 和 <span class="math inline">\(Y\)</span> 都是连续值，因此需要采用新的特征挑选方式。 &lt;br&gt; 首先，我们先简单明确一下回归树的分裂原则：<strong>每次分裂后，每个样本集合内的数据要尽可能相似</strong>。这一点与分类树是不谋而合的，尽可能相似就是说，类别上要尽量统一。而为了做到这一点，最常用的方法便是「最小二乘法」。下面，我们定义「最小二乘法」的代价函数（可以简单认为就是回归树的信息熵）：</p>
 <p><span class="math display">\[
 \min_{j,s}[\min_{c_1}\sum_{x_i\ \in\ {R_1\ (j,s)}}{(y_i-c_1)}^2+\min_{c_2}\sum_{x_i\ \in\ {R_2\ (j,s)}}{(y_i-c_2)}^2]
 \]</span></p>
@@ -515,22 +511,22 @@ Gini(D, A) = \sum_{j}^{k}{\frac{|D_j|}{|D|}}
 <p>这个公式的做法其实很简单，就是枚举所有特征以及特征值，挑选出最好的特征以及特征值作为分裂点，将样本分为两部分，其中，每一部分内的样本值 <span class="math inline">\(y\)</span> 的平方差最小。平方差最小，意味着这个样本内的数据是最相近的，可以认为属于同一类。</p>
 <p>至此，回归树的精髓部分就介绍完了。下面顺藤摸瓜讲一下回归树的构建过程。</p>
 <p><strong>最小二乘回归树生成算法：</strong></p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>依次遍历每个特征 j，根据所有样本中特征 j 的取值 s，我们按照上面的公式计算代价函数，这样便可以得到每对 ( <span class="math inline">\(j\)</span>，<span class="math inline">\(s\)</span> ) 的代价函数，我们选择函数值最小的作为切分点；</li>
 <li>使用上一步的切分点将数据分为两份；</li>
 <li>重复第 1、2 步，直到样本的平方差小于阈值或样本数目小于阈值为止。此时，叶子节点的数据就是该样本空间 <span class="math inline">\(R_m\)</span> 的平均值 <span class="math inline">\(c_m\)</span>；</li>
 <li>根据第 3 步构造的各个样本空间 <span class="math inline">\(R_m\)</span>，生成回归树。</li>
 </ol>
-<p>在本文参考的博文 <a href="https://cethik.vip/2016/09/21/machineCAST/" target="_blank" rel="external">CART之回归树构建</a>内有一个构建回归树的简单例子，虽然计算方式略有不同，但和本文陈述的方法应该大同小异，我这里偷个懒，就不再举例了😝。</p>
+<p>在本文参考的博文 <a href="https://cethik.vip/2016/09/21/machineCAST/" target="_blank" rel="noopener">CART之回归树构建</a>内有一个构建回归树的简单例子，虽然计算方式略有不同，但和本文陈述的方法应该大同小异，我这里偷个懒，就不再举例了😝。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://www.cnblogs.com/leoo2sk/archive/2010/09/19/decision-tree.html" target="_blank" rel="external">算法杂货铺——分类算法之决策树(Decision tree)</a></li>
-<li><a href="https://en.wikipedia.org/wiki/ID3_algorithm" target="_blank" rel="external">ID3 algorithm</a></li>
-<li><a href="https://en.wikipedia.org/wiki/C4.5_algorithm" target="_blank" rel="external">C4.5 algorithm</a></li>
-<li><a href="http://www.cnblogs.com/happyblog/archive/2011/09/30/2196901.html" target="_blank" rel="external">CART算法学习及实现</a></li>
-<li><a href="http://idatamining.net/blog/?p=698" target="_blank" rel="external">分类与回归树（classification and regression tree，CART）</a></li>
-<li><a href="http://www.cnblogs.com/liuwu265/p/4688403.html" target="_blank" rel="external">CART分类与回归树 学习笔记</a></li>
-<li><a href="https://cethik.vip/2016/09/21/machineCAST/" target="_blank" rel="external">CART之回归树构建</a></li>
+<li><a href="http://www.cnblogs.com/leoo2sk/archive/2010/09/19/decision-tree.html" target="_blank" rel="noopener">算法杂货铺——分类算法之决策树(Decision tree)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/ID3_algorithm" target="_blank" rel="noopener">ID3 algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/C4.5_algorithm" target="_blank" rel="noopener">C4.5 algorithm</a></li>
+<li><a href="http://www.cnblogs.com/happyblog/archive/2011/09/30/2196901.html" target="_blank" rel="noopener">CART算法学习及实现</a></li>
+<li><a href="http://idatamining.net/blog/?p=698" target="_blank" rel="noopener">分类与回归树（classification and regression tree，CART）</a></li>
+<li><a href="http://www.cnblogs.com/liuwu265/p/4688403.html" target="_blank" rel="noopener">CART分类与回归树 学习笔记</a></li>
+<li><a href="https://cethik.vip/2016/09/21/machineCAST/" target="_blank" rel="noopener">CART之回归树构建</a></li>
 </ul>
 
       
@@ -1060,24 +1056,7 @@ Gini(D, A) = \sum_{j}^{k}{\frac{|D_j|}{|D|}}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

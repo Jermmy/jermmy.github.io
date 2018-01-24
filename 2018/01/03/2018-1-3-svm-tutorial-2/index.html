@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="机器学习," />
+  <meta name="keywords" content="机器学习,优化理论," />
 
 
 
@@ -94,22 +94,18 @@
 
 
 
-<meta name="description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[
-\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m
-\] 由于求解过程中，限制条件中的 \(\delta">
+<meta name="description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[ \underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m \] 由于求解过程中，限制条件中的 \(\delta">
+<meta name="keywords" content="机器学习,优化理论">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SVM小白教程（2）：拉格朗日对偶">
 <meta property="og:url" content="https://jermmy.github.io/2018/01/03/2018-1-3-svm-tutorial-2/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[
-\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m
-\] 由于求解过程中，限制条件中的 \(\delta">
-<meta property="og:updated_time" content="2018-01-03T12:56:39.000Z">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[ \underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m \] 由于求解过程中，限制条件中的 \(\delta">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-07T12:45:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SVM小白教程（2）：拉格朗日对偶">
-<meta name="twitter:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[
-\underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m
-\] 由于求解过程中，限制条件中的 \(\delta">
+<meta name="twitter:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[ \underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m \] 由于求解过程中，限制条件中的 \(\delta">
 
 
 
@@ -143,7 +139,7 @@
 
 
 
-  <title>SVM小白教程（2）：拉格朗日对偶 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>SVM小白教程（2）：拉格朗日对偶 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -512,7 +508,7 @@ s.t. \ u \ge 0 \notag
 L(\mathbf{w},b,\alpha)= &amp; \frac{1}{2}\mathbf{w}^2-\sum_{i=1}^m{\alpha_i}[y_i(\mathbf{w}^T\mathbf{x_i}+b)-1] \tag{7} \\
 s.t. \ \alpha_i \ge &amp;\ 0, \ i=1, \dots, m \notag
 \end{align}
-\]</span> （乍一看，约束条件中的不等式也比较简单，直接用拉格朗日乘子法也可以解了，不过，这本<a href="http://localhost:4000/images/2017-12-23/support_vector_machines_succinctly.pdf" target="_blank" rel="external">教程</a>提到，只有样本量很少的时候才解得出来，所以我们还是转换成对偶问题求解）</p>
+\]</span> （乍一看，约束条件中的不等式也比较简单，直接用拉格朗日乘子法也可以解了，不过，这本<a href="http://localhost:4000/images/2017-12-23/support_vector_machines_succinctly.pdf" target="_blank" rel="noopener">教程</a>提到，只有样本量很少的时候才解得出来，所以我们还是转换成对偶问题求解）</p>
 <p>下面要求出 <span class="math inline">\(L(\mathbf{w},b,\alpha)\)</span> 关于 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span> 的最小值，这里可以直接通过偏导求得： <span class="math display">\[
 \nabla_\mathbf{w} L=\mathbf{w}-\sum_{i=1}^m \alpha_iy_i \mathbf{x}_i=0 \tag{8} 
 \]</span></p>
@@ -534,10 +530,10 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
 \]</span> 求出 <span class="math inline">\(W(\alpha)\)</span> 的最大值，就相当于求出了我们需要的参数 <span class="math inline">\(\mathbf{w}\)</span>。</p>
 <h2 id="参考">参考</h2>
 <ul>
-<li><a href="http://www.hanlongfei.com/convex/2015/11/05/duality/" target="_blank" rel="external">凸优化-对偶问题</a></li>
+<li><a href="http://www.hanlongfei.com/convex/2015/11/05/duality/" target="_blank" rel="noopener">凸优化-对偶问题</a></li>
 <li><a href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/">拉格朗日乘子法</a></li>
-<li><a href="http://www.cnblogs.com/90zeng/p/Lagrange_duality.html" target="_blank" rel="external">简易解说拉格朗日对偶（Lagrange duality）</a></li>
-<li><a href="http://www.cnblogs.com/jerrylead/archive/2011/03/13/1982684.html" target="_blank" rel="external">支持向量机SVM（二）</a></li>
+<li><a href="http://www.cnblogs.com/90zeng/p/Lagrange_duality.html" target="_blank" rel="noopener">简易解说拉格朗日对偶（Lagrange duality）</a></li>
+<li><a href="http://www.cnblogs.com/jerrylead/archive/2011/03/13/1982684.html" target="_blank" rel="noopener">支持向量机SVM（二）</a></li>
 </ul>
 
       
@@ -584,6 +580,8 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
         <div class="post-tags">
           
             <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/优化理论/" rel="tag"># 优化理论</a>
           
         </div>
       
@@ -1061,24 +1059,7 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

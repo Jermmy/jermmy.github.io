@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
 <meta property="og:url" content="https://jermmy.github.io/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting2.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-22/overfitting3.png">
@@ -119,8 +119,7 @@
 <meta property="og:updated_time" content="2017-12-13T03:01:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
-<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的过拟合（overfitting）问题，以及解决的方法：正则化（regularization）。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-22/overfitting1.png">
 
 
@@ -155,7 +154,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter3（2） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>读书笔记：neuralnetworksanddeeplearning chapter3（2） | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -165,7 +164,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -407,7 +406,7 @@
       
 
       
-        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>上一章，我们学习了改善网络训练的代价函数：交叉熵函数。今天要介绍神经网络容易遇到的<strong>过拟合（overfitting）</strong>问题，以及解决的方法：<strong>正则化（regularization）</strong>。</p>
 <a id="more"></a>
 <h3 id="过拟合">过拟合</h3>
@@ -562,7 +561,7 @@ w \rightarrow w&#39;=w-\frac{\eta \lambda}{n}{\rm sgn}(w)-\eta \frac{\partial C_
 <p>另外，数据量也可以弥补机器学习算法的不足。假设在相同数据规模下，算法 A 要好于算法 B，但如果为算法 B 提供更多数据，后者的效果往往会超过前者。而且，即使两者数据规模一样，但算法 B 的数据比 A 的更加丰富，B 也可能超过 A，这就是所谓<strong>好的算法不如好的数据</strong>。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a></li>
 </ul>
 
       
@@ -1090,24 +1089,7 @@ w \rightarrow w&#39;=w-\frac{\eta \lambda}{n}{\rm sgn}(w)-\eta \frac{\partial C_
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

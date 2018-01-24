@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,28 +94,18 @@
 
 
 
-<meta name="description" content="numpy.ndarray
-
-numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)
-
-This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
+<meta name="description" content="numpy.ndarray  numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)  This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
+<meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="numpy常用接口">
 <meta property="og:url" content="https://jermmy.github.io/2017/01/04/2017-1-4-numpy常用接口/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="numpy.ndarray
-
-numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)
-
-This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="numpy.ndarray  numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)  This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-09-06T13:13:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="numpy常用接口">
-<meta name="twitter:description" content="numpy.ndarray
-
-numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)
-
-This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
+<meta name="twitter:description" content="numpy.ndarray  numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)  This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没">
 
 
 
@@ -149,7 +139,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 
 
 
-  <title>numpy常用接口 | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>numpy常用接口 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -159,7 +149,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -406,7 +396,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 <p>numpy.ndarray(shape, dtype=None, buffer=None, offset=0, strides=None, order=None)</p>
 </blockquote>
 <p>This is an array object represents a multidimensional array of fixed-size items（Fixed-size 意味着数组一旦创建就没法修改了）。</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>shape: tuple of ints（除了该参数必须之外，其余为可选）；</li>
 <li>dtype: data-type</li>
 <li>buffer: object exposing buffer interface, used to fill the array with data.</li>
@@ -415,12 +405,12 @@ This is an array object represents a multidimensional array of fixed-size items�
 <li>order: {‘C’, ‘F’}, row-major (C-style) or column-major (Fortran-style).</li>
 </ol>
 <p>注：</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>如果 buffer 是 None，则只有 Shape、dtype、 order 是需要的。</li>
 <li>如果 buffer 不是 None，则所有参数都会用到。</li>
 <li>buffer 的 dtype 和 ndarray 的 dtype 要保持一致。</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>m = np.ndarray(shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=np.int32, buffer=np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>], dtype=np.int32))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>m</div><div class="line">[[<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>]</div><div class="line"> [<span class="number">4</span> <span class="number">5</span> <span class="number">6</span>]]</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = np.ndarray(shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=np.int32, buffer=np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>], dtype=np.int32))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m</span><br><span class="line">[[<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>]</span><br><span class="line"> [<span class="number">4</span> <span class="number">5</span> <span class="number">6</span>]]</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h3 id="numpy.array">numpy.array</h3>
 <blockquote>
@@ -428,7 +418,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 </blockquote>
 <p>这是 numpy 创建数组最常用的方式了，<code>object</code> 通常传入一个 <code>list</code> 数组，可以是一维或者多维。</p>
 <p>e.g.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3.0</span>])</div><div class="line">array([ <span class="number">1.</span>,  <span class="number">2.</span>,  <span class="number">3.</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])</div><div class="line">array([[<span class="number">1</span>, <span class="number">2</span>],</div><div class="line">       [<span class="number">3</span>, <span class="number">4</span>]])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], dtype=complex)</div><div class="line">array([ <span class="number">1.</span>+<span class="number">0.j</span>,  <span class="number">2.</span>+<span class="number">0.j</span>,  <span class="number">3.</span>+<span class="number">0.j</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3.0</span>])</span><br><span class="line">array([ <span class="number">1.</span>,  <span class="number">2.</span>,  <span class="number">3.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">       [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], dtype=complex)</span><br><span class="line">array([ <span class="number">1.</span>+<span class="number">0.j</span>,  <span class="number">2.</span>+<span class="number">0.j</span>,  <span class="number">3.</span>+<span class="number">0.j</span>])</span><br></pre></td></tr></table></figure>
 <h3 id="numpy.allclose">numpy.allclose()</h3>
 <blockquote>
 <p>numpy.allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False)</p>
@@ -440,7 +430,7 @@ This is an array object represents a multidimensional array of fixed-size items�
 </blockquote>
 <p>Returns an ndarray in range [start, stop)</p>
 <p>e.g.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>)</div><div class="line">array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3.0</span>)</div><div class="line">array([ <span class="number">0.</span>,  <span class="number">1.</span>,  <span class="number">2.</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>,<span class="number">7</span>)</div><div class="line">array([<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>,<span class="number">7</span>,<span class="number">2</span>)</div><div class="line">array([<span class="number">3</span>, <span class="number">5</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>)</span><br><span class="line">array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3.0</span>)</span><br><span class="line">array([ <span class="number">0.</span>,  <span class="number">1.</span>,  <span class="number">2.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>,<span class="number">7</span>)</span><br><span class="line">array([<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.arange(<span class="number">3</span>,<span class="number">7</span>,<span class="number">2</span>)</span><br><span class="line">array([<span class="number">3</span>, <span class="number">5</span>])</span><br></pre></td></tr></table></figure>
 <p>与python内置的range和xrange的比较：</p>
 <p><code>range()</code>多用于循环，会返回一个list。<code>xrange()</code>也多用于循环，但不返回list，而是类似generator，每次返回一个元素，因此内存开销更小。另外，python3 已经将<code>range()</code>的实现改成<code>xrange()</code>的方式，而<code>xrange()</code>这个接口则已经被取消了。</p>
 <h3 id="numpy.asmatrix">numpy.asmatrix()</h3>
@@ -449,53 +439,49 @@ This is an array object represents a multidimensional array of fixed-size items�
 </blockquote>
 <p>Interprete the input as a matrix, does not make a copy if the input is already a matrix or an ndarray.</p>
 <p>Returns numpy matrix.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>m = np.asmatrix(x)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x[<span class="number">0</span>,<span class="number">0</span>] = <span class="number">5</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>m</div><div class="line">matrix([[<span class="number">5</span>, <span class="number">2</span>],</div><div class="line">        [<span class="number">3</span>, <span class="number">4</span>]])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>x = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = np.asmatrix(x)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x[<span class="number">0</span>,<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m</span><br><span class="line">matrix([[<span class="number">5</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">3</span>, <span class="number">4</span>]])</span><br></pre></td></tr></table></figure>
 <h3 id="numpy.random.permutation">numpy.random.permutation</h3>
 <blockquote>
 <p>numpy.random.permutation(x)</p>
 </blockquote>
 <p>Randomly permute a sequence, or return a permuted range.</p>
-<ol style="list-style-type: decimal">
-<li>Parameters</li>
+<ol type="1">
+<li><p>Parameters</p>
+<p>x: int or array_like. If x is an integer, randomly permute np.arange(x). If x is an array, make a copy and shuffle the elements randomly.</p></li>
+<li><p>Returns</p>
+<p>out: ndarray. Permuted sequence or array range.</p></li>
 </ol>
-<p>x: int or array_like. If x is an integer, randomly permute np.arange(x). If x is an array, make a copy and shuffle the elements randomly.</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Returns</li>
-</ol>
-<p>out: ndarray. Permuted sequence or array range.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>permutation = np.random.permutation(np.array((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>permutation</div><div class="line">array([<span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">1</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>permutation = np.random.permutation(np.array((<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>permutation</span><br><span class="line">array([<span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
 <h4 id="numpy-生成序列中的随机子序列">numpy 生成序列中的随机子序列</h4>
 <p>可以借助 <code>numpy.random.choice</code> 接口。</p>
 <p>例如，要从 0 ～ 5 的数字中随机挑出 3 个数字，可以这样写：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>)  <span class="comment"># 等概率随机挑选</span></div><div class="line">array([<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>)  <span class="comment"># 等概率随机挑选</span></span><br><span class="line">array([<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>])</span><br></pre></td></tr></table></figure>
 <p>还可以根据不同的概率挑选：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])  <span class="comment"># 3 的概率最大，为0.6</span></div><div class="line">array([<span class="number">3</span>, <span class="number">3</span>, <span class="number">0</span>])</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])  <span class="comment"># 3 的概率最大，为0.6</span></span><br><span class="line">array([<span class="number">3</span>, <span class="number">3</span>, <span class="number">0</span>])</span><br></pre></td></tr></table></figure>
 <p>可以设置不放回地挑选：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, replace=<span class="keyword">False</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])</div><div class="line">array([<span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>])    <span class="comment"># 数字不会重复</span></div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(<span class="number">5</span>, <span class="number">3</span>, replace=<span class="keyword">False</span>, p=[<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0.6</span>, <span class="number">0</span>])</span><br><span class="line">array([<span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>])    <span class="comment"># 数字不会重复</span></span><br></pre></td></tr></table></figure>
 <p>当然，除了数字外，我们可以对其他类型的列表进行随机挑选：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>aa_milne_arr = [<span class="string">'pooh'</span>, <span class="string">'rabbit'</span>, <span class="string">'piglet'</span>, <span class="string">'Christopher'</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(aa_milne_arr, <span class="number">5</span>, p=[<span class="number">0.5</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.3</span>])</div><div class="line">array([<span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'Christopher'</span>, <span class="string">'piglet'</span>],</div><div class="line">      dtype=<span class="string">'|S11'</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>aa_milne_arr = [<span class="string">'pooh'</span>, <span class="string">'rabbit'</span>, <span class="string">'piglet'</span>, <span class="string">'Christopher'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.choice(aa_milne_arr, <span class="number">5</span>, p=[<span class="number">0.5</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.3</span>])</span><br><span class="line">array([<span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'pooh'</span>, <span class="string">'Christopher'</span>, <span class="string">'piglet'</span>],</span><br><span class="line">      dtype=<span class="string">'|S11'</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="numpy.argmax">numpy.argmax</h3>
 <blockquote>
 <p>numpy.argmax(a, axis=None, out=None)</p>
 </blockquote>
 <p>返回数组中最大值的下标</p>
-<ol style="list-style-type: decimal">
-<li>参数</li>
-</ol>
+<ol type="1">
+<li><p>参数</p>
 <p>a：数组</p>
-<p>axis：比较的坐标系或者维度，如果没有提供，则对数组中的所有元素进行比较。</p>
-<ol start="2" style="list-style-type: decimal">
-<li>返回一个下标数组</li>
+<p>axis：比较的坐标系或者维度，如果没有提供，则对数组中的所有元素进行比较。</p></li>
+<li><p>返回一个下标数组</p></li>
 </ol>
 <p>e.g.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.arange(<span class="number">6</span>).reshape(<span class="number">2</span>,<span class="number">3</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a</div><div class="line">array([[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>],</div><div class="line">       [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a)  <span class="comment"># 比较所有元素</span></div><div class="line"><span class="number">5</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="number">0</span>)  <span class="comment"># 比较列</span></div><div class="line">array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="number">1</span>)  <span class="comment"># 比较行</span></div><div class="line">array([<span class="number">2</span>, <span class="number">2</span>])</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.arange(<span class="number">6</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">1</span>] = <span class="number">5</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b</div><div class="line">array([<span class="number">0</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(b) <span class="comment"># Only the first occurrence is returned.</span></div><div class="line"><span class="number">1</span></div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.arange(<span class="number">6</span>).reshape(<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">array([[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">       [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a)  <span class="comment"># 比较所有元素</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="number">0</span>)  <span class="comment"># 比较列</span></span><br><span class="line">array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="number">1</span>)  <span class="comment"># 比较行</span></span><br><span class="line">array([<span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.arange(<span class="number">6</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">array([<span class="number">0</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.argmax(b) <span class="comment"># Only the first occurrence is returned.</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
 <h3 id="numpy.where">numpy.where</h3>
 <blockquote>
 <p>numpy .where(condition, x, y)</p>
 </blockquote>
 <p>这个函数会根据 condition，返回合适的下标。</p>
 <p>e.g.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.array([<span class="number">2</span>,<span class="number">1</span>,<span class="number">4</span>,<span class="number">5</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>np.where(a &gt; b)</div><div class="line">(array([<span class="number">1</span>]),)   <span class="comment"># 只有a[1]&gt;b[1]</span></div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.array([<span class="number">2</span>,<span class="number">1</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.where(a &gt; b)</span><br><span class="line">(array([<span class="number">1</span>]),)   <span class="comment"># 只有a[1]&gt;b[1]</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -1022,24 +1008,7 @@ This is an array object represents a multidimensional array of fixed-size items�
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

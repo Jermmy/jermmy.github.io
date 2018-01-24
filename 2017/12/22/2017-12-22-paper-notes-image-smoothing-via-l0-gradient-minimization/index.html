@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="图像处理,NPR," />
+  <meta name="keywords" content="图像处理,NPR,论文," />
 
 
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
-另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta name="description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。 另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta name="keywords" content="图像处理,NPR,论文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：Image Smoothing via L0 Gradient Minimization">
 <meta property="og:url" content="https://jermmy.github.io/2017/12/22/2017-12-22-paper-notes-image-smoothing-via-l0-gradient-minimization/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
-另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。 另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/l0-smoothing.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/gradient-detail.png">
@@ -109,11 +109,10 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/result1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/edge-detection.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-22/vectorize.png">
-<meta property="og:updated_time" content="2017-12-22T07:03:27.000Z">
+<meta property="og:updated_time" content="2018-01-11T03:29:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Image Smoothing via L0 Gradient Minimization">
-<meta name="twitter:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。
-另外这篇论文的作者徐立也是一个相当高产的研究员。">
+<meta name="twitter:description" content="今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 \(L_0\) 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。 另外这篇论文的作者徐立也是一个相当高产的研究员。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-12-22/l0-smoothing.png">
 
 
@@ -148,7 +147,7 @@
 
 
 
-  <title>论文笔记：Image Smoothing via L0 Gradient Minimization | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>论文笔记：Image Smoothing via L0 Gradient Minimization | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +157,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -401,13 +400,13 @@
 
       
         <p>今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 <span class="math inline">\(L_0\)</span> 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。</p>
-<p>另外这篇论文的作者<a href="http://www.lxu.me/" target="_blank" rel="external">徐立</a>也是一个相当高产的研究员。</p>
+<p>另外这篇论文的作者<a href="http://www.lxu.me/" target="_blank" rel="noopener">徐立</a>也是一个相当高产的研究员。</p>
 <center>
 <p><img src="/images/2017-12-22/l0-smoothing.png" width="600px"></p>
 </center>
 <a id="more"></a>
 <h3 id="论文的目的">论文的目的</h3>
-<p>所谓图像平滑，就是突出图像中的低频成分，抑制高频成分，减小突变的梯度。大部分情况下，这么做的目的是为了去除图像中的噪声，因为噪声一般就是一些孤立的像素点，是像素变化比较大的区域。在传统的图像处理中，大部分操作都是用一些具有平滑性质的卷积核对图像进行模糊处理，最常用的如：<a href="http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html" target="_blank" rel="external">高斯模糊</a>、均值滤波等等。这些方法都有一个缺陷，就是在模糊噪声的同时，也模糊了边缘。当然之后也有一些改进的方法，如：<a href="https://jermmy.github.io/2017/01/07/2017-1-7-Bilateral-Filter/">双边滤波</a>等，这些方法都在边缘保持上进行了很多改进，但多少还是会损失边缘的信息。本文的方法完全不同于以往的这些算法，它从图像梯度的角度出发，在平滑掉大部分细小的噪声的同时，又能最大限度的保持重要的边缘信息。</p>
+<p>所谓图像平滑，就是突出图像中的低频成分，抑制高频成分，减小突变的梯度。大部分情况下，这么做的目的是为了去除图像中的噪声，因为噪声一般就是一些孤立的像素点，是像素变化比较大的区域。在传统的图像处理中，大部分操作都是用一些具有平滑性质的卷积核对图像进行模糊处理，最常用的如：<a href="http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html" target="_blank" rel="noopener">高斯模糊</a>、均值滤波等等。这些方法都有一个缺陷，就是在模糊噪声的同时，也模糊了边缘。当然之后也有一些改进的方法，如：<a href="https://jermmy.github.io/2017/01/07/2017-1-7-Bilateral-Filter/">双边滤波</a>等，这些方法都在边缘保持上进行了很多改进，但多少还是会损失边缘的信息。本文的方法完全不同于以往的这些算法，它从图像梯度的角度出发，在平滑掉大部分细小的噪声的同时，又能最大限度的保持重要的边缘信息。</p>
 <h3 id="论文主要思想">论文主要思想</h3>
 <h4 id="一维图像信号">一维图像信号</h4>
 <p>在正式讲思想之前，我们先回忆一下图像平滑的目标是什么。</p>
@@ -444,7 +443,7 @@ C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
 <p>然后，我们可以用同样的方法得到目标函数： <span class="math display">\[
 \underset{S}{\operatorname{min}} \{ \sum_p{(S_p-I_p)^2+\lambda C(S)} \}
 \]</span> 公式中 <span class="math inline">\(I\)</span> 表示原图，其他的类比一维信号的公式。</p>
-<h3 id="优化方法">优化方法</h3>
+<p>###优化方法</p>
 <p>希望有生之年看懂补上。。。</p>
 <h3 id="实验结果">实验结果</h3>
 <center>
@@ -461,9 +460,9 @@ C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
 </center>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://www.cse.cuhk.edu.hk/~leojia/papers/L0smooth_Siggraph_Asia2011.pdf" target="_blank" rel="external">Image Smoothing via L0 Gradient Minimization</a></li>
-<li><a href="http://blog.csdn.net/bluecol/article/details/48750561" target="_blank" rel="external">L0范数图像平滑</a></li>
-<li><a href="http://blog.csdn.net/zouxy09/article/details/24971995" target="_blank" rel="external">机器学习中的范数规则化之（一）L0、L1与L2范数</a></li>
+<li><a href="http://www.cse.cuhk.edu.hk/~leojia/papers/L0smooth_Siggraph_Asia2011.pdf" target="_blank" rel="noopener">Image Smoothing via L0 Gradient Minimization</a></li>
+<li><a href="http://blog.csdn.net/bluecol/article/details/48750561" target="_blank" rel="noopener">L0范数图像平滑</a></li>
+<li><a href="http://blog.csdn.net/zouxy09/article/details/24971995" target="_blank" rel="noopener">机器学习中的范数规则化之（一）L0、L1与L2范数</a></li>
 </ul>
 
       
@@ -512,6 +511,8 @@ C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
             <a href="/tags/图像处理/" rel="tag"># 图像处理</a>
           
             <a href="/tags/NPR/" rel="tag"># NPR</a>
+          
+            <a href="/tags/论文/" rel="tag"># 论文</a>
           
         </div>
       
@@ -692,7 +693,7 @@ C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文的目的"><span class="nav-number">1.</span> <span class="nav-text">论文的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文主要思想"><span class="nav-number">2.</span> <span class="nav-text">论文主要思想</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一维图像信号"><span class="nav-number">2.1.</span> <span class="nav-text">一维图像信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二维图像信号"><span class="nav-number">2.2.</span> <span class="nav-text">二维图像信号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化方法"><span class="nav-number">3.</span> <span class="nav-text">优化方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结果"><span class="nav-number">4.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文的目的"><span class="nav-number">1.</span> <span class="nav-text">论文的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文主要思想"><span class="nav-number">2.</span> <span class="nav-text">论文主要思想</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一维图像信号"><span class="nav-number">2.1.</span> <span class="nav-text">一维图像信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二维图像信号"><span class="nav-number">2.2.</span> <span class="nav-text">二维图像信号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结果"><span class="nav-number">3.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -993,24 +994,7 @@ C(S)=\#\{p\ \big | \ |\partial_x S_p|+|\partial_y S_p| \neq 0 \}
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

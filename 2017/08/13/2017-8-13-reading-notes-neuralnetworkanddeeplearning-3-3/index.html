@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
+<meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
 <meta property="og:url" content="https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/tikz32.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/broad-gaussian.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/narrow-gaussian.png">
@@ -110,8 +110,7 @@
 <meta property="og:updated_time" content="2017-12-13T03:01:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
-<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减)
-上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
+<meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-8-13/tikz32.png">
 
 
@@ -146,7 +145,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter3（3） | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>读书笔记：neuralnetworksanddeeplearning chapter3（3） | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +155,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -398,17 +397,16 @@
       
 
       
-        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
+        <p>(本文是根据 <a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">neuralnetworksanddeeplearning</a> 这本书的第三章<a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a>整理而成的读书笔记，根据个人口味做了删减)</p>
 <p>上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：<strong>权重初始化</strong>和<strong>超参数的选择</strong></p>
 <a id="more"></a>
 <h3 id="权重初始化">权重初始化</h3>
 <p>到目前为止，我们都是用归一化高斯分布来初始化权值，但是，我们很想知道是否有其他初始化方法可以让网络训练得更好。</p>
 <p>事实上，确实存在比高斯分布更好的方法。不过，我们需要先了解高斯分布的初始化会存在哪些缺陷。</p>
 <p>假设我们有如下的网络结构，其中包含 1000 个输入神经元：</p>
-<div class="figure">
-<img src="/images/2017-8-13/tikz32.png" alt="tikz32">
-<p class="caption">tikz32</p>
-</div>
+<figure>
+<img src="/images/2017-8-13/tikz32.png" alt="tikz32"><figcaption>tikz32</figcaption>
+</figure>
 <p>现在，我们聚焦于隐藏层第一个神经元。假设输入中，有一半的神经元是 0，一半的神经元是 1。输入到隐藏层的权重和为 <span class="math inline">\(z=\sum_j{w_j x_j}+b\)</span>。由于有一半的 <span class="math inline">\(x_j=0\)</span>，所以 <span class="math inline">\(z\)</span> 相当于是 501 个归一化的高斯分布随机变量的和。因此，<span class="math inline">\(z\)</span> 本身也是一个高斯分布，其均值为 0，标准差为 <span class="math inline">\(\sqrt{501} \approx 22.4\)</span>。这是一个很「宽」的分布：</p>
 <center>
 <p><img src="/images/2017-8-13/broad-gaussian.png" width="520px"></p>
@@ -431,7 +429,7 @@
 <p>之所以称之为宽泛，是因为这种策略不告诉如何调整超参数，而是让你尽可能快地得到反馈。只有尽快把握网络的学习情况，我们才有耐心和信息继续 debug（总不能每调整一次要等个十来分钟才出结果吧）。我自己在 debug 网络的时候也经常采用这些做法，比如，只用很小的数据集训练，或者将网络的结构变小等等。这些做法只有一个目的：让网络尽可能快地反馈结果，不管结果好坏，这是我们能继续调试下去的前提。在反复调试后，我们往往能得到一些「灵感」，之后再慢慢将问题变的更复杂一些，然后继续调试。</p>
 <p>好了，下面我们针对学习率 <span class="math inline">\(\eta\)</span>、L2 正则化参数 <span class="math inline">\(\lambda\)</span> 和批训练的数据集大小学习一些比较有效的准则。</p>
 <h4 id="学习率">学习率</h4>
-<p>关于学习率的选择，Andrew Ng 在他的 <a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="external">Machine Learning</a> 课程中有过详细的讲解。这里面最重要的是要避免学习率过大给梯度下降带来「抖动」的问题，如下图中的橙线所示。在设置学习率时，我们可以先设置一个小一点的数值，如 0.1，如果这个数值太大，则调低一个数量级到 0.01，甚至 0.001…如果发现学习过程中代价函数没有出现「抖动」的情况，再适当提高学习率，如由原来的 0.1 提高到 0.2、0.5…但最终不能超过造成「抖动」的阈值。</p>
+<p>关于学习率的选择，Andrew Ng 在他的 <a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Machine Learning</a> 课程中有过详细的讲解。这里面最重要的是要避免学习率过大给梯度下降带来「抖动」的问题，如下图中的橙线所示。在设置学习率时，我们可以先设置一个小一点的数值，如 0.1，如果这个数值太大，则调低一个数量级到 0.01，甚至 0.001…如果发现学习过程中代价函数没有出现「抖动」的情况，再适当提高学习率，如由原来的 0.1 提高到 0.2、0.5…但最终不能超过造成「抖动」的阈值。</p>
 <center>
 <p><img src="/images/2017-8-13/multiple_eta.png" width="520p"></p>
 </center>
@@ -445,7 +443,7 @@
 <p>理论上，我们完全可以在每次训练时只用一个样本，但这样会导致训练过程相当漫长，而多个样本进行批训练，在当今计算机的快速矩阵运算下并不比单个样本慢，这样相当于同时训练多个样本的时间和单个样本一样（当然，将所有样本都用于训练还是会影响速度，所以才会采用随机梯度训练的批样本）。另外，个人认为，综合多个样本再取均值进行训练，可以抵消部分噪音样本的影响。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="external">Improving the way neural networks learn</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap3.html" target="_blank" rel="noopener">Improving the way neural networks learn</a></li>
 </ul>
 
       
@@ -973,24 +971,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -96,12 +96,13 @@
 
 <meta name="description" content="In me the tiger sniffs the rose.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Jermmy's Lazy Blog">
+<meta property="og:title" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:url" content="https://jermmy.github.io/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="In me the tiger sniffs the rose.">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jermmy's Lazy Blog">
+<meta name="twitter:title" content="Jermmy&#39;s Lazy Blog">
 <meta name="twitter:description" content="In me the tiger sniffs the rose.">
 
 
@@ -136,7 +137,7 @@
 
 
 
-  <title>Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -146,7 +147,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -557,10 +558,10 @@
 
       
         
-          <p>关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm <a href="https://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/">教程</a>，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的<a href="/images/2017-12-23/support_vector_machines_succinctly.pdf">博客</a>中。</p>
+          <p>关于 SVM（支持向量机），网上教程实在太多了，但真正能把内容讲清楚的少之又少。这段时间在网上看到一个老外的 svm <a href="https://www.svm-tutorial.com/2017/02/svms-overview-support-vector-machines/" target="_blank" rel="noopener">教程</a>，几乎是我看过的所有教程中最好的。这里打算通过几篇文章，把我对教程的理解记录成中文。另外，上面这篇教程的作者提供了一本免费的电子书，内容跟他的博客是一致的，为了方便读者，我把它上传到自己的<a href="/images/2017-12-23/support_vector_machines_succinctly.pdf">博客</a>中。</p>
 <p>这篇文章主要想讲清楚 SVM 的目标函数，而关于一些数学上的优化问题，则放在之后的文章。</p>
 <center>
-<p><img src="/images/2017-12-23/package.png" ></p>
+<p><img src="/images/2017-12-23/package.png"></p>
 </center>
           <!--noindex-->
           <div class="post-button text-center">
@@ -719,7 +720,7 @@
       
         
           <p>今天要分享的这篇论文是我个人最喜欢的论文之一，它的思想简单、巧妙，而且效果还相当不错。这篇论文借助数学上的 <span class="math inline">\(L_0\)</span> 范数工具对图像进行平滑，同时保留重要的边缘特征，可以实现类似水彩画的效果（见下图）。</p>
-<p>另外这篇论文的作者<a href="http://www.lxu.me/">徐立</a>也是一个相当高产的研究员。</p>
+<p>另外这篇论文的作者<a href="http://www.lxu.me/" target="_blank" rel="noopener">徐立</a>也是一个相当高产的研究员。</p>
 <center>
 <p><img src="/images/2017-12-22/l0-smoothing.png" width="600px"></p>
 </center>
@@ -1036,7 +1037,7 @@
 
       
         
-          <p>很久以前写过一篇 PCA 的小白<a href="http://jermmy.github.io/2017/03/25/2017-3-25-understand-PCA/">教程</a>，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。</p>
+          <p>很久以前写过一篇 PCA 的小白<a href="https://jermmy.github.io/2017/03/25/2017-3-25-understand-PCA/">教程</a>，不过由于当时对 PCA 的理解流于表面，所以只是介绍了一下 PCA 的算法流程。今天在数图课上偶然听到 PCA 在图像压缩上的应用，突然明白了一点实质性的东西，这里趁热记录一波。</p>
 <center>
 <p><img src="/images/2017-12-15/pca.jpeg" width="400px"></p>
 </center>
@@ -2292,24 +2293,7 @@ N(\overline x | \overline u, \Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{|\Sigma|^{1/
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

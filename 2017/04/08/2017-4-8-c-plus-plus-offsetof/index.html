@@ -7,7 +7,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -94,19 +94,18 @@
 
 
 
-<meta name="description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。
-严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
+<meta name="description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。 严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
+<meta name="keywords" content="C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++ offsetof">
 <meta property="og:url" content="https://jermmy.github.io/2017/04/08/2017-4-8-c-plus-plus-offsetof/index.html">
-<meta property="og:site_name" content="Jermmy's Lazy Blog">
-<meta property="og:description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。
-严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。 严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-04-22T05:04:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++ offsetof">
-<meta name="twitter:description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。
-严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
+<meta name="twitter:description" content="今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： offsetof(type, member)。 严格来说，这只是一个宏定义。其中的 type 表示一个数据结构（ struct 或者 class ），member 表示这个结构的成员。这个函数会返回一个 size_t 类型的数值，表示这个 member 在这个数据结构中的位置（以字节为单位）。">
 
 
 
@@ -140,7 +139,7 @@
 
 
 
-  <title>C++ offsetof | Jermmy's Lazy Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>C++ offsetof | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +149,7 @@
 
 
 
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -395,19 +394,19 @@
         <p>今天写 OpenGL 时，发现一个 C/C++ 中可能很实用但出现频率较低的函数： <code>offsetof(type, member)</code>。</p>
 <p>严格来说，这只是一个宏定义。其中的 <code>type</code> 表示一个数据结构（ struct 或者 class ），<code>member</code> 表示这个结构的成员。这个函数会返回一个 <code>size_t</code> 类型的数值，表示这个 <code>member</code> 在这个数据结构中的位置（以字节为单位）。</p>
 <a id="more"></a>
-<p>看个例子（改自 <a href="http://www.cplusplus.com/reference/cstddef/offsetof/" target="_blank" rel="external">C++官网</a> ）：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> foo &#123;</div><div class="line">    <span class="keyword">char</span> a;</div><div class="line">    <span class="keyword">char</span> b[<span class="number">10</span>];</div><div class="line">    <span class="keyword">int</span> c;</div><div class="line">    <span class="keyword">char</span> d;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, a) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, b) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, c) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, d) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看个例子（改自 <a href="http://www.cplusplus.com/reference/cstddef/offsetof/" target="_blank" rel="noopener">C++官网</a> ）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">char</span> b[<span class="number">10</span>];</span><br><span class="line">    <span class="keyword">int</span> c;</span><br><span class="line">    <span class="keyword">char</span> d;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, a) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, b) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, c) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; offsetof(foo, d) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">1</div><div class="line">12</div><div class="line">16</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0</span><br><span class="line">1</span><br><span class="line">12</span><br><span class="line">16</span><br></pre></td></tr></table></figure>
 <p>这个例子简单明了。</p>
 <p>在结构体 <code>foo</code> 中，成员 <code>a</code> 处于第一位的位置，所以它的偏移是 0 。</p>
 <p>成员 <code>b</code> 处于第二位的位置，它的偏移就是 <code>a</code> 所占的空间大小，所以是 1 ，注意 <code>offsetof</code> 以字节为单位返回偏移量，而 <code>a</code> 是 <code>char</code> 类型，刚好占一个字节的空间。</p>
-<p>成员 <code>c</code> 的偏移是成员 <code>a</code> 和 成员 <code>b</code> 所占空间之和。由于 <code>b</code> 是一个 10 字节的数组，所以 <code>c</code> 最终的偏移是 11。可等等！上面的结果却是 12 ！这并不是你的编译器在调皮，而是它悄悄帮你做了「对齐」的工作（关于「对齐」的知识，欢迎参考文末链接<a href="http://www.cnblogs.com/clover-toeic/p/3853132.html" target="_blank" rel="external">C语言字节对齐问题详解</a>）。这里简单提一下为什么结果会是 12。从前面的分析我们知道，<code>a</code> 和 <code>b</code> 总共占了 11 个字节的内容，<code>c</code> 作为一个 int 变量，讲道理应该占据 11，12，13，14 这几个位置。可是，为了满足<strong>对齐</strong>的规则，int 变量必须从一个能满足被 4 整除的地址空间开始存放。所以，gcc/g++ 会跳过 11 这个位置，从 12 开始为 <code>c</code> 分配空间。而原来 11 这个位置，则会自行填充其他值（一般是 0 ）。</p>
+<p>成员 <code>c</code> 的偏移是成员 <code>a</code> 和 成员 <code>b</code> 所占空间之和。由于 <code>b</code> 是一个 10 字节的数组，所以 <code>c</code> 最终的偏移是 11。可等等！上面的结果却是 12 ！这并不是你的编译器在调皮，而是它悄悄帮你做了「对齐」的工作（关于「对齐」的知识，欢迎参考文末链接<a href="http://www.cnblogs.com/clover-toeic/p/3853132.html" target="_blank" rel="noopener">C语言字节对齐问题详解</a>）。这里简单提一下为什么结果会是 12。从前面的分析我们知道，<code>a</code> 和 <code>b</code> 总共占了 11 个字节的内容，<code>c</code> 作为一个 int 变量，讲道理应该占据 11，12，13，14 这几个位置。可是，为了满足<strong>对齐</strong>的规则，int 变量必须从一个能满足被 4 整除的地址空间开始存放。所以，gcc/g++ 会跳过 11 这个位置，从 12 开始为 <code>c</code> 分配空间。而原来 11 这个位置，则会自行填充其他值（一般是 0 ）。</p>
 <p>成员 <code>d</code> 在 <code>c</code> 之后，因此它的偏移位置就是 12 + 4 = 16。由于 <code>d</code> 是 <code>char</code> 类型，因此只要起始位置能被 1 整除就可以，不用对齐。</p>
 <h3 id="参考">参考</h3>
 <ul>
-<li><a href="http://www.cplusplus.com/reference/cstddef/offsetof/" target="_blank" rel="external">C++官网</a></li>
-<li><a href="http://www.cnblogs.com/clover-toeic/p/3853132.html" target="_blank" rel="external">C语言字节对齐问题详解</a></li>
+<li><a href="http://www.cplusplus.com/reference/cstddef/offsetof/" target="_blank" rel="noopener">C++官网</a></li>
+<li><a href="http://www.cnblogs.com/clover-toeic/p/3853132.html" target="_blank" rel="noopener">C语言字节对齐问题详解</a></li>
 </ul>
 
       
@@ -935,24 +934,7 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
