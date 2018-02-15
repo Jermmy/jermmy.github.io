@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[ \underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m \] 由于求解过程中，限制条件中的 \(\delta">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-07T12:45:50.000Z">
+<meta property="og:updated_time" content="2018-02-15T14:48:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SVM小白教程（2）：拉格朗日对偶">
 <meta name="twitter:description" content="在上一篇文章中，我们推导出了 SVM 的目标函数： \[ \underset{(\mathbf{w},b)}{\operatorname{min}} ||\mathbf{w}|| \\  \operatorname{s.t.} \ y_i(\mathbf{w}^T\mathbf{x_i}+b) \ge \delta, \ \ i=1,...,m \] 由于求解过程中，限制条件中的 \(\delta">
@@ -397,9 +397,32 @@
 \begin{align}
 &amp;\underset{(\mathbf{w},b)}{\operatorname{min}} \frac{1}{2}\mathbf{w}^2 \tag{1} \\  \operatorname{s.t.} \ y_i  (\mathbf{w}^T &amp; \mathbf{x_i}+b) \ge 1,  \ i=1,...,m  \notag
 \end{align}
-\]</span> 现在，我们要开始着手来解这个函数。 这篇文章想谈一谈拉格朗日对偶的问题，这也是求解 SVM 最经典的方法（考虑到我不是数学专业出身，所以很多问题只能「肤浅」着讲了）。 <a id="more"></a></p>
-<h2 id="拉格朗日对偶">拉格朗日对偶</h2>
-<p>对于（1）式中的问题，如果限制条件是等号的话，我们是可以用<a href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/">拉格朗日乘子法</a>求解的，然而这里的不等号却让问题变得复杂了一点。而拉格朗日对偶就是为了将复杂的问题简单化。</p>
+\]</span> 现在，我们要开始着手来解这个函数。 <a id="more"></a></p>
+<h2 id="拉格朗日乘子法">拉格朗日乘子法</h2>
+<p>对于（1）式中的问题，如果限制条件是等号的话，我们是可以直接用<a href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/">拉格朗日乘子法</a>求解的。而为了应对不等号的情况，研究人员提出了 KKT 条件下的拉格朗日乘子法。所谓 KKT 条件，我们可以简单地把它当作拉格朗日乘子法的进阶版，只要原优化问题满足几个特定的条件，就可以仿照拉格朗日乘子法来求解问题。（关于 KKT 条件的具体内容，博主没有仔细研究过）。</p>
+<p>而 SVM 原问题，刚好满足这些条件。因此可以直接套用拉格朗日乘子法的流程，首先列出拉格朗日函数： <span class="math display">\[
+L(\mathbf w, b, \mathbf \alpha)=\frac{1}{2}||\mathbf w||^2-\sum_{i=1}^n\alpha_i(y_i(\mathbf w^T \mathbf x_i + b)-1) \\
+s.t. \alpha_i \ge 0   \tag{2}
+\]</span> （注意，在 KKT 条件下，需要满足 <span class="math inline">\(\alpha_i \ge 0\)</span>）</p>
+<p>然后，令 <span class="math inline">\(\frac{\partial L}{\partial \mathbf w}=0\)</span>，<span class="math inline">\(\frac{\partial L}{\partial b}=0\)</span>，可以得到方程组： <span class="math display">\[
+\frac{\partial L}{\partial \mathbf w}=\mathbf w-\sum_{i=1}^n\alpha_i y_i \mathbf x_i=0   \tag{3}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial L}{\partial b}=\sum_{i=1}^n \alpha_i y_i=0   \tag{4}
+\]</span></p>
+<p>在约束条件是等式的情况中，我们还会根据 <span class="math inline">\(\frac{\partial L}{\partial \mathbf \alpha}=0\)</span> 得到另外几组方程，然后可以解出 <span class="math inline">\(\mathbf w\)</span> 和 <span class="math inline">\(b\)</span>。</p>
+<p>不过，由于现在约束条件是不等式，所以 <span class="math inline">\(\frac{\partial L}{\partial \mathbf \alpha}\)</span> 得到的是一堆不等式： <span class="math display">\[
+y_i (\mathbf w \mathbf x_i+b)-1 \ge 0 \ \ i=1,2,\dots,N
+\]</span> 这样是没法直接解出 <span class="math inline">\(\mathbf w\)</span> 和 <span class="math inline">\(b\)</span> 的。</p>
+<p>为了让方程组的形式更加简单，我们可以联立 (2)(3)(4) 把 <span class="math inline">\(\mathbf w\)</span> 和 <span class="math inline">\(b\)</span> 消掉（后文有详细的推导过程）： <span class="math display">\[
+L(\mathbf w,b, \mathbf \alpha)=\sum_{i=1}^n \alpha_i - \frac{1}{2}\sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j \mathbf x_j^T \mathbf x_i   \tag{5}
+\]</span> 到这一步，熟悉优化的同学应该发现，我们已经把原问题转化为拉格朗日对偶问题。换句话说，我们接下来要优化的问题就变为： <span class="math display">\[
+\underset{\alpha}{\operatorname{max}} \sum_{i=1}^n \alpha_i - \frac{1}{2}\sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j \mathbf x_j^T \mathbf x_i  \tag{6}  \\
+s.t. \ a_i \ge 0, i=1,\dots,m \\
+\sum_{i=1}^m\alpha_i y_i=0
+\]</span></p>
+<h2 id="拉格朗日对偶问题">拉格朗日对偶问题</h2>
+<p>博主刚开始接触拉格朗日对偶的时候，一直搞不懂为什么一个<strong>最小化</strong>的问题可以转换为一个<strong>最大化</strong>问题。直到看了这篇<a href="http://www.hanlongfei.com/convex/2015/11/05/duality/" target="_blank" rel="noopener">博文</a>后，才对它有了形象的理解。所以，下面我就根据这篇博文，谈谈我对拉格朗日对偶的理解。</p>
 <h3 id="对偶问题">对偶问题</h3>
 <p>先看一个简单的线性规划问题： <span class="math display">\[
 \underset{x,y}{\operatorname{min}} x+3y \\
@@ -410,32 +433,32 @@ x+y+2y \ge 2 + 2 \times 0 = 2
 \]</span></p>
 <p>所以 <span class="math inline">\(x+3y\)</span> 的最小值是 2。</p>
 <p>如果将问题泛化： <span class="math display">\[
-\underset{x,y}{\operatorname{min}} px+qy \tag{2} \\
+\underset{x,y}{\operatorname{min}} px+qy \tag{7} \\
 s.t. \ x+y \ge 2  \\
-x,y \ge 0 
+x,y \ge 0
 \]</span> 同样地，通过这种拼凑的方法，我们可以将问题变换为： <span class="math display">\[
 \begin{align}
 a(x+y) &amp;\ge 2a  \notag \\
 bx &amp;\ge 0 \notag\\
 cy &amp;\ge 0 \notag\\
-a(x+y)+bx+cy&amp;=(a+b)x+(a+c)y \ge 2a \tag{3}
+a(x+y)+bx+cy&amp;=(a+b)x+(a+c)y \ge 2a \tag{8}
 \end{align}
 \]</span> 其中，<span class="math inline">\(a,b,c &gt; 0\)</span>。</p>
-<p>（3）式对 <span class="math inline">\(\forall a,b,c &gt; 0\)</span> 均成立。不管 <span class="math inline">\(a+b\)</span>、<span class="math inline">\(a+c\)</span> 的值是多少，<span class="math inline">\((a+b)x+(a+c)y\)</span> 的最小值都是 <span class="math inline">\(2a\)</span>。因此，我们可以加上约束：<span class="math inline">\(a+b=p\)</span>、<span class="math inline">\(a+c=q\)</span>，这样就得到 <span class="math inline">\(px+qy\)</span> 的最小值为 <span class="math inline">\(2a\)</span>。需要注意的是，<span class="math inline">\(2a\)</span> 是 <span class="math inline">\(px+qy\)</span> 的下界，即这个最小值对 <span class="math inline">\(\forall a\)</span> 都要成立，所以，需要在约束条件内求出 <span class="math inline">\(a\)</span> 的最大值，才能得出 <span class="math inline">\(px+qy\)</span> 的最小值。</p>
+<p>（8）式对 <span class="math inline">\(\forall a,b,c &gt; 0\)</span> 均成立。不管 <span class="math inline">\(a+b\)</span>、<span class="math inline">\(a+c\)</span> 的值是多少，<span class="math inline">\((a+b)x+(a+c)y\)</span> 的最小值都是 <span class="math inline">\(2a\)</span>。因此，我们可以加上约束：<span class="math inline">\(a+b=p\)</span>、<span class="math inline">\(a+c=q\)</span>，这样就得到 <span class="math inline">\(px+qy\)</span> 的最小值为 <span class="math inline">\(2a\)</span>。需要注意的是，<span class="math inline">\(2a\)</span> 是 <span class="math inline">\(px+qy\)</span> 的下界，即这个最小值对 <span class="math inline">\(\forall a\)</span> 都要成立，所以，需要在约束条件内求出 <span class="math inline">\(a\)</span> 的最大值，才能得出 <span class="math inline">\(px+qy\)</span> 的最小值。</p>
 <p>这样一来，问题就转换为： <span class="math display">\[
 \begin{eqnarray}
-\underset{a,b,c} {\operatorname {max}}\ {2a}   \tag{4} \\
+\underset{a,b,c} {\operatorname {max}}\ {2a}   \tag{9} \\
 s.t. \ p=a+b \notag\\
 q = a+c \notag\\ 
 a,b,c \ge 0 \notag
 \end{eqnarray}
-\]</span> （4）式就是（2）式的对偶形式。</p>
-<p><strong>对偶</strong>和<strong>对称</strong>有异曲同工之妙。所谓对偶，就是把原来的最小化问题（2）转变为最大化问题（4）。这种转化对最终结果没有影响，但却使问题更加简单（问题（4）中的限制条件都是等号，而不等号只是针对单个变量 <span class="math inline">\(a,b,c\)</span>，因此可以直接套用拉格朗日乘子法）。</p>
+\]</span> （9）式就是（7）式的对偶形式。</p>
+<p><strong>对偶</strong>和<strong>对称</strong>有异曲同工之妙。所谓对偶，就是把原来的最小化问题（7）转变为最大化问题（9）。这种转化对最终结果没有影响，但却使问题更加简单（问题（9）中的限制条件都是等号，而不等号只是针对单个变量 <span class="math inline">\(a,b,c\)</span>，因此可以直接套用拉格朗日乘子法）。</p>
 <p>另外，对偶分<strong>强对偶</strong>和<strong>弱对偶</strong>两种。借用上面的例子，强对偶指的是 <span class="math inline">\(px+qy\)</span> 的最小值就等于 <span class="math inline">\(2a\)</span> 的最大值，而弱对偶则说明，<span class="math inline">\(px+qy\)</span> 的最小值大于 <span class="math inline">\(2a\)</span> 的最大值。SVM 属于强对偶问题。</p>
 <h3 id="线性规划问题的对偶问题">线性规划问题的对偶问题</h3>
 <p>现在，我们把问题再上升到一般的线性规划问题： <span class="math display">\[
 \begin{eqnarray}
-\underset{x \in \mathbb{R}^n} {\operatorname{min}} c^Tx \tag{5} \\
+\underset{x \in \mathbb{R}^n} {\operatorname{min}} c^Tx \tag{10} \\
 s.t. \ Ax=b \notag \\
 Gx \le h \notag
 \end{eqnarray}
@@ -446,7 +469,7 @@ Gx \le h \notag
 (-u^TA-v^TG)x &amp; \ge -b^Tu-h^Tu \notag
 \end{align}
 \]</span> 这样，可以得到该线性问题的对偶形式： <span class="math display">\[
-\underset{u \in \mathbb{R}^m,v \in \mathbb{R}^r} {\operatorname{max}}   -b^Tu-h^Tu  \tag{6} \\
+\underset{u \in \mathbb{R}^m,v \in \mathbb{R}^r} {\operatorname{max}}   -b^Tu-h^Tu  \tag{11} \\
 s.t.  \  c=  -A^Tu-G^Tv  \\
 v  &gt;  \ 0
 \]</span> 这种「拼凑」的转换方法可以用拉格朗日函数作为通用的方法解决。定义原函数如下： <span class="math display">\[
@@ -458,7 +481,7 @@ L(x,u,v)=f(x)+u^T(Ax-b)+v^T(Gx-h)
 \begin{align}
 L(x,u,v)&amp;=(c^T+u^TA+v^TG)x-u^Tb-v^Th   \notag 
 \end{align}
-\]</span> <span class="math inline">\(\underset{x}{\operatorname{min}}{L(x,u,v)}\)</span> 在 <span class="math inline">\(x\)</span> 没有任何限制的前提下，是不存在最小值。因此，我们要加上约束条件：<span class="math inline">\(c^T+u^TA+v^TG=0\)</span>，这样，<span class="math inline">\(\underset{x}{\operatorname{min}}{L(x,u,v)}=-u^Tb-v^Th\)</span>。如此一来，我们又把原问题转换到（6）中的对偶问题上了。</p>
+\]</span> <span class="math inline">\(\underset{x}{\operatorname{min}}{L(x,u,v)}\)</span> 在 <span class="math inline">\(x\)</span> 没有任何限制的前提下，是不存在最小值。因此，我们要加上约束条件：<span class="math inline">\(c^T+u^TA+v^TG=0\)</span>，这样，<span class="math inline">\(\underset{x}{\operatorname{min}}{L(x,u,v)}=-u^Tb-v^Th\)</span>。如此一来，我们又把原问题转换到（11）中的对偶问题上了。</p>
 <h3 id="二次规划问题的对偶问题">二次规划问题的对偶问题</h3>
 <p>由于 SVM 的目标函数是一个二次规划问题（带有平方项），因此我们最后再来看一个二次规划的优化问题。</p>
 <p>假设有如下二次规划问题： <span class="math display">\[
@@ -483,7 +506,7 @@ L(x,u,v)=\frac{1}{2}x^TQx+c^Tx-u^Tx+v^T(Ax-b) \notag \\
 s.t. \ u&gt;0
 \end{equation}
 \]</span></p>
-<h3 id="拉格朗日对偶问题">拉格朗日对偶问题</h3>
+<h3 id="拉格朗日对偶问题-1">拉格朗日对偶问题</h3>
 <p>现在总结一下拉格朗日对偶问题的基本「套路」。</p>
 <p>假设原问题为： <span class="math display">\[
 \begin{equation}
@@ -503,37 +526,38 @@ s.t. \ u \ge 0 \notag
 \underset{x}{\operatorname{min}}\underset{u,v}{\operatorname{max}}L(x,u,v) \ge \underset{u,v}{\operatorname{max}}\underset{x}{\operatorname{min}}L(x,u,v) 
 \]</span></p>
 <h2 id="svm的对偶问题">SVM的对偶问题</h2>
-<p>现在终于可以扯回 SVM 了。我们将约束条件表述成 <span class="math inline">\(y_i (\mathbf{w}^T\mathbf{x_i}+b) -1 \ge 0, \ i=1, \dots ,m\)</span>，然后，按照上面的「套路」，表示出拉格朗日原始问题： <span class="math display">\[
+<p>现在看回 SVM。我们将约束条件表述成 <span class="math inline">\(y_i (\mathbf{w}^T\mathbf{x_i}+b) -1 \ge 0, \ i=1, \dots ,m\)</span>，然后，按照上面的「套路」，表示出拉格朗日原始问题： <span class="math display">\[
 \begin{align}
-L(\mathbf{w},b,\alpha)= &amp; \frac{1}{2}\mathbf{w}^2-\sum_{i=1}^m{\alpha_i}[y_i(\mathbf{w}^T\mathbf{x_i}+b)-1] \tag{7} \\
+L(\mathbf{w},b,\alpha)= &amp; \frac{1}{2}\mathbf{w}^2-\sum_{i=1}^m{\alpha_i}[y_i(\mathbf{w}^T\mathbf{x_i}+b)-1] \tag{12} \\
 s.t. \ \alpha_i \ge &amp;\ 0, \ i=1, \dots, m \notag
 \end{align}
-\]</span> （乍一看，约束条件中的不等式也比较简单，直接用拉格朗日乘子法也可以解了，不过，这本<a href="http://localhost:4000/images/2017-12-23/support_vector_machines_succinctly.pdf" target="_blank" rel="noopener">教程</a>提到，只有样本量很少的时候才解得出来，所以我们还是转换成对偶问题求解）</p>
-<p>下面要求出 <span class="math inline">\(L(\mathbf{w},b,\alpha)\)</span> 关于 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span> 的最小值，这里可以直接通过偏导求得： <span class="math display">\[
-\nabla_\mathbf{w} L=\mathbf{w}-\sum_{i=1}^m \alpha_iy_i \mathbf{x}_i=0 \tag{8} 
+\]</span> 下面要求出 <span class="math inline">\(L(\mathbf{w},b,\alpha)\)</span> 关于 <span class="math inline">\(\mathbf{w}\)</span> 和 <span class="math inline">\(b\)</span> 的最小值，这里可以直接通过偏导求得： <span class="math display">\[
+\nabla_\mathbf{w} L=\mathbf{w}-\sum_{i=1}^m \alpha_iy_i \mathbf{x}_i=0 \tag{13}
 \]</span></p>
 <p><span class="math display">\[
-\frac{\partial L}{\partial b}=-\sum_{i=1}^m\alpha_i y_i=0  \tag{9}
+\frac{\partial L}{\partial b}=-\sum_{i=1}^m\alpha_i y_i=0  \tag{14}
 \]</span></p>
-<p>由（8）式解得： <span class="math display">\[
+<p>由（13）式解得： <span class="math display">\[
 \begin{align}
-\mathbf{w}=\sum_{i=1}^m \alpha_i y_i \mathbf{x}_i \tag{10}
+\mathbf{w}=\sum_{i=1}^m \alpha_i y_i \mathbf{x}_i \tag{15}
 \end{align}
-\]</span> （10）式代入（7）式得到： <span class="math display">\[
-W(\alpha,b)=\sum_{i=1}^m\alpha_i-\frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i \alpha_j y_i y_j \mathbf{x}_i \mathbf{x}_j-b\sum_{i=1}^m \alpha_i y_i \tag{11}
-\]</span> 而（9）式已经表明：<span class="math inline">\(\sum_{i=1}^m\alpha_i y_i=0\)</span>，所以（11）式化简为： <span class="math display">\[
-W(\alpha)=\sum_{i=1}^m\alpha_i-\frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i \alpha_j y_i y_j \mathbf{x}_i \mathbf{x}_j \tag{12}
-\]</span> （12）式就是最终版本的对偶形式了。自此，我们得出 SVM 的拉格朗日对偶问题： <span class="math display">\[
+\]</span> （15）式代入（12）式得到： <span class="math display">\[
+W(\alpha,b)=\sum_{i=1}^m\alpha_i-\frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i \alpha_j y_i y_j \mathbf{x}_i \mathbf{x}_j-b\sum_{i=1}^m \alpha_i y_i \tag{16}
+\]</span> 而（14）式已经表明：<span class="math inline">\(\sum_{i=1}^m\alpha_i y_i=0\)</span>，所以（16）式化简为： <span class="math display">\[
+W(\alpha)=\sum_{i=1}^m\alpha_i-\frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i \alpha_j y_i y_j \mathbf{x}_i \mathbf{x}_j \tag{17}
+\]</span> （17）式就是最终版本的对偶形式了（上文的 (6) 式其实也是这样推出来的）。自此，我们得出 SVM 的拉格朗日对偶问题： <span class="math display">\[
 \underset{\alpha}{\operatorname{max}} W(\alpha)   \\
 s.t. \ a_i \ge 0, i=1,\dots,m \\
 \sum_{i=1}^m\alpha_i y_i=0
-\]</span> 求出 <span class="math inline">\(W(\alpha)\)</span> 的最大值，就相当于求出了我们需要的参数 <span class="math inline">\(\mathbf{w}\)</span>。</p>
+\]</span> 解出 <span class="math inline">\(\mathbf \alpha\)</span> 后，就可以根据 (15) 式解出 <span class="math inline">\(\mathbf w\)</span>，然后根据超平面的间隔求出 <span class="math inline">\(b\)</span>。</p>
+<p>当然，这个对偶形式的优化问题依然不是那么容易解的，研究人员提出了一种 <a href="https://en.wikipedia.org/wiki/Sequential_minimal_optimization" target="_blank" rel="noopener">SMO 算法</a>，可以快速地求解 <span class="math inline">\(\mathbf \alpha\)</span>。不过算法的具体内容，本文就不继续展开了。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="http://www.hanlongfei.com/convex/2015/11/05/duality/" target="_blank" rel="noopener">凸优化-对偶问题</a></li>
 <li><a href="https://jermmy.github.io/2017/07/27/2017-7-27-understand-lagrange-multiplier/">拉格朗日乘子法</a></li>
 <li><a href="http://www.cnblogs.com/90zeng/p/Lagrange_duality.html" target="_blank" rel="noopener">简易解说拉格朗日对偶（Lagrange duality）</a></li>
 <li><a href="http://www.cnblogs.com/jerrylead/archive/2011/03/13/1982684.html" target="_blank" rel="noopener">支持向量机SVM（二）</a></li>
+<li><a href="https://www.youtube.com/watch?v=Cz144VkaRUQ" target="_blank" rel="noopener">第7课 支持向量机，为什么能理解SVM的人凤毛麟角？</a></li>
 </ul>
 
       
@@ -603,6 +627,10 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/09/2018-2-8-leetcode-98-validate-binary-search-tree/" rel="prev" title="Leetcode题解：98. validate binary search tree">
+                Leetcode题解：98. validate binary search tree <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -676,7 +704,7 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">78</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -687,7 +715,7 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -698,7 +726,7 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -758,7 +786,7 @@ s.t. \ a_i \ge 0, i=1,\dots,m \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#拉格朗日对偶"><span class="nav-number">1.</span> <span class="nav-text">拉格朗日对偶</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶问题"><span class="nav-number">1.1.</span> <span class="nav-text">对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性规划问题的对偶问题"><span class="nav-number">1.2.</span> <span class="nav-text">线性规划问题的对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二次规划问题的对偶问题"><span class="nav-number">1.3.</span> <span class="nav-text">二次规划问题的对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉格朗日对偶问题"><span class="nav-number">1.4.</span> <span class="nav-text">拉格朗日对偶问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#svm的对偶问题"><span class="nav-number">2.</span> <span class="nav-text">SVM的对偶问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#拉格朗日乘子法"><span class="nav-number">1.</span> <span class="nav-text">拉格朗日乘子法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉格朗日对偶问题"><span class="nav-number">2.</span> <span class="nav-text">拉格朗日对偶问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶问题"><span class="nav-number">2.1.</span> <span class="nav-text">对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性规划问题的对偶问题"><span class="nav-number">2.2.</span> <span class="nav-text">线性规划问题的对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二次规划问题的对偶问题"><span class="nav-number">2.3.</span> <span class="nav-text">二次规划问题的对偶问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉格朗日对偶问题-1"><span class="nav-number">2.4.</span> <span class="nav-text">拉格朗日对偶问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#svm的对偶问题"><span class="nav-number">3.</span> <span class="nav-text">SVM的对偶问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
