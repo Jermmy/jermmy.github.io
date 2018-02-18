@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/GMM.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-10-29/EM_for_GMM.png">
-<meta property="og:updated_time" content="2017-11-05T16:32:36.000Z">
+<meta property="og:updated_time" content="2018-02-18T04:30:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GMM与EM共舞">
 <meta name="twitter:description" content="GMM，即高斯混合模型（Gaussian Mixture Model），简单地讲，就是将多个高斯模型混合起来，作为一个新的模型，这样就可以综合运用多模型的表达能力。EM，指的是均值最大化算法（expectation-maximization），它是一种估计模型参数的策略，在 GMM 这类算法中应用广泛，因此，有时候人们又喜欢把 GMM 这类可以用 EM 算法求解的模型称为 EM 算法家族。 这篇文">
@@ -432,7 +432,8 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 \ln{[\prod_{i=1}^m p( x_i)]}&amp;=&amp;\ln{[\prod_{i=1}^m{\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)}}]}   \\
 &amp;=&amp;\sum_{i=1}^m{\ln{[\sum_{k=1}^K{\pi_k N( x|\mu_k, \Sigma_k)]}}}   \\
 \end{eqnarray}
-\]</span> 不过，这个对数函数却出奇的复杂，直接求导数的方法很难求出 <span class="math inline">\(\mu_k\)</span> 和 <span class="math inline">\(\Sigma_k\)</span>，因此，我们只能换用其他方式来求解。而这就是 EM 算法发挥作用的地方。</p>
+\]</span> 不过，这个对数函数却出奇的复杂，直接求导数的方法很难解出 <span class="math inline">\(\pi_k\)</span>、<span class="math inline">\(\mu_k\)</span> 和 <span class="math inline">\(\Sigma_k\)</span>，因此，我们只能换用其他方式来求解。而这就是 EM 算法发挥作用的地方。</p>
+<p>（其实求出偏导后，再用随机梯度下降的方法也是可以解出来的，比如 <a href="http://blog.otoro.net/2015/06/14/mixture-density-networks/" target="_blank" rel="noopener">Mixture Density Network</a> 就是这么处理的。不过，在传统的机器学习中，人们习惯用 EM 来求解）</p>
 <h3 id="均值最大化算法-em">均值最大化算法 EM</h3>
 <h4 id="k-means-的启示">K-means 的启示</h4>
 <p>在正式开讲 EM 之前，我们先回忆一下，K-means 是怎么求出聚类中心的。其实，总共分三步进行：</p>
@@ -470,7 +471,7 @@ p( x \in C_k |  x)=\frac{p(C_k)p( x| x\in C_k)}{p( x)}
 <p><img src="/images/2017-10-29/EM_for_GMM.png" width="600px"></p>
 </center>
 <p>图中有很多公式标记，可能要参考原书才看得懂，不过，它的流程和我之前给出的 3 个步骤是一致。另外，算法的停止条件可以是达到最大迭代次数，或者是似然函数（公式 (2)）的增长小于某个阈值。</p>
-<p>好了，本文到这里就不再深入下去了。EM 算法博大精深，吴军老师在《数学之美》称它为<strong>上帝的算法</strong>，可见这个算法的强大之处。EM 算法可以应用的场合非常多，从本文给出的 GMM 例子来看，它其实很类似梯度下降算法，在给定的目标函数很复杂、难以求解时，EM 算法用一种迭代的策略来优化初始参数，并逐步收敛到最优解。关于这个算法的具体内容，我想进一步深入理解后，再用一篇文章好好写一下。</p>
+<p>好了，本文到这里就不再深入下去了。EM 算法博大精深，吴军老师在《数学之美》称它为<strong>上帝的算法</strong>，可见这个算法的强大之处。EM 算法可以应用的场合非常多，从本文给出的 GMM 例子来看，它其实很类似梯度下降算法，在给定的目标函数很复杂、难以求解时，EM 算法用一种迭代的策略来优化初始参数，并逐步收敛到最优解。</p>
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="http://blog.pluskid.org/?p=39" target="_blank" rel="noopener">漫谈 Clustering (3): Gaussian Mixture Model</a></li>
