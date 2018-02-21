@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/IoU.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn%20feature.png">
-<meta property="og:updated_time" content="2017-05-13T08:17:42.000Z">
+<meta property="og:updated_time" content="2018-02-20T08:11:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
 <meta name="twitter:description" content="在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照定位+分割+识别的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理">
@@ -430,10 +430,10 @@
 <h4 id="object-category-classifiers">3. Object category classifiers</h4>
 <p>训练完 CNN 后，我们就可以通过它提取物体的特征了。这里使用 fc7 层输出的 4096 维的向量作为特征。</p>
 <p>对于每一类物体，我们要训练一个二分类的 SVM 模型，由 SVM 来判断矩形区域内是否有物体存在。SVM 的训练数据是 CNN 提取的特征向量，对应的 label 和上面一样分为 21 类。与 CNN 不同的是，我们重新调整了 IoU 的阈值。在 CNN 中，我们将 &gt;= 0.5 IoU 的矩形都标为正样本，但在训练 SVM 的时候，作者发现，取 0.3 IoU 效果最好。所以，这一次我们将 &gt;= 0.3 IoU 的矩形都标记为正样本作为 SVM 的训练数据。</p>
-<h3 id="预测阶段">预测阶段</h3>
+<h3 id="预测">预测</h3>
 <p>预测的时候，我们先通过 Selective Search 选出 2000+ 矩形区域，用 CNN 的 fc7 层提取特征向量，再用 SVM 对这些矩形区域进行评分判断。由于矩形区域存在大量的重叠，因此论文最后用<strong>非极大值抑制（non-maximum suppression）</strong>的方法对这些区域进行筛选。</p>
 <p>具体做法是：先从所有矩形区域中，选出 SVM 得分最高的区域，将与该区域的 IoU 面积超过阈值的都删除，然后从剩下的矩形区域中再挑选出得分最高的，继续剔除 IoU 超过阈值的区域，如此往复直到没有矩形区域可选为止。</p>
-<p>做完这一步，剩下的矩形基本就是比较可靠的物体所在的位置了。但作者还想更进一步，结合 CNN 的 pool5 层提取的特征以及 DPM 中的 box regression 对矩形位置进一步微调。这一步论文没有详细说明，而我自己也知之甚少，日后明白了再补上。</p>
+<p>做完这一步，剩下的矩形基本就是比较可靠的物体所在的位置了，但作者还想进一步提高精度。根据前面对 IoU 的介绍，想提高定位的精度，就必须保证预测出来的矩形框和 ground truth 尽量靠近。文章对这一步没有做过多的介绍，只是说结合 CNN 的 pool5 层提取的特征以及 DPM 中的 box regression，训练一个线性回归模型对矩形位置进一步微调。这里我没有仔细去看论文，只是参考了这篇<a href="http://blog.csdn.net/zijin0802034/article/details/77685438" target="_blank" rel="noopener">博客</a>，所以简单说一下我的理解。通常，预测出来的矩形框和 ground truth 之间存在位置和尺度上的差别，因此，我们可以计算出两个矩形中心点之间的偏移 (<span class="math inline">\(\Delta x\)</span>, <span class="math inline">\(\Delta y\)</span>)，以及长宽尺寸上的比例 (<span class="math inline">\(S_x\)</span>, <span class="math inline">\(S_y\)</span>)。然后，训练一个线性回归模型，根据 pool5 的特征来拟合这四个变量。预测的时候，这个模型在看到一个 pool5 的特征后，就知道这种特征应该微调的尺寸是多少，继而对矩形框实现微调。</p>
 <h3 id="几个细节问题">几个细节问题</h3>
 <h4 id="cnn的输入">1. CNN的输入</h4>
 <p>论文中使用的 CNN 需要输入 227*227 的图片，但 Selective Search 找出来的矩形框尺寸各异，因此需要提供一种方法对矩形中的图片进行归一化。</p>
@@ -454,7 +454,8 @@
 <ul>
 <li><p><a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="noopener">RCNN学习笔记(2):Rich feature hierarchies for accurate object detection and semantic segmentation</a></p></li>
 <li><a href="http://www.jianshu.com/p/deb0f69f5597" target="_blank" rel="noopener">R-CNN详解</a></li>
-<li><p><a href="http://blog.csdn.net/shenxiaolu1984/article/details/51066975" target="_blank" rel="noopener">【目标检测】RCNN算法详解</a></p></li>
+<li><a href="http://blog.csdn.net/shenxiaolu1984/article/details/51066975" target="_blank" rel="noopener">【目标检测】RCNN算法详解</a></li>
+<li><p><a href="http://blog.csdn.net/zijin0802034/article/details/77685438" target="_blank" rel="noopener">边框回归(Bounding Box Regression)详解</a></p></li>
 </ul>
 
       
@@ -603,7 +604,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -685,7 +686,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn是什么"><span class="nav-number">1.</span> <span class="nav-text">R-CNN是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn-的流程"><span class="nav-number">2.</span> <span class="nav-text">R-CNN 的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练阶段"><span class="nav-number">3.</span> <span class="nav-text">训练阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#supervised-pre-training"><span class="nav-number">3.1.</span> <span class="nav-text">1. Supervised pre-training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#domain-specific-fine-tuning"><span class="nav-number">3.2.</span> <span class="nav-text">2. Domain-specific fine-tuning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#object-category-classifiers"><span class="nav-number">3.3.</span> <span class="nav-text">3. Object category classifiers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测阶段"><span class="nav-number">4.</span> <span class="nav-text">预测阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个细节问题"><span class="nav-number">5.</span> <span class="nav-text">几个细节问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn的输入"><span class="nav-number">5.1.</span> <span class="nav-text">1. CNN的输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn对特征的提取"><span class="nav-number">5.2.</span> <span class="nav-text">2. CNN对特征的提取</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn是什么"><span class="nav-number">1.</span> <span class="nav-text">R-CNN是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r-cnn-的流程"><span class="nav-number">2.</span> <span class="nav-text">R-CNN 的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练阶段"><span class="nav-number">3.</span> <span class="nav-text">训练阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#supervised-pre-training"><span class="nav-number">3.1.</span> <span class="nav-text">1. Supervised pre-training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#domain-specific-fine-tuning"><span class="nav-number">3.2.</span> <span class="nav-text">2. Domain-specific fine-tuning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#object-category-classifiers"><span class="nav-number">3.3.</span> <span class="nav-text">3. Object category classifiers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测"><span class="nav-number">4.</span> <span class="nav-text">预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个细节问题"><span class="nav-number">5.</span> <span class="nav-text">几个细节问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn的输入"><span class="nav-number">5.1.</span> <span class="nav-text">1. CNN的输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnn对特征的提取"><span class="nav-number">5.2.</span> <span class="nav-text">2. CNN对特征的提取</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

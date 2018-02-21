@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-1-7/gau_blur.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-1-7/simi_blur.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-1-7/blur.jpg">
-<meta property="og:updated_time" content="2017-12-22T02:07:08.000Z">
+<meta property="og:updated_time" content="2018-02-21T09:50:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bilateral Filter">
 <meta name="twitter:description" content="最近在看图像风格化的论文的时候，频繁遇到 Bilateral Filter。google 一波后，发现并不是什么不得了的东西，但它的思想却很有借鉴意义。 简介 Bilateral Filter，中文又称「双边滤波器」。相比以往那些仅仅使用位置信息进行滤波的 filter，Bilateral Filter 还考虑了颜色信息，可以保证边缘部分不会被过滤。 简单来说，一般的 filter 都是基于这样的">
@@ -424,27 +424,17 @@ s(\zeta-x) = e^{-{1\over2}({ {f(\zeta)-f(x)} \over \sigma })^2}
 <p>具体实现可以参考这篇博客：<a href="http://blog.csdn.net/jia20003/article/details/7740683" target="_blank" rel="noopener">图像处理之双边滤波效果(Bilateral Filtering for Gray and Color Image)</a>，或者参考我自己的 <a href="https://github.com/Jermmy/BilateralFilter" target="_blank" rel="noopener">demo</a>，当然，我也只是将上面博客的 java 版改成 c++ 而已<sup>0</sup>。</p>
 <p>给出几幅结果图：</p>
 <p><strong>原图</strong>：</p>
-<figure>
-<img src="/images/2017-1-7/lena.jpg" alt="lena"><figcaption>lena</figcaption>
-</figure>
+<p><img src="/images/2017-1-7/lena.jpg"></p>
 <p><strong>高斯模糊</strong>：</p>
-<figure>
-<img src="/images/2017-1-7/gau_blur.jpg" alt="gau_blur"><figcaption>gau_blur</figcaption>
-</figure>
+<p><img src="/images/2017-1-7/gau_blur.jpg"></p>
 <p><strong>仅仅用颜色信息滤波</strong>：</p>
-<figure>
-<img src="/images/2017-1-7/simi_blur.jpg" alt="simi_blur"><figcaption>simi_blur</figcaption>
-</figure>
+<p><img src="/images/2017-1-7/simi_blur.jpg"></p>
 <p><strong>双边滤波：</strong></p>
-<figure>
-<img src="/images/2017-1-7/blur.jpg" alt="blur"><figcaption>blur</figcaption>
-</figure>
+<p><img src="/images/2017-1-7/blur.jpg"></p>
 <p>仔细对比一下，双边滤波对边缘的保留效果比高斯滤波好太多了，这一点从第三幅图就可以知晓缘由了。</p>
 <p>另外！！如果使用高斯核函数来实现双边滤波，颜色卷积和的 <span class="math inline">\(\sigma\)</span> 要取大一点的值，比如：50。否则，由于不同颜色的差值往往比位置差值大出许多（举个例子：50 和 60 两种像素值肉眼上看很接近，但却差出 10，平方一下就是 100），可能导致很相近的像素点权值很小，最后跟没滤波的效果一样。</p>
-<p>&lt;br&gt;</p>
 <h3 id="启发">启发</h3>
 <p>Bilateral Filter 的思想是：在位置信息的基础上加上颜色信息，相当于考虑两个权值。如果还要考虑其他重要因素，是不是可以再加进一个权值，构成一个三边滤波器呢？答案当然是可以的，由此，我们可以把很多简单的滤波器综合起来形成一个更强大的滤波器。</p>
-<p>&lt;br&gt;</p>
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="http://blog.csdn.net/jia20003/article/details/7740683" target="_blank" rel="noopener">图像处理之双边滤波效果(Bilateral Filtering for Gray and Color Image)</a></li>
@@ -595,7 +585,7 @@ s(\zeta-x) = e^{-{1\over2}({ {f(\zeta)-f(x)} \over \sigma })^2}
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

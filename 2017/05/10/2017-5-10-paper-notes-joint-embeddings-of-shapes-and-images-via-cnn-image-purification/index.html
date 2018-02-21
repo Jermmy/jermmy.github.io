@@ -103,8 +103,10 @@
 <meta property="og:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/image%20query.png">
-<meta property="og:image" content="https://jermmy.github.io/2017/05/10/2017-5-10-paper-notes-joint-embeddings-of-shapes-and-images-via-cnn-image-purification/“/images/2017-5-10/network.png”">
-<meta property="og:updated_time" content="2018-01-04T12:45:04.000Z">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/embedding%20space.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/network.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/Shape-Guided%20Image%20Editing.png">
+<meta property="og:updated_time" content="2018-02-21T09:46:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
 <meta name="twitter:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
@@ -415,7 +417,7 @@
 <p>在构造出这个空间之前，我们先思考一下，3D 模型之间的相似度要怎么测量？</p>
 <p>前面说了，论文是通过将 3D 形状投影成图像的方法，将该问题转化为我们熟悉的图像相似度的比较。</p>
 <p>假设我们有一个 3D 模型的集合（这里面可能包括椅子、桌子、飞机等，参考上图）：<span class="math inline">\(S={\lbrace S_i \rbrace}_{i=1}^{n}\)</span>。这个集合里的模型形状要事先做好对齐。</p>
-<p>然后，我们从 k 个不同的视角（viewpoint）对各个模型进行投影，得到每个模型的投影图片集合：<span class="math inline">\(I_i={\lbrace I_{i,v} \rbrace}_{v=1}^{k} \ \  for each \ \  S_i\)</span>。论文中 k 取 20。</p>
+<p>然后，我们从 k 个不同的视角（viewpoint）对各个模型进行投影，得到每个模型的投影图片集合：<span class="math inline">\(I_i={\lbrace I_{i,v} \rbrace}_{v=1}^{k} \ \  for\ each \ \  S_i\)</span>。论文中 k 取 20。</p>
 <p>接着，对于每张投影图片 <span class="math inline">\(I_i\)</span>，提取图片的 HoG 特征：<span class="math inline">\(H_{i, v} \in R^{10188}\)</span>。这里提取的 HoG 特征由三个尺寸的图像特征组合而成：120x120，60x60，30x30。将每个尺寸下的 HoG 特征组合在一起，形成一个 10188 维的向量。由于 3D 形状事先已经对齐了，所以 HoG 在鲁棒性上得到了保证。</p>
 <p>对于每一个形状 <span class="math inline">\(S_i\)</span>，我们组合所有投影图片的 HoG 特征（这个特征又称为 LightField HoG），得到形状本身的特征 <span class="math inline">\(F_i=(H_{i,1}; H_{i,2}; …; H_{i,k}) \in R^{203760}\)</span>，这个特征的维度为 203760（10188 x 20）。对于两个不同形状间的相似度比较，可以由这个特征向量的欧氏距离计算得到：<span class="math inline">\(d_{i,j}=||F_i - F_j||_2\)</span>。</p>
 <h4 id="embedding-space">Embedding Space</h4>
@@ -427,9 +429,9 @@
 </ol>
 <p>构造空间最简单的方法就是直接使用上面提出来的特征向量 <span class="math inline">\(F_i\)</span>，构造一个特征空间 <span class="math inline">\(F=\lbrace F_i \rbrace\)</span>。这个特征空间的维度明显偏高（203760维），因此，论文中又使用 PCA 算法对特征向量进行降维，得到一个新的特征空间 <span class="math inline">\(F^{-}\)</span>，维度为 128 维。</p>
 <p>但这个降维后的空间存在一个问题：虽然 <span class="math inline">\(F^{-}\)</span> 能够表示形状之间的相似度，但却难以体现不相似度。换句话说，相似的形状之间的距离都很相近，但不相似的形状（比如：椅子和汽车）之间的距离则完全没有意义（可能很近也可能很远）。论文中的说法是：<span class="math inline">\(F^{-}\)</span> does not respect this distinction between the greater importance of the samll distances and the lesser one of the larger ones. 由于我英语水平有限，对这句顺口溜不是特别理解，但不管怎样，<span class="math inline">\(F^{-}\)</span> 是存在不足的。</p>
-<p>因此，论文提出一个新的空间 <span class="math inline">\(D_{n\*n}\)</span>，代表一个距离矩阵：<span class="math inline">\(D(i, j) = d_{i, j}\)</span>。由于 <span class="math inline">\(F\)</span> 是原特征向量组成的空间，而 <span class="math inline">\(D\)</span> 则是一个距离矩阵，因此，对 <span class="math inline">\(D\)</span> 降维后，仍然可以很好地表达相似性和不相似性（这一点暂时不是很理解）。降维方面，作者比较了多种方法，最后发现，使用 non-linear Multi-Dimensional Scaling(MDS) 方法效果上最好。该方法的提出是在 1964 年，听起来相当的有格调又很有历史感，我暂时没有去了解，所以先姑且把它当作一个黑盒子吧。总之，我们通过这个方法，将距离矩阵 <span class="math inline">\(D_{n\*n}\)</span> 降维成 <span class="math inline">\(D^{-}\)</span>，维度同样保持 128 维（见下图）。然后，将降维后的矩阵 <span class="math inline">\(D^{-}\)</span> 的行向量当作形状的特征向量。这种用距离来表示特征的方法我是第一次遇到，还不是很理解。作者在论文的 PPT 中这样解释：如果两个形状跟其他所有形状之间的 distance 差不多，也就是说它们在 <span class="math inline">\(D^{-}\)</span> 的行向量很相似，那么这两个形状也应该是类似的。</p>
+<p>因此，论文提出一个新的空间 <span class="math inline">\(D_{n*n}\)</span>，代表一个距离矩阵：<span class="math inline">\(D(i, j) = d_{i, j}\)</span>。由于 <span class="math inline">\(F\)</span> 是原特征向量组成的空间，而 <span class="math inline">\(D\)</span> 则是一个距离矩阵，因此，对 <span class="math inline">\(D\)</span> 降维后，仍然可以很好地表达相似性和不相似性（这一点暂时不是很理解）。降维方面，作者比较了多种方法，最后发现，使用 non-linear Multi-Dimensional Scaling(MDS) 方法效果上最好。该方法的提出是在 1964 年，听起来相当的有格调又很有历史感，我暂时没有去了解，所以先姑且把它当作一个黑盒子吧。总之，我们通过这个方法，将距离矩阵 <span class="math inline">\(D_{n*n}\)</span> 降维成 <span class="math inline">\(D^{-}\)</span>，维度同样保持 128 维（见下图）。然后，将降维后的矩阵 <span class="math inline">\(D^{-}\)</span> 的行向量当作形状的特征向量。这种用距离来表示特征的方法我是第一次遇到，还不是很理解。作者在论文的 PPT 中这样解释：如果两个形状跟其他所有形状之间的 distance 差不多，也就是说它们在 <span class="math inline">\(D^{-}\)</span> 的行向量很相似，那么这两个形状也应该是类似的。</p>
 <center>
-&lt;img src=“/images/2017-5-10/embedding space.png” width=“500px”&gt;
+<p><img src="/images/2017-5-10/embedding space.png" width="500px"></p>
 </center>
 <h3 id="cnn-for-image-embedding">CNN for Image Embedding</h3>
 <p>构造出 <span class="math inline">\(D^{-}\)</span> 空间后，我们相当于把一个 3D 模型 <span class="math inline">\(S\_i\)</span> 映射到 <span class="math inline">\(D^{-}\)</span> 中的一个点 <span class="math inline">\(P_{S_{i}}\)</span>。下一步，就是要把图像也映射进这个空间，这相当于一个特征提取的工作，而 CNN 正是完成该工作的最佳选择之一。</p>
@@ -441,7 +443,7 @@
 <p>论文中直接采用了 AlexNet 的架构，唯一不同的只是将网络最后一层 fc8 的输出改为 128 维的向量（原 AlexNet 是将 fc8 输入到 softmax 层），同时将 Softmax Loss Layer 换成 Euclidean Loss Layer。这个损失函数具体为：</p>
 <p><span class="math inline">\(L(\theta)=\sum_{i,r}{||f(R_{i,r}; \theta) - P_{S_{i}}||_{2}^{2}}\)</span></p>
 <center>
-<img src="“/images/2017-5-10/network.png”" width="“500px”">
+<p><img src="/images/2017-5-10/network.png" width="500px"></p>
 </center>
 <p>上图中，左图为原来的 AlexNet，右图为论文中采用的 CNN。</p>
 <p>由于真实环境的照片中，背景会更加复杂，因此，网络前面五层卷积层的参数直接使用其他人在 ImageNet 上训练好的参数。而网络后面三层全连接层 FC Layer，则将参数随机初始化，并用之前生成的数据进行训练，这样，每次梯度下降的时候只优化后面三层网络的参数。这个过程又被称为 fine-tune。</p>
@@ -454,7 +456,7 @@
 <p>最容易想到的，自然是 3D 模型以及图片的检索上。而且，由于论文构造的空间将 3D 和 2D 融合在一起，因此，对<strong>以图搜形</strong>，<strong>以形搜图</strong>、<strong>以图搜图</strong>、<strong>以形搜形</strong>来说，都是通用的。不过，由于 CNN 只接收图片作为输入，如果想用形状来检索，就必须先把形状投影成图片才行。</p>
 <p>论文还提到另一种好玩的应用 <strong>Shape-Guided Image Editing</strong>。</p>
 <center>
-&lt;img src=“/images/2017-5-10/Shape-Guided Image Editing.png” width=“500px”&gt;
+<p><img src="/images/2017-5-10/Shape-Guided Image Editing.png" width="500px"></p>
 </center>
 <p>比如，我们想在图片中为椅子增加一个台灯照射下的阴影效果，这个时候，直接基于图像处理的方法是比较难做到的，而换个角度，可以先用一个类似的 3D 模型投射出这个阴影后，再把阴影加入到原图中。</p>
 <h3 id="参考">参考</h3>
@@ -610,7 +612,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
