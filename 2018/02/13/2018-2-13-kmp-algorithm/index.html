@@ -1,0 +1,1012 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="算法," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章想简单讲讲 KMP 算法的内容。 KMP 算法 KMP 算法由 Knuth–Morris–Pratt 三个人共同提出，它的目的是判断字符串 A 中是否包含另一个字符串 B（如：判断 abababaababacb 中是否包含 ababacb）。">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP算法">
+<meta property="og:url" content="https://jermmy.github.io/2018/02/13/2018-2-13-kmp-algorithm/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="这篇文章想简单讲讲 KMP 算法的内容。 KMP 算法 KMP 算法由 Knuth–Morris–Pratt 三个人共同提出，它的目的是判断字符串 A 中是否包含另一个字符串 B（如：判断 abababaababacb 中是否包含 ababacb）。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-03T09:19:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KMP算法">
+<meta name="twitter:description" content="这篇文章想简单讲讲 KMP 算法的内容。 KMP 算法 KMP 算法由 Knuth–Morris–Pratt 三个人共同提出，它的目的是判断字符串 A 中是否包含另一个字符串 B（如：判断 abababaababacb 中是否包含 ababacb）。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2018/02/13/2018-2-13-kmp-algorithm/"/>
+
+
+
+
+
+  <title>KMP算法 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/02/13/2018-2-13-kmp-algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                KMP算法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-13T11:11:40+08:00">
+                2018-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/13/2018-2-13-kmp-algorithm/" class="leancloud_visitors" data-flag-title="KMP算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章想简单讲讲 KMP 算法的内容。</p>
+<h2 id="kmp-算法">KMP 算法</h2>
+<p><a href="https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm" target="_blank" rel="noopener">KMP</a> 算法由 Knuth–Morris–Pratt 三个人共同提出，它的目的是判断字符串 A 中是否包含另一个字符串 B（如：判断 <strong>abababaababacb</strong> 中是否包含 <strong>ababacb</strong>）。</p>
+<a id="more"></a>
+<h2 id="kmp-算法流程">KMP 算法流程</h2>
+<h3 id="kmp">KMP</h3>
+<p>下面演示一下 KMP 的流程。假设我们要判断字符串 A（abababaababacb）中是否包含字符串 B（ababacb）。</p>
+<p>我们分别用两个指针 <strong>i</strong> 和 <strong>j</strong> 指示 A、B 匹配的位置。</p>
+<p>首先比较第一个位置：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0</span></span><br><span class="line">A: a</span><br><span class="line">B: a</span><br><span class="line">j: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>匹配了 a 跟 a，向前移动指针 <strong>i</strong> 和 <strong>j</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01</span> </span><br><span class="line">A: ab</span><br><span class="line">B: ab</span><br><span class="line">j: <span class="number">01</span></span><br></pre></td></tr></table></figure>
+<p>匹配了 b，继续向前移动指针 <strong>i</strong>、<strong>j</strong>，直到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01234</span> <span class="number">5</span></span><br><span class="line">A: ababa b</span><br><span class="line">B: ababa c</span><br><span class="line">j: <span class="number">01234</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>按照常规的方法，我们要把 <strong>i</strong> 从上次起始点 0 移动到 1，而 <strong>j</strong> 则回到 0 继续匹配。但你是否注意到一个现象：我们已经用 B 的 ababa 匹配了 A 的 ababa，也就是说，我们已经掌握 A、B 前面这部分的信息，那么，对于前面这部分信息能否相互匹配，我们其实已经知道了。</p>
+<p>比如说，我们没有必要把 <strong>i</strong> 和 <strong>j</strong> 重新调回 1 和 0，因为 A[1] 和 B[0] 肯定是不匹配的。最明智的做法是调成下面这种状态：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01234</span> <span class="number">5</span></span><br><span class="line">A: ababa b</span><br><span class="line">B:   aba b</span><br><span class="line">j:   <span class="number">012</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p><strong>i</strong> 还是在 5 的位置，而 <strong>j</strong> 则调整到 3，然后继续后面的匹配工作。</p>
+<p>这一步，就是 KMP 的精髓所在（这个 j 的位置如何调整，后面会说）。</p>
+<p>继续这个例子，当 <strong>i</strong> 走到 7 的时候，又没法匹配了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123456</span> <span class="number">7</span></span><br><span class="line">A: abababa a</span><br><span class="line">B:   ababa c</span><br><span class="line">j:   <span class="number">01234</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>同样的道理，我们可以把 B 串往后挪动，而保持 A 串不动（其实就是 <strong>i</strong> 不变，移动 <strong>j</strong>）。这一次，<strong>j</strong> 还是调整到 3 的位置：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123456</span> <span class="number">7</span></span><br><span class="line">A: abababa a</span><br><span class="line">B:     aba b</span><br><span class="line">j:     <span class="number">012</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>我们发现，经过这次调整，依然没法匹配下去，那只能继续挪动 B，直到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01234567</span></span><br><span class="line">A: abababaa</span><br><span class="line">B:        a</span><br><span class="line">j:        <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p><strong>j</strong> 这次被打回原形了。</p>
+<p>之后，我们可以一路匹配直到结束：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123456789</span> <span class="number">10</span> <span class="number">11</span> <span class="number">12</span> <span class="number">13</span></span><br><span class="line">A: abababaaba  b  a  c  b</span><br><span class="line">B:        aba  b  a  c  b</span><br><span class="line">j:        <span class="number">012</span>  <span class="number">3</span>  <span class="number">4</span>  <span class="number">5</span>  <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>到这里，我们先总结一下，假设在每次出现不匹配时，我们已经知道了如何调整 <strong>j</strong>，那上面的流程可以写成下面的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kmp</span><span class="params">(<span class="built_in">string</span> A, <span class="built_in">string</span> B)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = A.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (A[i] == B[j]) j++;</span><br><span class="line">        <span class="keyword">if</span> (j == B.length()) <span class="keyword">return</span> i - j + <span class="number">1</span>; <span class="comment">// 返回 A、B 匹配的起点</span></span><br><span class="line">        <span class="comment">// 如果 A 的下一位和 B 不匹配，则不断调整 j，直到匹配或者j回到0为止</span></span><br><span class="line">        <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; A[i + <span class="number">1</span>] != B[j]) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];    <span class="comment">// next[j]表示当j+1位出现不匹配时，j应该回到next[j]的位置</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这段代码的时间复杂度为 O(n)，具体可以看这篇<a href="http://www.matrix67.com/blog/archives/115" target="_blank" rel="noopener">文章</a>的分析。</p>
+<h3 id="next-数组">next 数组</h3>
+<p><strong>现在问题来了：我们该如何调整 j 的位置呢？</strong></p>
+<p>看回刚才那个例子，当出现下面这种不匹配的情况时，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01234</span> <span class="number">5</span></span><br><span class="line">A: ababa b</span><br><span class="line">B: ababa c</span><br><span class="line">j: <span class="number">01234</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>我们是这样调整 <strong>j</strong> 的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01234</span> <span class="number">5</span></span><br><span class="line">A: ababa b</span><br><span class="line">B:   aba b</span><br><span class="line">j:   <span class="number">012</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>由于 B 中的 ababa 和 A 是匹配的，所以 A 前面那一串肯定是 ababa。然后我们才能把 B 前三个字符（B[0 : 2] = aba）移到后面，跟 A 中 ababa 的后三个字符匹配。</p>
+<p><strong>前三个字符跟后三个字符匹配！</strong></p>
+<p><strong>前三个字符跟后三个字符匹配！</strong></p>
+<p><strong>前三个字符跟后三个字符匹配！</strong></p>
+<p>这是关键。</p>
+<p>ababa 是 A 的字符串，同时也是 B 的字符串，所以这些新位置的计算完全可以仅仅根据 B 来预处理。</p>
+<p>现在，我们重新审视这个过程。</p>
+<p>假设 B（ababacb） 跟某个字符串进行匹配，在 j = 5 时才发生失配：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i:</span><br><span class="line">A: ***** *</span><br><span class="line">B: ababa c</span><br><span class="line">j: <span class="number">01234</span> <span class="number">5</span>（<span class="number">01234</span>都是匹配的，<span class="number">5</span>开始不匹配）</span><br></pre></td></tr></table></figure>
+<p>这时，我们可以在不管 A 的情况下，将 j 调整为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i:</span><br><span class="line">A: ***** *</span><br><span class="line">B:   aba b</span><br><span class="line">j:   <span class="number">012</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>为什么可以这么做？因为 ababa 的后三个字符和前三个字符是相等。</p>
+<p>现在，你应该明白 j 的位置要怎么调整了。它本质上是在计算 B 子串中<strong>最长且相等的前缀和后缀</strong>，是 B 自己对自己的匹配。</p>
+<p>通常，我们会用一个<strong>部分匹配表</strong>来记录这部分信息（即之前代码中的<strong>next</strong>数组）。</p>
+<p>我们继续用一个例子来解释 next 数组的计算流程。为了让例子更具代表性，我们选用 <strong>B = abababca</strong>。在下面的例子中，我们同样会用 <strong>i</strong>、<strong>j</strong> 两个指针来标示，这一次是用 B 来匹配 B（请铭记：next[i] 表示的是 B 的子串 B[0 : i] 中，最长且相等的前缀和后缀的长度，它和前面代码中的注释本质是一样的。⚠️B[0 : i] 包含 B[0] 到 B[i] 总共 i+1 个字符）。</p>
+<p>例子中的 <strong>n</strong> 代表 <strong>next</strong> 数组。</p>
+<p>我们默认 next[0] = 0，因为 B[0] 就只包含一个字符，不存在前缀后缀。</p>
+<p>所以匹配从第二个字符开始：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01</span></span><br><span class="line">B: ab******</span><br><span class="line">B:  a</span><br><span class="line">j:  <span class="number">0</span></span><br><span class="line">n: <span class="number">00</span></span><br></pre></td></tr></table></figure>
+<p>B[0 : 1] 中，前缀是 B[0]，后缀是 B[1]，二者不等，所以 next[1] = 0（最长且相等的前后缀的长度为 0）。</p>
+<p>因为没有匹配上，我们只能移动 <strong>i</strong>，固定 <strong>j</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">012</span></span><br><span class="line">B: aba*****</span><br><span class="line">B:   a</span><br><span class="line">j:   <span class="number">0</span></span><br><span class="line">n: <span class="number">001</span></span><br></pre></td></tr></table></figure>
+<p>终于匹配到了一个，next[2] = 1。</p>
+<p>之后，<strong>i</strong>、<strong>j</strong> 同时移动：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123</span></span><br><span class="line">B: abab****</span><br><span class="line">B:   ab</span><br><span class="line">j:   <span class="number">01</span></span><br><span class="line">n: <span class="number">0012</span></span><br></pre></td></tr></table></figure>
+<p>在 B[0 : 3] 这个串 (abab) 中，我们继续匹配到 b，现在匹配的前缀和后缀变为 ab，next[3] = 2。</p>
+<p>以此类推:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">012345</span></span><br><span class="line">B: ababab**</span><br><span class="line">B:   abab</span><br><span class="line">j:   <span class="number">0123</span></span><br><span class="line">n: <span class="number">001234</span></span><br></pre></td></tr></table></figure>
+<p>不过，再往前走一步，情况就复杂了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">012345</span> <span class="number">6</span></span><br><span class="line">B: ababab c*</span><br><span class="line">B:   abab a</span><br><span class="line">j:   <span class="number">0123</span> <span class="number">4</span></span><br><span class="line">n: <span class="number">001234</span></span><br></pre></td></tr></table></figure>
+<p>第 6 位，c 这颗老鼠屎，搅坏一锅粥。怎么办呢？只能重新调整 <strong>j</strong> 了。但是，我们不能一口气将 <strong>j</strong> 调回 0，因为这一步中，j != 0 告诉我们：c 之前的串是能够匹配的呀。而我们的目的也是要找最长的前缀和后缀，因而，虽然前面千辛万苦找到的 abab 现在是匹配不下去了，我们能不能继续找一个长度小于 4 的匹配串呢？比如，abab 中的前缀 ab 和后缀 ab 也是能匹配的呀。所以，我们将 <strong>j</strong> 调成这个样子，看能不能挽救一下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">012345</span> <span class="number">6</span></span><br><span class="line">B: ababab c*</span><br><span class="line">B:     ab a</span><br><span class="line">j:     <span class="number">01</span> <span class="number">2</span></span><br><span class="line">n: <span class="number">001234</span></span><br></pre></td></tr></table></figure>
+<p>结果还是挽救不了，因为 B[6] 和 B[2] 不相等。但此时，j 还是大于 0，也就是说前面还是有子串是匹配的。不过，眼睛瞄一下也知道，剩下的 ab 本身是不存在匹配情况的，所以这下只能将 <strong>j</strong> 调回 0 了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123456</span></span><br><span class="line">B: abababc*</span><br><span class="line">B:       a</span><br><span class="line">j:       <span class="number">0</span></span><br><span class="line">n: <span class="number">0012340</span></span><br></pre></td></tr></table></figure>
+<p>上面这个「挽救」的过程，其实是求 next 数组中最难理解的地方（而 next 是 KMP 最难理解的地方）。</p>
+<p>再回顾一下，我们遇到 c 之后，不是直接将 <strong>j</strong> 置 0，而是从之前匹配到的子串中，寻找可能的前缀和后缀。在这个例子中，我们已经匹配到的是 abab，因此之后就是找找 abab 身上的前缀跟后缀。不知道你注意到没有，从 abab 身上找前缀后缀的工作，我们在计算 next[3] 的时候就遇过了👇：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">0123</span></span><br><span class="line">B: abab****</span><br><span class="line">B:   ab</span><br><span class="line">j:   <span class="number">01</span></span><br><span class="line">n: <span class="number">0012</span></span><br></pre></td></tr></table></figure>
+<p>因为这个 abab 本身也是 B 的前缀，而我们之前已经计算出这个前缀的最长且相等的前后缀长度是 2（next[3] = 2）。</p>
+<p>但是，尽管我们挽救了 ab 出来，但还是没法进一步匹配下去，所以又要从 ab 身上挽救点东西。但坑爹的是，我们在计算 next[1] 时就已经发现，ab 本身就没有相等的前后缀👇：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i: <span class="number">01</span></span><br><span class="line">B: ab******</span><br><span class="line">B:  a</span><br><span class="line">j:  <span class="number">0</span></span><br><span class="line">n: <span class="number">00</span></span><br></pre></td></tr></table></figure>
+<p>next[1] = 0，所以，这一次我们是真没办法了，才将 <strong>j</strong> 调回 0。一旦 <strong>j</strong> 回到 0，c 之前也就没有匹配的子串了，一切又从头开始。</p>
+<p>希望以上这段解释，能让你明白下面这段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; getNext(<span class="built_in">string</span> B) &#123;</span><br><span class="line">  <span class="keyword">int</span> n = B.length();</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(n, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="comment">// 注意，这里的j表示长度</span></span><br><span class="line">    <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; B[i] != B[j]) &#123;</span><br><span class="line">      j = next[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (B[i] == B[j]) &#123;</span><br><span class="line">      j++;</span><br><span class="line">    &#125;</span><br><span class="line">    next[i] = j;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，KMP 的基本流程就讲完了。</p>
+<p>KMP 算法我主要是看了这篇<a href="http://www.matrix67.com/blog/archives/115" target="_blank" rel="noopener">文章</a>入门的，但其中，对 next 数组的求解过程一直不明白，于是，我又找了其他文章，但坑爹的是，不同作者的讲解思路和风格都不一样，虽然道理是一样的，但在顿悟道理之前，这些不同的文章还是会让初学者很困惑。最后，实在没辙了，我就找了个例子，按照最开始那篇文章的思路，在那使劲捣鼓，总算折腾出一个在我看来还过得去的解释。不过，我的思考方式不可能适合所有人，如果你看到这堆解释后，依然一头雾水，最好的方法是静下心来，拿出纸笔，对着例子捣鼓一段时间，这样的效率会比不断找文章阅读来的高。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="http://www.matrix67.com/blog/archives/115" target="_blank" rel="noopener">KMP算法详解</a></li>
+<li><a href="http://jakeboxer.com/blog/2009/12/13/the-knuth-morris-pratt-algorithm-in-my-own-words/" target="_blank" rel="noopener">The Knuth-Morris-Pratt Algorithm in my own words</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2018/02/13/2018-2-13-kmp-algorithm/" title="KMP算法">https://jermmy.github.io/2018/02/13/2018-2-13-kmp-algorithm/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/09/2018-2-8-leetcode-98-validate-binary-search-tree/" rel="next" title="Leetcode题解：98. validate binary search tree">
+                <i class="fa fa-chevron-left"></i> Leetcode题解：98. validate binary search tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kmp-算法"><span class="nav-number">1.</span> <span class="nav-text">KMP 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kmp-算法流程"><span class="nav-number">2.</span> <span class="nav-text">KMP 算法流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kmp"><span class="nav-number">2.1.</span> <span class="nav-text">KMP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next-数组"><span class="nav-number">2.2.</span> <span class="nav-text">next 数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
