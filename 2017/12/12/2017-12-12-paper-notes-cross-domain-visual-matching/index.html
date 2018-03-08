@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-12-12/algo2.png">
-<meta property="og:updated_time" content="2017-12-20T06:59:17.000Z">
+<meta property="og:updated_time" content="2018-03-06T08:17:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Cross-Domain Visual Matching via Generalized Similarity Measure and Feature Learning">
 <meta name="twitter:description" content="Cross-Domain Visual Matching，即跨域视觉匹配。所谓跨域，指的是数据的分布不一样，简单点说，就是两种数据「看起来」不像。如下图中，（a）一般的正面照片和各种背景角度下拍摄的照片；（b）摄像头不同角度下拍到的照片；（c）年轻和年老时的人脸照；（d）证件照和草图风格的人脸照，这些图像都存在对应关系，但由于它们属于不同的域，因此必须针对不同的域采用不同的特征提取方法，之后再做特">
@@ -458,7 +458,7 @@ G(\mathbf{W}, \mathbf{\phi})=\sum_{i=1}^N{(1-\ell_i \tilde{S}(\mathbf{x_i}, \mat
 <p>首先，我们用两个子网络分支分别提取两个不同域的图片特征，然后用一个共享的网络将两种特征融合起来，最后再用两个子网络分支计算相似模型的参数。 接下来分析一下网络训练的流程。首先，我们将网络的输出结果记为： <span class="math display">\[
 \begin{align} 
 \tilde{x} \triangleq \begin{bmatrix} \mathbf{L_A f_1(x)} &amp; \mathbf{L_C^x f_1(x)} &amp; \mathbf{d}^T \mathbf{f_1(x)} \end{bmatrix}^T   \notag \\
-\tilde{y} \triangleq \begin{bmatrix} \mathbf{L_B f_2(x)} &amp; \mathbf{L_C^y f_2(y)} &amp; \mathbf{e}^T \mathbf{f_2(y)} \end{bmatrix}^T \notag 
+\tilde{y} \triangleq \begin{bmatrix} \mathbf{L_B f_2(y)} &amp; \mathbf{L_C^y f_2(y)} &amp; \mathbf{e}^T \mathbf{f_2(y)} \end{bmatrix}^T \notag 
 \end{align}
 \]</span> 为了将 <span class="math inline">\(\tilde{x}\)</span> 和 <span class="math inline">\(\tilde{y}\)</span> 代入 (3) 式，我们再引入三个辅助矩阵： <span class="math display">\[
 \begin{align}
