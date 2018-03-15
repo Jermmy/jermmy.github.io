@@ -106,8 +106,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20algorithm.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20gradient.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/BN%20algorithm%20all.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/Internal%20Covariate%20Shift.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-9-2/feature%20scaling.png">
-<meta property="og:updated_time" content="2018-03-15T15:50:42.000Z">
+<meta property="og:updated_time" content="2018-03-15T15:54:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Batch Normalization">
 <meta name="twitter:description" content="在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的读书笔记里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：  sigmoid  如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。 之前的笔记虽然找">
@@ -452,7 +453,7 @@ y=\frac{\gamma}{\sqrt{Var[x]+\epsilon}}x+(\beta - \frac{\gamma E[x]}{\sqrt{Var[x
 <p>今天看了李宏毅教授的<a href="https://www.youtube.com/watch?v=BZh1ltr5Rkg&amp;t=21s" target="_blank" rel="noopener">视频</a>，发现 BN 其实是要解决另一个更严重的问题，而顺带把函数梯度消失的问题解决了，所以，我上面扯了这么多，居然一直没抓住重点～囧～</p>
 <p>BN 其实是要解决 <strong>Internal Covariate Shift</strong>，没错，这几个关键词就在论文题目里，居然给我省略了。。。这个问题我没有追根溯源去寻找其他文献，但李教授用了一张图让我明白了是怎么回事：</p>
 <center>
-<p>&lt;img src=“/images/2017-9-2/Internal Covariate Shift.png”, width=“600px”&gt;</p>
+<p><img src="/images/2017-9-2/Internal Covariate Shift.png" width="600px"></p>
 </center>
 <p>这张图里，同一个特征的两个维度上 <span class="math inline">\(x_1\)</span>、<span class="math inline">\(x_2\)</span> 的值的范围是不一样的，这种差别导致训练的时候会非常的缓慢，除非我们针对不同的维度设置不同的学习率，但这是很难办到的。其实，熟悉 Andrew NG 机器学习入门课的人也应该会回忆起 NG 提到的这个问题：</p>
 <center>
