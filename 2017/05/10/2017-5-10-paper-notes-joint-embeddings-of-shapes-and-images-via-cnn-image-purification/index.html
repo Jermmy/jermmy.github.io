@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/embedding%20space.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/Shape-Guided%20Image%20Editing.png">
-<meta property="og:updated_time" content="2018-02-21T09:46:30.000Z">
+<meta property="og:updated_time" content="2018-03-18T02:38:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
 <meta name="twitter:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
@@ -434,7 +434,7 @@
 <p><img src="/images/2017-5-10/embedding space.png" width="500px"></p>
 </center>
 <h3 id="cnn-for-image-embedding">CNN for Image Embedding</h3>
-<p>构造出 <span class="math inline">\(D^{-}\)</span> 空间后，我们相当于把一个 3D 模型 <span class="math inline">\(S\_i\)</span> 映射到 <span class="math inline">\(D^{-}\)</span> 中的一个点 <span class="math inline">\(P_{S_{i}}\)</span>。下一步，就是要把图像也映射进这个空间，这相当于一个特征提取的工作，而 CNN 正是完成该工作的最佳选择之一。</p>
+<p>构造出 <span class="math inline">\(D^{-}\)</span> 空间后，我们相当于把一个 3D 模型 <span class="math inline">\(S_i\)</span> 映射到 <span class="math inline">\(D^{-}\)</span> 中的一个点 <span class="math inline">\(P_{S_{i}}\)</span>。下一步，就是要把图像也映射进这个空间，这相当于一个特征提取的工作，而 CNN 正是完成该工作的最佳选择之一。</p>
 <p>我们的目标是训练一个 CNN 网络，这个网络的输入是一张图片，输出是一个向量 <span class="math inline">\(P_{I} \in D^{-}\)</span>。要求是，如果图片 <span class="math inline">\(I\)</span> 描述的是一个形状类似于 <span class="math inline">\(S_i\)</span> 的物体，那么 <span class="math inline">\(P_{I}\)</span> 要接近于 <span class="math inline">\(P_{S_{i}}\)</span>。</p>
 <h4 id="training-image-synthesis">Training Image Synthesis</h4>
 <p>由于我们是要把一张图片转换成一个特征向量，因此训练数据的格式应该是:（图片，向量）。由于之前构造空间 <span class="math inline">\(D^{-}\)</span> 的时候，我们已经计算出了每个形状 <span class="math inline">\(S_i\)</span> 对应的特征向量，因此，只需要对 <span class="math inline">\(S_i\)</span> 各个角度的投影进行渲染得到一个图片集 <span class="math inline">\(R_i\)</span>，对于图片集中的每张图片 <span class="math inline">\(R_{i,r}\)</span>，我们相当于得到了一个训练样本 <span class="math inline">\((R_{i,r}, P_{S_{i}})\)</span>。由于 CNN 容易过拟合，因此，除了生成大量训练样本外，论文还在渲染投影图片的时候，加入一些额外的「噪声」，比如：添加不同的光照、采用多个角度进行投影，以及融合一些随机背景等。</p>
@@ -451,7 +451,7 @@
 <h4 id="predicting">Predicting</h4>
 <p>预测的时候，我们需要将图片输入到 CNN 中，得到一个特征向量。然后在 <span class="math inline">\(D^{-}\)</span> 空间内，用 KNN 之类的方法找到距离最近的向量，这些向量对应的形状就是图片中的物体最相似的形状。而如果要用形状来检索，则需要先把形状投影成图片后，再放入 CNN 中，然后用同样的方法找到最相似的形状。另外，这个空间还可以用来<strong>以图搜图</strong>，只要将所有图片都输入到 CNN 中，找出它们在空间中的位置，根据欧氏距离就可以判断出最相似的图片了。个人觉得这一点正是这个形状嵌套空间的优势所在。</p>
 <h3 id="实验结果及应用">实验结果及应用</h3>
-<p>论文从 多角度图片检索(cross-view image retrieval)、基于图片的形状检索，以及基于形状的图片检索上，和其他方法进行了对比，结果均有提高。当然，针对不同的形状模型，提高的幅度也是不尽相同。</p>
+<p>论文从多角度图片检索(cross-view image retrieval)、基于图片的形状检索，以及基于形状的图片检索上，和其他方法进行了对比，结果均有提高。当然，针对不同的形状模型，提高的幅度也是不尽相同。</p>
 <p>我更感兴趣的是这个东西有哪些应用。</p>
 <p>最容易想到的，自然是 3D 模型以及图片的检索上。而且，由于论文构造的空间将 3D 和 2D 融合在一起，因此，对<strong>以图搜形</strong>，<strong>以形搜图</strong>、<strong>以图搜图</strong>、<strong>以形搜形</strong>来说，都是通用的。不过，由于 CNN 只接收图片作为输入，如果想用形状来检索，就必须先把形状投影成图片才行。</p>
 <p>论文还提到另一种好玩的应用 <strong>Shape-Guided Image Editing</strong>。</p>
