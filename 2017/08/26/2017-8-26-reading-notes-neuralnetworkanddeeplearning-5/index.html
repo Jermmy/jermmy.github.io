@@ -97,7 +97,7 @@
 <meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
 <meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
+<meta property="og:title" content="读书笔记：梯度是怎么消失的">
 <meta property="og:url" content="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
@@ -111,9 +111,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/sigma%27.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz39.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-26/tikz40.png">
-<meta property="og:updated_time" content="2017-12-13T03:00:59.000Z">
+<meta property="og:updated_time" content="2018-03-23T02:28:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="读书笔记：neuralnetworkanddeeplearning chapter5">
+<meta name="twitter:title" content="读书笔记：梯度是怎么消失的">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第五章Why are deep neural networks hard to train? 整理而成的读书笔记，根据个人口味做了删减) 在之前的笔记中，我们已经学习了神经网络最核心的 BP 算法，以及一些改进的方案（如：引入交叉熵函数）来提高网络训练的速度。但如果仔细思考会发现，前面例子中的网络都很「浅」，最多就一">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-8-26/gradient.png">
 
@@ -149,7 +149,7 @@
 
 
 
-  <title>读书笔记：neuralnetworkanddeeplearning chapter5 | Jermmy's Lazy Blog</title>
+  <title>读书笔记：梯度是怎么消失的 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -318,7 +318,7 @@
             
             
               
-                读书笔记：neuralnetworkanddeeplearning chapter5
+                读书笔记：梯度是怎么消失的
               
             
           </h1>
@@ -373,7 +373,7 @@
 
           
           
-             <span id="/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworkanddeeplearning chapter5">
+             <span id="/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" class="leancloud_visitors" data-flag-title="读书笔记：梯度是怎么消失的">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -444,7 +444,7 @@
 <figure>
 <img src="/images/2017-8-26/tikz37.png" alt="tikz37"><figcaption>tikz37</figcaption>
 </figure>
-<p><span class="math inline">\(b\)</span> 和 <span class="math inline">\(w\)</span> 表示参数，<span class="math inline">\(C\)</span> 是代价函数，激活函数采用 sigmoid，每层网络的输出为 <span class="math inline">\(a_j=\sigma(z_j)\)</span>，<span class="math inline">\(z_j=w_ja_{j-1}+b_j\)</span>。</p>
+<p><span class="math inline">\(b\)</span> 和 <span class="math inline">\(w\)</span> 表示参数，<span class="math inline">\(C\)</span> 是损失函数，激活函数采用 sigmoid，每层网络的输出为 <span class="math inline">\(a_j=\sigma(z_j)\)</span>，<span class="math inline">\(z_j=w_ja_{j-1}+b_j\)</span>。</p>
 <p>下面，我们要求出 <span class="math inline">\(\partial C/\partial b_1\)</span>，看看是什么原因导致这个值很小。</p>
 <p>根据 BP 的公式可以推出：</p>
 <figure>
@@ -524,7 +524,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" title="读书笔记：neuralnetworkanddeeplearning chapter5">https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/</a>
+      <a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/" title="读书笔记：梯度是怎么消失的">https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>

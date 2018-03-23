@@ -97,7 +97,7 @@
 <meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
 <meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
+<meta property="og:title" content="读书笔记：如何初始化神经网络">
 <meta property="og:url" content="https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
@@ -107,9 +107,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/narrow-gaussian.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/weight_initialization_30.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-8-13/multiple_eta.png">
-<meta property="og:updated_time" content="2017-12-13T03:01:09.000Z">
+<meta property="og:updated_time" content="2018-03-23T02:27:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
+<meta name="twitter:title" content="读书笔记：如何初始化神经网络">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章，我们介绍了神经网络容易出现的过拟合问题，并学习了最常用的正则化方法，以及其他一些技巧，今天，我们将介绍本章节最后两个问题：权重初始化和超参数的选择">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-8-13/tikz32.png">
 
@@ -145,7 +145,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter3（3） | Jermmy's Lazy Blog</title>
+  <title>读书笔记：如何初始化神经网络 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -314,7 +314,7 @@
             
             
               
-                读书笔记：neuralnetworksanddeeplearning chapter3（3）
+                读书笔记：如何初始化神经网络
               
             
           </h1>
@@ -369,7 +369,7 @@
 
           
           
-             <span id="/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter3（3）">
+             <span id="/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/" class="leancloud_visitors" data-flag-title="读书笔记：如何初始化神经网络">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -429,7 +429,7 @@
 <p>之所以称之为宽泛，是因为这种策略不告诉如何调整超参数，而是让你尽可能快地得到反馈。只有尽快把握网络的学习情况，我们才有耐心和信息继续 debug（总不能每调整一次要等个十来分钟才出结果吧）。我自己在 debug 网络的时候也经常采用这些做法，比如，只用很小的数据集训练，或者将网络的结构变小等等。这些做法只有一个目的：让网络尽可能快地反馈结果，不管结果好坏，这是我们能继续调试下去的前提。在反复调试后，我们往往能得到一些「灵感」，之后再慢慢将问题变的更复杂一些，然后继续调试。</p>
 <p>好了，下面我们针对学习率 <span class="math inline">\(\eta\)</span>、L2 正则化参数 <span class="math inline">\(\lambda\)</span> 和批训练的数据集大小学习一些比较有效的准则。</p>
 <h4 id="学习率">学习率</h4>
-<p>关于学习率的选择，Andrew Ng 在他的 <a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Machine Learning</a> 课程中有过详细的讲解。这里面最重要的是要避免学习率过大给梯度下降带来「抖动」的问题，如下图中的橙线所示。在设置学习率时，我们可以先设置一个小一点的数值，如 0.1，如果这个数值太大，则调低一个数量级到 0.01，甚至 0.001…如果发现学习过程中代价函数没有出现「抖动」的情况，再适当提高学习率，如由原来的 0.1 提高到 0.2、0.5…但最终不能超过造成「抖动」的阈值。</p>
+<p>关于学习率的选择，Andrew Ng 在他的 <a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Machine Learning</a> 课程中有过详细的讲解。这里面最重要的是要避免学习率过大给梯度下降带来「抖动」的问题，如下图中的橙线所示。在设置学习率时，我们可以先设置一个小一点的数值，如 0.1，如果这个数值太大，则调低一个数量级到 0.01，甚至 0.001…如果发现学习过程中损失函数没有出现「抖动」的情况，再适当提高学习率，如由原来的 0.1 提高到 0.2、0.5…但最终不能超过造成「抖动」的阈值。</p>
 <center>
 <p><img src="/images/2017-8-13/multiple_eta.png" width="520p"></p>
 </center>
@@ -473,7 +473,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/" title="读书笔记：neuralnetworksanddeeplearning chapter3（3）">https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/</a>
+      <a href="https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/" title="读书笔记：如何初始化神经网络">https://jermmy.github.io/2017/08/13/2017-8-13-reading-notes-neuralnetworkanddeeplearning-3-3/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>

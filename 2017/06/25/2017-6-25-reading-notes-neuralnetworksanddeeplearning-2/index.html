@@ -97,7 +97,7 @@
 <meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
 <meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
+<meta property="og:title" content="读书笔记：神经网络是怎么训练的">
 <meta property="og:url" content="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
@@ -107,9 +107,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz18.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz20.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-6-25/tikz21.png">
-<meta property="og:updated_time" content="2017-12-16T06:16:16.000Z">
+<meta property="og:updated_time" content="2018-03-23T02:24:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter2">
+<meta name="twitter:title" content="读书笔记：神经网络是怎么训练的">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第二章How the backpropagation algorithm works整理而成的读书笔记，根据个人口味做了删减) 在上一章的学习中，我们介绍了神经网络可以用梯度下降法来训练，但梯度的计算方法却没有给出。在本章中，我们将学习一种计算神经网络梯度的方法——后向传播算法（backpropagation）。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-6-25/tikz16.png">
 
@@ -145,7 +145,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter2 | Jermmy's Lazy Blog</title>
+  <title>读书笔记：神经网络是怎么训练的 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -314,7 +314,7 @@
             
             
               
-                读书笔记：neuralnetworksanddeeplearning chapter2
+                读书笔记：神经网络是怎么训练的
               
             
           </h1>
@@ -369,7 +369,7 @@
 
           
           
-             <span id="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter2">
+             <span id="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" class="leancloud_visitors" data-flag-title="读书笔记：神经网络是怎么训练的">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -419,11 +419,11 @@ a_{j}^l = \sigma(\sum_{k}{w_{jk}^{l}a_{k}^{l-1}+b_{j}^{l}})      \tag{23}
 a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 \]</span> 注意，这里我们对 <span class="math inline">\(\sigma()\)</span> 函数做了点延伸，当输入参数是向量时，<span class="math inline">\(\sigma()\)</span> 会逐个作用到向量的每个元素上（elementwise）。</p>
 <p>在 (25) 式中，有时为了书写的方便，我们会用 <span class="math inline">\(z^l\)</span> 来表示 <span class="math inline">\(W^la^{l-1}+b^l\)</span>。下文中，<span class="math inline">\(z^l\)</span> 将会频繁出现。</p>
-<h3 id="代价函数的两个前提假设">代价函数的两个前提假设</h3>
+<h3 id="损失函数的两个前提假设">损失函数的两个前提假设</h3>
 <p>BP 算法的目标是要计算偏导数 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial w\)</span> 和 <span class="math inline">\(\partial C\)</span>/<span class="math inline">\(\partial b\)</span>，要让 BP 算法起作用，我们需要两个前提假设：</p>
 <ol type="1">
-<li>代价函数可以表示成 <span class="math inline">\(C=\frac{1}{n}\sum_{x}{C_x}\)</span>，其中 <span class="math inline">\(C_x\)</span> 是每个训练样本 x 的代价函数。</li>
-<li>代价函数用神经网络的输出作为函数的输入：</li>
+<li>损失函数可以表示成 <span class="math inline">\(C=\frac{1}{n}\sum_{x}{C_x}\)</span>，其中 <span class="math inline">\(C_x\)</span> 是每个训练样本 x 的损失函数。</li>
+<li>损失函数用神经网络的输出作为函数的输入：</li>
 </ol>
 <figure>
 <img src="/images/2017-6-25/tikz18.png" alt="tikz16"><figcaption>tikz16</figcaption>
@@ -432,8 +432,8 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <p>BP 算法本质上是为了计算出 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial w_{jk}^{l}\)</span> 和 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial b_{j}^{l}\)</span>。为了计算这两个导数，我们引入一个中间变量 <span class="math inline">\(\delta_{j}^{l}\)</span>，这个中间变量表示第 l 层第 j 个神经元的<strong>误差</strong>。BP 算法会计算出这个<strong>误差</strong>，然后用它来计算<span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial w_{jk}^{l}\)</span> 和 <span class="math inline">\(\partial C\)</span> / <span class="math inline">\(\partial b_{j}^{l}\)</span>。</p>
 <p><span class="math inline">\(\delta_{j}^{l}\)</span> 被定义为： <span class="math display">\[
 \delta _{j}^{l}=\frac{\partial C}{\partial z_{j}^{l}}  \tag{29}
-\]</span> 这个定义来源于这样一个事实：代价函数 <span class="math inline">\(C\)</span> 可以看作是关于 <span class="math inline">\(z\)</span> 的函数，而 <span class="math inline">\(z\)</span> 是 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的线性组合（考虑到代价函数的两个前提假设，<span class="math inline">\(C\)</span> 是关于网络输出 <span class="math inline">\(a\)</span> 的函数，而 <span class="math inline">\(a\)</span> 又是 <span class="math inline">\(z\)</span> 的函数，所以 <span class="math inline">\(C\)</span> 也可以看作是 <span class="math inline">\(z\)</span> 的函数）。其实，我们也可以将它定义为：<span class="math inline">\(\delta_{j}^{l}=\frac{\partial C}{\partial a_{j}^{l}}\)</span>（<span class="math inline">\(a\)</span> 是神经网络某一层的输出），但这样会导致之后的计算十分复杂，所以，我们还是保留原先的定义。</p>
-<p>BP 算法基于 4 个基本公式，这些公式会告诉我们如何计算 <span class="math inline">\(\delta^{l}\)</span> 和代价函数的梯度。</p>
+\]</span> 这个定义来源于这样一个事实：损失函数 <span class="math inline">\(C\)</span> 可以看作是关于 <span class="math inline">\(z\)</span> 的函数，而 <span class="math inline">\(z\)</span> 是 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的线性组合（考虑到损失函数的两个前提假设，<span class="math inline">\(C\)</span> 是关于网络输出 <span class="math inline">\(a\)</span> 的函数，而 <span class="math inline">\(a\)</span> 又是 <span class="math inline">\(z\)</span> 的函数，所以 <span class="math inline">\(C\)</span> 也可以看作是 <span class="math inline">\(z\)</span> 的函数）。其实，我们也可以将它定义为：<span class="math inline">\(\delta_{j}^{l}=\frac{\partial C}{\partial a_{j}^{l}}\)</span>（<span class="math inline">\(a\)</span> 是神经网络某一层的输出），但这样会导致之后的计算十分复杂，所以，我们还是保留原先的定义。</p>
+<p>BP 算法基于 4 个基本公式，这些公式会告诉我们如何计算 <span class="math inline">\(\delta^{l}\)</span> 和损失函数的梯度。</p>
 <h4 id="输出层误差-deltal的计算公式">输出层误差 <span class="math inline">\(\delta^{L}\)</span>的计算公式</h4>
 <p><span class="math display">\[
 \delta_{j}^{L}=\frac{\partial C}{\partial z_{j}^{L}}=\frac{\partial C}{\partial a_{j}^{L}}\sigma&#39;(z_{j}^{L})  \tag{BP1}
@@ -474,7 +474,7 @@ a^l=\sigma(W^la^{l-1}+b^l)                   \tag{25}
 <img src="/images/2017-6-25/tikz21.png" alt="tikz21"><figcaption>tikz21</figcaption>
 </figure>
 <h4 id="个人对于误差以及-bp-的理解">个人对于误差以及 BP 的理解</h4>
-<p>根据误差 <span class="math inline">\(\delta\)</span> 的定义，不难发现，它其实就是代价函数关于参数 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的间接导数，这一点跟第一章中对梯度的定义是一致的。当 <span class="math inline">\(\delta\)</span> 越大时，证明网络还远没有收敛，即网络的「误差」还很大，因此需要学习更多，反之，则证明网络的「误差」比较小，学习可以停止了。</p>
+<p>根据误差 <span class="math inline">\(\delta\)</span> 的定义，不难发现，它其实就是损失函数关于参数 <span class="math inline">\(W\)</span> 和 <span class="math inline">\(b\)</span> 的间接导数，这一点跟第一章中对梯度的定义是一致的。当 <span class="math inline">\(\delta\)</span> 越大时，证明网络还远没有收敛，即网络的「误差」还很大，因此需要学习更多，反之，则证明网络的「误差」比较小，学习可以停止了。</p>
 <p>网络中每一层的误差都需要借助前一层的误差进行计算，这个过程其实是一个导数的叠加过程，可以感性地认为，整个神经网络其实是由一个个函数复合在一起形成的，因此，导数的计算其实就是链式法则的不断应用，前面层神经元的导数需要后面层神经元导数不断叠加，这个过程就构成了<strong>后向传播</strong>算法。</p>
 <h3 id="公式证明">公式证明</h3>
 <h4 id="bp1">BP1</h4>
@@ -578,7 +578,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" title="读书笔记：neuralnetworksanddeeplearning chapter2">https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/</a>
+      <a href="https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" title="读书笔记：神经网络是怎么训练的">https://jermmy.github.io/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -607,8 +607,8 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/" rel="next" title="读书笔记：neuralnetworksanddeeplearning chapter1">
-                <i class="fa fa-chevron-left"></i> 读书笔记：neuralnetworksanddeeplearning chapter1
+              <a href="/2017/05/13/2017-5-13-reading-notes-neuralnetworksanddeeplearning-1/" rel="next" title="读书笔记：敲开神经网络的大门">
+                <i class="fa fa-chevron-left"></i> 读书笔记：敲开神经网络的大门
               </a>
             
           </div>
@@ -617,8 +617,8 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" rel="prev" title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
-                读书笔记：neuralnetworksanddeeplearning chapter3（1） <i class="fa fa-chevron-right"></i>
+              <a href="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" rel="prev" title="读书笔记：改进损失函数">
+                读书笔记：改进损失函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -779,7 +779,7 @@ z_j^l=\sum_k{W_{jk}^l a_k^{l-1}}+b_j^l
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#热身一种基于矩阵的快速计算神经网络输出的方法"><span class="nav-number">1.</span> <span class="nav-text">热身：一种基于矩阵的快速计算神经网络输出的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代价函数的两个前提假设"><span class="nav-number">2.</span> <span class="nav-text">代价函数的两个前提假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bp-算法背后的四个基本公式"><span class="nav-number">3.</span> <span class="nav-text">BP 算法背后的四个基本公式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#输出层误差-deltal的计算公式"><span class="nav-number">3.1.</span> <span class="nav-text">输出层误差 \(\delta^{L}\)的计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deltal与deltal1的计算公式"><span class="nav-number">3.2.</span> <span class="nav-text">\(\delta^L\)与\(\delta^{L+1}\)的计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bias-的导数计算公式"><span class="nav-number">3.3.</span> <span class="nav-text">bias 的导数计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权重-w-的导数计算公式"><span class="nav-number">3.4.</span> <span class="nav-text">权重 W 的导数计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些启发insights"><span class="nav-number">3.5.</span> <span class="nav-text">一些启发（insights）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#个人对于误差以及-bp-的理解"><span class="nav-number">3.6.</span> <span class="nav-text">个人对于误差以及 BP 的理解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式证明"><span class="nav-number">4.</span> <span class="nav-text">公式证明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bp1"><span class="nav-number">4.1.</span> <span class="nav-text">BP1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp2"><span class="nav-number">4.2.</span> <span class="nav-text">BP2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp3"><span class="nav-number">4.3.</span> <span class="nav-text">BP3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp4"><span class="nav-number">4.4.</span> <span class="nav-text">BP4</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向传播算法bp"><span class="nav-number">5.</span> <span class="nav-text">后向传播算法(BP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#热身一种基于矩阵的快速计算神经网络输出的方法"><span class="nav-number">1.</span> <span class="nav-text">热身：一种基于矩阵的快速计算神经网络输出的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#损失函数的两个前提假设"><span class="nav-number">2.</span> <span class="nav-text">损失函数的两个前提假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bp-算法背后的四个基本公式"><span class="nav-number">3.</span> <span class="nav-text">BP 算法背后的四个基本公式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#输出层误差-deltal的计算公式"><span class="nav-number">3.1.</span> <span class="nav-text">输出层误差 \(\delta^{L}\)的计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deltal与deltal1的计算公式"><span class="nav-number">3.2.</span> <span class="nav-text">\(\delta^L\)与\(\delta^{L+1}\)的计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bias-的导数计算公式"><span class="nav-number">3.3.</span> <span class="nav-text">bias 的导数计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权重-w-的导数计算公式"><span class="nav-number">3.4.</span> <span class="nav-text">权重 W 的导数计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些启发insights"><span class="nav-number">3.5.</span> <span class="nav-text">一些启发（insights）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#个人对于误差以及-bp-的理解"><span class="nav-number">3.6.</span> <span class="nav-text">个人对于误差以及 BP 的理解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式证明"><span class="nav-number">4.</span> <span class="nav-text">公式证明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bp1"><span class="nav-number">4.1.</span> <span class="nav-text">BP1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp2"><span class="nav-number">4.2.</span> <span class="nav-text">BP2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp3"><span class="nav-number">4.3.</span> <span class="nav-text">BP3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bp4"><span class="nav-number">4.4.</span> <span class="nav-text">BP4</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向传播算法bp"><span class="nav-number">5.</span> <span class="nav-text">后向传播算法(BP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

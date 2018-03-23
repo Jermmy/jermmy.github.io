@@ -97,7 +97,7 @@
 <meta name="description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
 <meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+<meta property="og:title" content="读书笔记：改进损失函数">
 <meta property="og:url" content="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
@@ -110,9 +110,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation3.gif">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/saturation4.gif">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-7-20/softmax.gif">
-<meta property="og:updated_time" content="2018-01-06T08:28:49.000Z">
+<meta property="og:updated_time" content="2018-03-23T02:23:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+<meta name="twitter:title" content="读书笔记：改进损失函数">
 <meta name="twitter:description" content="(本文是根据 neuralnetworksanddeeplearning 这本书的第三章Improving the way neural networks learn整理而成的读书笔记，根据个人口味做了删减) 上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。 这些方法">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2017-7-20/tikz28.png">
 
@@ -148,7 +148,7 @@
 
 
 
-  <title>读书笔记：neuralnetworksanddeeplearning chapter3（1） | Jermmy's Lazy Blog</title>
+  <title>读书笔记：改进损失函数 | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -317,7 +317,7 @@
             
             
               
-                读书笔记：neuralnetworksanddeeplearning chapter3（1）
+                读书笔记：改进损失函数
               
             
           </h1>
@@ -372,7 +372,7 @@
 
           
           
-             <span id="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" class="leancloud_visitors" data-flag-title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">
+             <span id="/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" class="leancloud_visitors" data-flag-title="读书笔记：改进损失函数">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -404,7 +404,7 @@
 <p>上一章中，我们领略了神经网络中最重要的算法：后向传播算法(BP)。它使得神经网络的训练成为可能，是其他高级算法的基础。今天，我们要继续学习其他方法，这些方法使得网络的训练结果更好。</p>
 <p>这些方法包括：</p>
 <ul>
-<li>更好的代价函数：<strong>交叉熵(cross-entropy)函数</strong></li>
+<li>更好的损失函数：<strong>交叉熵(cross-entropy)函数</strong></li>
 <li>四种正规化方法：<strong>L1</strong>、<strong>L2</strong>、<strong>dropout</strong>以及数据集的人工<strong>增广</strong></li>
 <li>一种更好的初始化权值的方法</li>
 <li>一系列选择 hyper-parameters 的启发策略</li>
@@ -440,8 +440,8 @@ C=\frac{(y-a)^2}{2}    \tag{54}
 <img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid"><figcaption>sigmoid</figcaption>
 </figure>
 <p>从函数图像我们可以发现，当函数值接近于 1 或 0 时，函数导数趋于 0，从而导致 (55) 和 (56) 两个式子的值趋于 0。这也是为什么神经元一开始的学习速率会那么慢，而中间部分学习速度会突然提升。</p>
-<h4 id="引入交叉熵代价函数">引入交叉熵代价函数</h4>
-<p>要解决学习速度下降的问题，我们需要从两个偏导数上面做文章。要么换一个代价函数，要么更换 <span class="math inline">\(\sigma\)</span> 函数。这里，我们采用第一种做法，将代价函数更换为交叉熵函数(cross-entropy)。</p>
+<h4 id="引入交叉熵损失函数">引入交叉熵损失函数</h4>
+<p>要解决学习速度下降的问题，我们需要从两个偏导数上面做文章。要么换一个损失函数，要么更换 <span class="math inline">\(\sigma\)</span> 函数。这里，我们采用第一种做法，将损失函数更换为交叉熵函数(cross-entropy)。</p>
 <p>首先用一个例子来介绍交叉熵函数。</p>
 <p>假设我们有如下神经元：</p>
 <figure>
@@ -449,8 +449,8 @@ C=\frac{(y-a)^2}{2}    \tag{54}
 </figure>
 <p>则交叉熵函数被定义为（这里假定 y 是个概率值，在 0～1 之间，这样才能跟 a 相搭）： <span class="math display">\[
 C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
-\]</span> 当然，直觉上看不出这个函数能解决学习速率下降的问题，甚至看不出这可以成为一个代价函数。</p>
-<p>我们先解释为什么这个函数可以作为代价函数。首先，这个函数是非负的，即 <span class="math inline">\(C&gt;0\)</span>（注意 <span class="math inline">\(a\)</span> 的值在 0～1 之间）。其次，当神经元实际输出跟我们想要的结果接近时，交叉熵函数值会趋近 0。因此，交叉熵满足代价函数的基本条件。</p>
+\]</span> 当然，直觉上看不出这个函数能解决学习速率下降的问题，甚至看不出这可以成为一个损失函数。</p>
+<p>我们先解释为什么这个函数可以作为损失函数。首先，这个函数是非负的，即 <span class="math inline">\(C&gt;0\)</span>（注意 <span class="math inline">\(a\)</span> 的值在 0～1 之间）。其次，当神经元实际输出跟我们想要的结果接近时，交叉熵函数值会趋近 0。因此，交叉熵满足损失函数的基本条件。</p>
 <p>另外，交叉熵解决了学习速率下降的问题。我们将 <span class="math inline">\(a=\sigma(z)\)</span> 代入 (57) 式，并运用链式法则可以得到（这里的 <span class="math inline">\(w_j\)</span> 应该特指最后一层的参数，即 <span class="math inline">\(w_j^L\)</span>）： <span class="math display">\[
 \begin{eqnarray}
   \frac{\partial C}{\partial w_j} &amp; = &amp; -\frac{1}{n} \sum_x \left(
@@ -476,13 +476,13 @@ C=-\frac{1}{n}\sum_x{[y \ln a + (1-y) \ln (1-a)]}   \tag{57}
 <img src="/images/2017-7-20/saturation4.gif" alt="saturation4"><figcaption>saturation4</figcaption>
 </figure>
 <p>这一次，正如我们期望的那样，神经元学习得非常快。</p>
-<p>这两次实验中，采用的学习率是 0.005。事实上，对于不同的代价函数，学习率要作出相应的调整。</p>
+<p>这两次实验中，采用的学习率是 0.005。事实上，对于不同的损失函数，学习率要作出相应的调整。</p>
 <p>上面对交叉熵函数的讨论都只针对一个神经元，其实很容易将它延伸到多层神经元的网络结构。假设 <span class="math inline">\(y=y_1, y_2, \dots\)</span> 是想要的网络输出，而 <span class="math inline">\(a_1^L, a_2^L, \dots\)</span> 是网络的实际输出，则 cross-entropy 函数可以定义为： <span class="math display">\[
 C=-\frac{1}{n}\sum_x \sum_y {[y_j \ln a_j^L + (1-y_j) \ln(1-a_j^L)]}  \tag{63}
 \]</span> 好了，介绍了这么多，那我们什么时候用平方差函数，什么时候用交叉熵呢？作者给出的意见是，交叉熵几乎总是更好的选择，而原因也跟上文提到的一样，平方差函数容易在开始的时候遇到训练速率较慢的问题，而交叉熵则没有这种困扰。当然，这个问题出现的前提是平方差函数中用了 sigmoid 函数。</p>
 <h4 id="交叉熵到底是什么它是怎么来的">交叉熵到底是什么，它是怎么来的？</h4>
 <p>这一节中，我们想知道，第一个吃螃蟹的人是怎么想到交叉熵函数的。</p>
-<p>假设我们发现了学习速率下降的根源在于 <span class="math inline">\(\sigma&#39;(z)\)</span> 函数，我们要如何解决这个问题呢？当然，方法有很多，这里我们考虑这样的思路：是否能找一个新的代价函数，将 <span class="math inline">\(\sigma&#39;(z)\)</span> 这个项消掉？假如我们希望最终的偏导数满足下面的形式： <span class="math display">\[
+<p>假设我们发现了学习速率下降的根源在于 <span class="math inline">\(\sigma&#39;(z)\)</span> 函数，我们要如何解决这个问题呢？当然，方法有很多，这里我们考虑这样的思路：是否能找一个新的损失函数，将 <span class="math inline">\(\sigma&#39;(z)\)</span> 这个项消掉？假如我们希望最终的偏导数满足下面的形式： <span class="math display">\[
 \frac{\partial C}{\partial w_j}=x_j (a-y) \tag{71}
 \]</span></p>
 <p><span class="math display">\[
@@ -500,7 +500,7 @@ C=-\frac{1}{n}\sum_x{[y\ln a+(1-y)\ln(1-a)]}+constant \tag{77}
 \]</span> 至此，我们已经推出了交叉熵函数的形式。</p>
 <p>当然啦，交叉熵真正的来源是信息论，更具体的介绍超出了本教程的范畴，所以就不再深入了。</p>
 <h3 id="softmax">Softmax</h3>
-<p>前一节中，我们重点介绍了交叉熵如何解决训练速度下降的问题，这是从代价函数的角度思考问题。其实，我们还有另一种方法，那就是更换 <span class="math inline">\(\sigma()\)</span> 函数。这里要简单介绍一个新的 <span class="math inline">\(\sigma()\)</span> ：Softmax。</p>
+<p>前一节中，我们重点介绍了交叉熵如何解决训练速度下降的问题，这是从损失函数的角度思考问题。其实，我们还有另一种方法，那就是更换 <span class="math inline">\(\sigma()\)</span> 函数。这里要简单介绍一个新的 <span class="math inline">\(\sigma()\)</span> ：Softmax。</p>
 <p>Softmax 的功能和 sigmoid 类似，只不过前者的函数形式是这样的： <span class="math display">\[
 a_j^L=\frac{e^{z_j^L}}{\sum_k{e^{z_k^L}}} \tag{78}
 \]</span> ⚠️分母是所有输出神经元的总和。这意味着，经过 Softmax 函数后，所有神经元的输出会呈现出概率分布的样式。</p>
@@ -510,11 +510,11 @@ a_j^L=\frac{e^{z_j^L}}{\sum_k{e^{z_k^L}}} \tag{78}
 <p>当增大其中一个神经元输出时，其他神经元的输出值会变小，而且变小的总和等于前者增加的值。反之亦然。这是因为所有神经元的输出值总和始终为 1。</p>
 <p>另外，Softmax 的输出始终为正值。</p>
 <h4 id="softmax-解决学习速率下降的问题">Softmax 解决学习速率下降的问题</h4>
-<p>这一次，我们定义一个 <strong>log-likelihood</strong> 代价函数，通过它来了解 Softmax 如何缓解 <strong>learning slowdown</strong> 的问题。</p>
+<p>这一次，我们定义一个 <strong>log-likelihood</strong> 损失函数，通过它来了解 Softmax 如何缓解 <strong>learning slowdown</strong> 的问题。</p>
 <p><strong>log-likelihood</strong> 的函数形式为： <span class="math display">\[
 C \equiv -\ln a_y^L \tag{80}
 \]</span> 先解释一下 <span class="math inline">\(a_y^L\)</span>，比方说，在 MNIST 数据集中，我们要判断一张图片属于 10 类中的哪一类，那么，输出结果应该是一个 10 维的向量 <span class="math inline">\(a^L\)</span>，而真实结果则是数字 <span class="math inline">\(y\)</span>，比如 7。那么，<span class="math inline">\(a_y^L\)</span> 则表示 <span class="math inline">\(a_7^L\)</span> 这个项对应的概率值有多高。如果概率值（靠近 1）越高，证明猜测结果越正确，那么 <span class="math inline">\(C\)</span> 的值就越小，反之越大。</p>
-<p>有了代价函数后，我们照样求出偏导数： <span class="math display">\[
+<p>有了损失函数后，我们照样求出偏导数： <span class="math display">\[
 \frac{\partial C}{\partial b_j^L}=a_j^L-y_j \tag{81}
 \]</span></p>
 <p><span class="math display">\[
@@ -555,7 +555,7 @@ C \equiv -\ln a_y^L \tag{80}
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" title="读书笔记：neuralnetworksanddeeplearning chapter3（1）">https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/</a>
+      <a href="https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/" title="读书笔记：改进损失函数">https://jermmy.github.io/2017/07/20/2017-7-20-reading-notes-neuralnetworksanddeeplearning-3-1/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -584,8 +584,8 @@ C \equiv -\ln a_y^L \tag{80}
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" rel="next" title="读书笔记：neuralnetworksanddeeplearning chapter2">
-                <i class="fa fa-chevron-left"></i> 读书笔记：neuralnetworksanddeeplearning chapter2
+              <a href="/2017/06/25/2017-6-25-reading-notes-neuralnetworksanddeeplearning-2/" rel="next" title="读书笔记：神经网络是怎么训练的">
+                <i class="fa fa-chevron-left"></i> 读书笔记：神经网络是怎么训练的
               </a>
             
           </div>
@@ -594,8 +594,8 @@ C \equiv -\ln a_y^L \tag{80}
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" rel="prev" title="读书笔记：neuralnetworksanddeeplearning chapter3（2）">
-                读书笔记：neuralnetworksanddeeplearning chapter3（2） <i class="fa fa-chevron-right"></i>
+              <a href="/2017/07/22/2017-7-22-reading-notes-neuralnetworkanddeeplearning-3-2/" rel="prev" title="读书笔记：对抗过拟合">
+                读书笔记：对抗过拟合 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -756,7 +756,7 @@ C \equiv -\ln a_y^L \tag{80}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉熵函数cross-entropy"><span class="nav-number">1.</span> <span class="nav-text">交叉熵函数(cross-entropy)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入交叉熵代价函数"><span class="nav-number">1.1.</span> <span class="nav-text">引入交叉熵代价函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵到底是什么它是怎么来的"><span class="nav-number">1.2.</span> <span class="nav-text">交叉熵到底是什么，它是怎么来的？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">2.</span> <span class="nav-text">Softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax-解决学习速率下降的问题"><span class="nav-number">2.1.</span> <span class="nav-text">Softmax 解决学习速率下降的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉熵函数cross-entropy"><span class="nav-number">1.</span> <span class="nav-text">交叉熵函数(cross-entropy)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入交叉熵损失函数"><span class="nav-number">1.1.</span> <span class="nav-text">引入交叉熵损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵到底是什么它是怎么来的"><span class="nav-number">1.2.</span> <span class="nav-text">交叉熵到底是什么，它是怎么来的？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">2.</span> <span class="nav-text">Softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax-解决学习速率下降的问题"><span class="nav-number">2.1.</span> <span class="nav-text">Softmax 解决学习速率下降的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
