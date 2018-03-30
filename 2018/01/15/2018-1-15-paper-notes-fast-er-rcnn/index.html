@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/sliding%20window.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/RPN.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/rcnn13.png">
-<meta property="og:updated_time" content="2018-02-24T12:59:48.000Z">
+<meta property="og:updated_time" content="2018-03-30T02:52:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Fast(er) RCNN">
 <meta name="twitter:description" content="在 RCNN 初步试水取得成功后，研究人员又迅速跟进，针对 RCNN 中的几点不足提出改进，接连推出了 fast-rcnn 和 faster-rcnn。关于这两篇论文，网上相关的文章实在是多如牛毛，因此，本篇博文不打算深入讲解，只是不落俗套地介绍一下它们改进的痛点，基本流程，以及我自己对一些小问题的理解。">
@@ -446,7 +446,7 @@ L(p,u,t^u,v)=L_{cls}(p,u)+\lambda[u \ge 1]L_{loc}(t^u,v)
 <h3 id="region-proposal-network">Region Proposal Network</h3>
 <p>Faster RCNN 提出了一种 Region Proposal Network（RPN），看名字就知道，这个网络是用来提取 region 的。在传统的物体检测算法中，我们一般是用滑动窗口来扫描原图，然后针对每个窗口提取特征。RPN 的思路与之类似，不过，为了共享卷积层的运算，它是在卷积网络的 feature map 上，以每个特征点为中心，用一个 <span class="math inline">\(n * n\)</span> 的矩形窗口进行扫描。论文中，n 被设为 3。那我们该如何判断窗口内是否有物体呢？由于卷积网络得到的 feature map 在尺寸上和原图存在一定的比例关系，所以，我们可以把滑动窗口按比例换算回原图，然后对比原图的 ground truth，根据某种事先定好的规则，来判断这个窗口是否包含物体（比如，跟 ground truth 的矩形的 IoU 大于某个阈值就认为包含物体）。在 <span class="math inline">\(n * n\)</span> 的窗口之上，论文又用一个 <span class="math inline">\(n * n\)</span> 的卷积层，对窗口范围内的 feature map 进行卷积，然后用全联接网络输出二分类的结果（前景还是背景）以及对矩形窗口的粗调整（类似 Fast RCNN 中的 bounding box regression，不过这一步的调整相对粗糙一些）。</p>
 <p>上面就是 RPN 的基本思想了。总的来说，可以认为 RPN 就是在滑动窗口上，接着的一个小网络，这个网络会判断窗口内是否有物体，以及会对原图的窗口进行粗调整（原图的窗口是 feature map 上的窗口按比例换算得到的）。</p>
-<p>不过，直接根据滑动窗口换算回原图存在一个 bug。试想一下，如果 ground truth 只占这个窗口的一部分，而且这部分刚好是物体的重要部位，那我们应该认为这个窗口有物体还是没物体呢？</p>
+<p>不过，直接根据滑动窗口换算回原图存在一个 bug。试想一下，如果 ground truth 只占这个滑动窗口的一部分（也就是说二者的 IoU 不满足筛选条件），但这一部分又刚好是物体的重要部位，那我们应该认为这个窗口有物体还是没物体呢？</p>
 <center>
 <p><img src="/images/2018-1-15/sliding window.png" width="400px"></p>
 </center>
@@ -454,8 +454,8 @@ L(p,u,t^u,v)=L_{cls}(p,u)+\lambda[u \ge 1]L_{loc}(t^u,v)
 <p>训练的时候，作者随机挑选两张图片，并从每张图片上总共挑出 256 个 ground truth 作为 proposals（包括前景和后景），然后，再根据滑动窗口，挑选出大约 2400 个 Anchors。RPN 的 loss 函数包括两部分： <span class="math display">\[
 L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{reg}}\sum_i p_i^*L_{reg}(t_i, t_i^*)
 \]</span> 其中，</p>
-<p><span class="math inline">\(L_{cls}\)</span> 是一个二分类函数，_</p>
-<p><span class="math inline">\(L_{reg}\)</span> 则是bounding box regression 函数（具体的跟 Fast RCNN 一样），</p>
+<p><span class="math inline">\(L_{cls}\)</span> 是一个二分类函数，</p>
+<p><span class="math inline">\(L_{reg}\)</span> 则是 bounding box regression 函数（具体的跟 Fast RCNN 一样），</p>
 <p><span class="math inline">\(p_i\)</span> 表示网络找到的 Anchor 区域中存在物体的概率（1 代表前景，0 代表背景），而 <span class="math inline">\(t_i\)</span> 则是每个 Anchor 的矩形框位置和大小参数，</p>
 <p><span class="math inline">\(p_i^*\)</span> 和 <span class="math inline">\(t_i^*\)</span> 则是 ground truth 对应的前后景概率以及窗口位置，</p>
 <p>归一化项中，<span class="math inline">\(N_{cls}\)</span> 取 batch 的大小（256），<span class="math inline">\(N_{reg}\)</span> 取 Anchors 的数目（约为 2400）。</p>

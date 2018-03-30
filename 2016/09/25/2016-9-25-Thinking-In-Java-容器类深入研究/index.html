@@ -1,0 +1,1159 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="容器已经是现代编程语言必备的组件了。（注：由于一些常用容器的使用已经非常熟悉，因此本文着眼于我不熟悉的容器） 完整的容器分类法 下面这张图摘自《Thinking in Java》，是Java中容器类很好的概览图  full_container_taxonomy_thinking_in_java">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thinking in Java — 容器类深入研究">
+<meta property="og:url" content="https://jermmy.github.io/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="容器已经是现代编程语言必备的组件了。（注：由于一些常用容器的使用已经非常熟悉，因此本文着眼于我不熟悉的容器） 完整的容器分类法 下面这张图摘自《Thinking in Java》，是Java中容器类很好的概览图  full_container_taxonomy_thinking_in_java">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2016-9-25/full_container_taxonomy_thinking_in_java.png">
+<meta property="og:updated_time" content="2017-03-25T01:31:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Thinking in Java — 容器类深入研究">
+<meta name="twitter:description" content="容器已经是现代编程语言必备的组件了。（注：由于一些常用容器的使用已经非常熟悉，因此本文着眼于我不熟悉的容器） 完整的容器分类法 下面这张图摘自《Thinking in Java》，是Java中容器类很好的概览图  full_container_taxonomy_thinking_in_java">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2016-9-25/full_container_taxonomy_thinking_in_java.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/"/>
+
+
+
+
+
+  <title>Thinking in Java — 容器类深入研究 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Thinking in Java — 容器类深入研究
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-25T10:22:52+08:00">
+                2016-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/" class="leancloud_visitors" data-flag-title="Thinking in Java — 容器类深入研究">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>容器已经是现代编程语言必备的组件了。（注：由于一些常用容器的使用已经非常熟悉，因此本文着眼于我不熟悉的容器）</p>
+<h3 id="完整的容器分类法">完整的容器分类法</h3>
+<p>下面这张图摘自《Thinking in Java》，是Java中容器类很好的概览图</p>
+<figure>
+<img src="/images/2016-9-25/full_container_taxonomy_thinking_in_java.png" alt="full_container_taxonomy_thinking_in_java"><figcaption>full_container_taxonomy_thinking_in_java</figcaption>
+</figure>
+<a id="more"></a>
+<p>Java SE5中新添加的接口有：</p>
+<ul>
+<li><code>Queue</code>接口及其实现<code>PriorityQueue</code>和各种风格的<code>BlockingQueue</code>；</li>
+<li><code>ConcurrentMap</code>接口及其实现<code>ConcurrentHashMap</code>（用于多线程）；</li>
+<li><code>CopyOnWriteArrayList</code>和<code>CopyOnWriteArraySet</code>，它们也是用于多线程机制的；</li>
+<li><code>EnumSet</code>和<code>EnumMap</code>，为使用<code>enum</code>而设计的<code>Set</code>和<code>Map</code>的特殊实现；</li>
+<li>在<code>Collections</code>类中的多个便利方法。</li>
+</ul>
+<p>&lt;br&gt;</p>
+<h3 id="set和存储顺序">Set和存储顺序</h3>
+<h4 id="hashset-treeset-linkedhashset">HashSet, TreeSet, LinkedHashSet</h4>
+<p><code>Set</code>是一种集合类，它需要一种方式来维护存储顺序。不同的Set实现类具有不同的存储行为，通常我们使用内置数据类型（如：<code>String</code>）的时候不需要考虑存储顺序，因为这些数据类型已经被设计为可以在容器内部使用。但如果是使用我们自定义的数据类型，就有必要了解一些内部机制了。</p>
+<table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Set</td>
+<td>存入<code>Set</code>的每个元素都必须是唯一的，因为<code>Set</code>不保存重复元素。加入<code>Set</code>的元素必须定义<code>equals()</code>方法以确保对象的唯一性。<code>Set</code>和<code>Collection</code>有完全一样的接口。Set接口不保证维护元素的次序。</td>
+</tr>
+<tr class="even">
+<td>HashSet</td>
+<td>为快速查找而设计的<code>Set</code>。存入<code>HashSet</code>的元素必须定义<code>hashCode()</code></td>
+</tr>
+<tr class="odd">
+<td>TreeSet</td>
+<td>保持次序的<code>Set</code>，底层为树结构。使用它可以从<code>Set</code>中提取有序的序列。元素必须实现<code>Comparable</code>接口</td>
+</tr>
+<tr class="even">
+<td>LinkedHashSet</td>
+<td>具有<code>HashSet</code>的查询速度，且内部使用链表维护元素的顺序（插入的次序）。于是在使用迭代器遍历<code>Set</code>时，结果会按元素插入的次序显示。元素也必须定义<code>hashCode()</code>方法</td>
+</tr>
+</tbody>
+</table>
+<p>（作者推荐，如果没有其他限制，默认使用<code>HashSet</code>）</p>
+<p>必须为散列存储和树形存储创建一个 <code>equals()</code>方法，但是<code>hashCode()</code>只有在这个类将会被置于<code>HashSet</code>或者<code>LinkedHashSet</code>时才是必须的。好的编程习惯是：在覆盖<code>equals()</code>方法时，同时覆盖<code>hashCode()</code>。</p>
+<p>看一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SetType</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SetType</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123; i = n; &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> o <span class="keyword">instanceof</span> SetType &amp;&amp; (i == ((SetType)o).i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> Integer.toString(i); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HashType</span> <span class="keyword">extends</span> <span class="title">SetType</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">HashType</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123; <span class="keyword">super</span>(n); &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> i; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeType</span> <span class="keyword">extends</span> <span class="title">SetType</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">TreeType</span>&gt; </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">TreeType</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123; <span class="keyword">super</span>(n); &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(TreeType arg)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (arg.i &lt; i ? -<span class="number">1</span> : (arg.i == i ? <span class="number">0</span> : <span class="number">1</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypesForSets</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> &lt;T&gt; <span class="function">Set&lt;T&gt; <span class="title">fill</span><span class="params">(Set&lt;T&gt; set, Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">				set.add(type.getConstructor(<span class="keyword">int</span>.class).newInstance(i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> set;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(Set&lt;T&gt; set, Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">		fill(set, type);</span><br><span class="line">		fill(set, type);   <span class="comment">// Try to add duplicates</span></span><br><span class="line">		fill(set, type);</span><br><span class="line">		System.out.println(set);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		test(<span class="keyword">new</span> HashSet&lt;HashType&gt;(), HashType.class);</span><br><span class="line">		test(<span class="keyword">new</span> LinkedHashSet&lt;HashType&gt;(), HashType.class);</span><br><span class="line">		test(<span class="keyword">new</span> TreeSet&lt;TreeType&gt;(), TreeType.class);</span><br><span class="line">		<span class="comment">// Things that don't work:</span></span><br><span class="line">		test(<span class="keyword">new</span> HashSet&lt;SetType&gt;(), SetType.class);</span><br><span class="line">		test(<span class="keyword">new</span> HashSet&lt;TreeType&gt;(), TreeType.class);</span><br><span class="line">		test(<span class="keyword">new</span> LinkedHashSet&lt;SetType&gt;(), SetType.class);</span><br><span class="line">		test(<span class="keyword">new</span> LinkedHashSet&lt;TreeType&gt;(), TreeType.class);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			test(<span class="keyword">new</span> TreeSet&lt;SetType&gt;(), SetType.class);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.out.println(e.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			test(<span class="keyword">new</span> TreeSet&lt;HashType&gt;(), HashType.class);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.out.println(e.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]</span><br><span class="line">[5, 8, 1, 7, 3, 7, 9, 1, 9, 6, 7, 8, 4, 0, 3, 4, 9, 3, 2, 0, 5, 2, 1, 6, 6, 5, 4, 2, 8, 0]</span><br><span class="line">[6, 1, 7, 8, 0, 6, 3, 0, 9, 1, 2, 8, 0, 7, 2, 9, 7, 4, 5, 5, 2, 9, 1, 6, 4, 3, 5, 3, 4, 8]</span><br><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">java.lang.ClassCastException: SetType cannot be cast to java.lang.Comparable</span><br><span class="line">java.lang.ClassCastException: HashType cannot be cast to java.lang.Comparable</span><br></pre></td></tr></table></figure>
+<p>这个例子分别演示了<code>HashSet</code>、<code>LinkedHashSet</code>、<code>TreeSet</code>的用法。<code>test()</code>函数会往集合<code>Set</code>中放入相同的元素（通过三个<code>fill()</code>），通过不同的<code>SetType</code>可以看到：<code>HashSet</code>、<code>LinkedHashSet</code>会根据<code>hashCode()</code>保持元素的唯一性（注意<code>SetType</code>、<code>TreeType</code>由于没有覆写<code>hashCode()</code>函数，所以使用了默认的hashCode()方法，导致每个元素的hash结果都不一样），<code>TreeSet</code>则根据<code>Comparable</code>接口判断元素的唯一性。</p>
+<h4 id="sortedset">SortedSet</h4>
+<p><code>SortedSet</code>是一个接口定义，它保证内部的元素处于排序状态。</p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SortedSetDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SortedSet&lt;String&gt; sortedSet = <span class="keyword">new</span> TreeSet&lt;String&gt;();</span><br><span class="line">		Collections.addAll(sortedSet, <span class="string">"one two three four five six seven eight"</span>.split(<span class="string">" "</span>));</span><br><span class="line">		System.out.println(sortedSet);</span><br><span class="line">		String low = sortedSet.first();</span><br><span class="line">		String high = sortedSet.last();</span><br><span class="line">		System.out.println(low);</span><br><span class="line">		System.out.println(high);</span><br><span class="line">		Iterator&lt;String&gt; it = sortedSet.iterator();</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">6</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (i == <span class="number">3</span>) low = it.next();</span><br><span class="line">			<span class="keyword">if</span> (i == <span class="number">6</span>) high = it.next();</span><br><span class="line">			<span class="keyword">else</span> it.next();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(low);</span><br><span class="line">		System.out.println(high);</span><br><span class="line">		System.out.println(sortedSet.subSet(low, high));</span><br><span class="line">		System.out.println(sortedSet.headSet(high));</span><br><span class="line">		System.out.println(sortedSet.tailSet(low));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[eight, five, four, one, seven, six, three, two]</span><br><span class="line">eight</span><br><span class="line">two</span><br><span class="line">one</span><br><span class="line">two</span><br><span class="line">[one, seven, six, three]</span><br><span class="line">[eight, five, four, one, seven, six, three]</span><br><span class="line">[one, seven, six, three, two]</span><br></pre></td></tr></table></figure>
+<p>这里记住<code>SortedSet</code>的几个接口：</p>
+<p><code>Object first()</code> 返回容器中的第一个元素；</p>
+<p><code>Object last()</code> 返回容器中的最末一个元素；</p>
+<p><code>SortedSet subSet(fromElement, toElement)</code> 生成Set的子集，范围从fromElement（包含）到toElement（不包含）；</p>
+<p><code>SortedSet headSet(toElement)</code> 生成此Set的子集，由小于toElement的元素组成；</p>
+<p><code>SortedSet tailSet(fromElement)</code> 生成此Set的子集，由大于或等于fromElement的元素组成。</p>
+<p>&lt;br&gt;</p>
+<h3 id="队列">队列</h3>
+<p>除了并发应用，<code>Queue</code>在Java SE5中仅有的两个实现是<code>LinkedList</code>和<code>PriorityQueue</code>，它们的差异在于排序行为而不是性能。</p>
+<h4 id="优先级队列">优先级队列</h4>
+<p><code>PriorityQueue</code>的使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToDoList</span> <span class="keyword">extends</span> <span class="title">PriorityQueue</span>&lt;<span class="title">ToDoList</span>.<span class="title">ToDoItem</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ToDoItem</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">ToDoItem</span>&gt; </span>&#123;</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">char</span> primary;</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">int</span> secondary;</span><br><span class="line">		<span class="keyword">private</span> String item;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="title">ToDoItem</span><span class="params">(String td, <span class="keyword">char</span> pri, <span class="keyword">int</span> sec)</span> </span>&#123;</span><br><span class="line">			primary = pri;</span><br><span class="line">			secondary = sec;</span><br><span class="line">			item = td;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(ToDoItem arg)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">if</span> (primary &gt; arg.primary) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">if</span> (primary == arg.primary)</span><br><span class="line">				<span class="keyword">if</span> (secondary &gt; arg.secondary)</span><br><span class="line">					<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span> (secondary == arg.secondary)</span><br><span class="line">					<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> Character.toString(primary) + secondary + <span class="string">": "</span> + item;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(String td, <span class="keyword">char</span> pri, <span class="keyword">int</span> sec)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.add(<span class="keyword">new</span> ToDoItem(td, pri, sec));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ToDoList toDoList = <span class="keyword">new</span> ToDoList();</span><br><span class="line">		toDoList.add(<span class="string">"Empty trash"</span>, <span class="string">'C'</span>, <span class="number">4</span>);</span><br><span class="line">		toDoList.add(<span class="string">"Feed dog"</span>, <span class="string">'A'</span>, <span class="number">2</span>);</span><br><span class="line">		toDoList.add(<span class="string">"Feed bird"</span>, <span class="string">'B'</span>, <span class="number">7</span>);</span><br><span class="line">		toDoList.add(<span class="string">"Mow lawn"</span>, <span class="string">'C'</span>, <span class="number">3</span>);</span><br><span class="line">		toDoList.add(<span class="string">"Water lawn"</span>, <span class="string">'A'</span>, <span class="number">1</span>);</span><br><span class="line">		toDoList.add(<span class="string">"Feed cat"</span>, <span class="string">'B'</span>, <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">while</span> (!toDoList.isEmpty()) &#123;</span><br><span class="line">			System.out.println(toDoList.remove());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">A1: Water lawn</span><br><span class="line">A2: Feed dog</span><br><span class="line">B1: Feed cat</span><br><span class="line">B7: Feed bird</span><br><span class="line">C3: Mow lawn</span><br><span class="line">C4: Empty trash</span><br></pre></td></tr></table></figure>
+<p>&lt;br&gt;</p>
+<h3 id="理解map">理解Map</h3>
+<h4 id="map-的基本实现">Map 的基本实现</h4>
+<table>
+<colgroup>
+<col style="width: 29%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HashMap</td>
+<td>Map基于散列表的实现（它取代了<code>Hashtable</code>）。插入和查询“键值对”的开销是固定的。可以通过构造器设置容量和负载因子，以调整容器的性能。</td>
+</tr>
+<tr class="even">
+<td>LinkedHashMap</td>
+<td>类似于<code>HashMap</code>，但是迭代遍历它时，取得“键值对”的顺序是其插入次序，或者是最近最少使用（LRU）的次序。只比<code>HashMap</code>慢一点；而在迭代访问时反而更快，因为它使用链表维护内部次序。</td>
+</tr>
+<tr class="odd">
+<td>TreeMap</td>
+<td>基于红黑树的实现。查看“键”或“键值对”时，它们会被排序（次序由<code>Comparable</code>或<code>Comparator</code>决定）。TreeMap的特点在于，所得到的结果是经过排序的。<code>TreeMap</code>是唯一的带有<code>subMap()</code>方法的Map，它可以返回一个子树。</td>
+</tr>
+<tr class="even">
+<td>WeakHashMap</td>
+<td>弱键（weak kay）映射，允许释放映射所指向的对象；这是为解决某类特殊问题而设计的。如果映射之外没有引用指向某个“键”，则此“键”可以被垃圾收集器回收。</td>
+</tr>
+<tr class="odd">
+<td>ConcurrentHashMap</td>
+<td>一种线程安全的Map，它不涉及同步加锁，效率更高。</td>
+</tr>
+<tr class="even">
+<td>IdentifyHashMap</td>
+<td>使用==代替equals()对“键”进行比较的散列映射。专为解决特殊问题而设计的。</td>
+</tr>
+</tbody>
+</table>
+<p>之前讲<code>Set</code> 的时候说过，一般情况下，<code>HashSet</code>的效率是最高的。Map也不例外，<code>HashMap</code>应该是开发者首选。因为<code>HashMap</code>内部使用散列码提高了搜索速度。散列的速度远高于线性搜索，甚至树结构的搜索。</p>
+<p>由于<code>Map</code>的使用与<code>Set</code>基本一样，这里便不再举例说明。</p>
+<h4 id="sortedmap">SortedMap</h4>
+<p>与<code>SortedSet</code>一样，<code>SortedMap</code>是一个接口定义，其唯一的实现类（Java SE5）是<code>TreeMap</code>，插入<code>SortedMap</code>的键必须实现<code>Comparable</code>接口。</p>
+<h4 id="linkedhashmap">LinkedHashMap</h4>
+<p>为了提高访问速度，<code>LinkedHashMap</code>散列化所有的元素，但是在遍历键值对时，却以元素的插入顺序返回键值对。此外，可以在构造器中设定<code>LinkedHashMap</code>，使之采用基于访问的最近最少使用算法。</p>
+<p>&lt;br&gt;</p>
+<h3 id="散列与散列码">散列与散列码</h3>
+<h4 id="hashmap底层原理">HashMap底层原理</h4>
+<p>如果使用自定义的类作为<code>HashMap</code>，那么这个类必须覆写<code>equals()</code>和<code>hashCode()</code>方法。理由是：<code>HashMap</code>是一种拉链式的哈希数组，类似于数据库中静态哈希存储结构。在<code>HashMap</code>中会有一个类似<code>list[]</code>的数组，Key的<code>hashCode()</code>用来计算这个Key对应数组哪个位置，之后再将对应的Value插入到这个位置的<code>list</code>后面，为了判断这个Key是否已经存在，<code>HashMap</code>又会调用Key的<code>equals()</code>函数对list做一次线性扫描（可能会有优化），只有不存在这个Key时才将Value插入list。</p>
+<p>基于以上原理，<code>hashCode()</code>的结果可以相同，但<code>equals()</code>的结果一定要有所区分！</p>
+<h4 id="覆盖hashcode">覆盖hashCode()</h4>
+<p>设计hash函数要避开几个雷区：</p>
+<ol type="1">
+<li>hashCode不能依赖于对象中易变的数据，这样，可能业务逻辑上原本相同的对象，get和put的位置不同；</li>
+<li>hashCode不能依赖于具有唯一性的对象信息，尤其是this，这样逻辑上相同的两个实例对象会产生不同的hashCode</li>
+</ol>
+<p>对于如何设计一个好的hashCode，作者引用了Joshua Bloch的指导：</p>
+<ol type="1">
+<li><p>给int变量result赋予某个非零值常量，例如17；</p></li>
+<li><p>为对象内每个有意义的域f（即每个可以做equals()操作的域）计算出一个int散列码c：</p>
+<table>
+<thead>
+<tr class="header">
+<th>域类型</th>
+<th>计算</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>boolean</td>
+<td>c = ( f ? 0 : 1)</td>
+</tr>
+<tr class="even">
+<td>byte、char、short或int</td>
+<td>c = (int)f</td>
+</tr>
+<tr class="odd">
+<td>long</td>
+<td>c = (int)(f ^ (f &gt;&gt;&gt; 32))</td>
+</tr>
+<tr class="even">
+<td>float</td>
+<td>c = Float.floatToIntBits(f);</td>
+</tr>
+<tr class="odd">
+<td>double</td>
+<td>long I = Double.doubleToLongBits(f); c = (int)(I ^ (I &gt;&gt;&gt; 32))</td>
+</tr>
+<tr class="even">
+<td>Object，其equals() 调用这个域的equals()</td>
+<td>c = f.hashCode()</td>
+</tr>
+<tr class="odd">
+<td>数组</td>
+<td>对每个元素应用上述规则</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>合并计算得到的散列码：</p>
+<p>result = 37*result + c;</p></li>
+<li><p>返回result</p></li>
+<li><p>检查hashCode()最后生成的结果，确保相同的对象有相同的散列码</p></li>
+</ol>
+<p>下面是一个应用上述规则的例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CountedString</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; created = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">	<span class="keyword">private</span> String s;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> id = <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">CountedString</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">		s = str;</span><br><span class="line">		created.add(s);</span><br><span class="line">		<span class="keyword">for</span> (String s2 : created) &#123;</span><br><span class="line">			<span class="keyword">if</span> (s2.equals(str)) &#123;</span><br><span class="line">				++id;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"String: "</span> + s + <span class="string">"  id: "</span> + id + <span class="string">" hashCode(): "</span> + hashCode();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Using Joshua Bloch's recipe</span></span><br><span class="line">		<span class="keyword">int</span> result = <span class="number">17</span>;</span><br><span class="line">		result = <span class="number">37</span> * result + s.hashCode();</span><br><span class="line">		result = <span class="number">37</span> * result + id;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> o <span class="keyword">instanceof</span> CountedString &amp;&amp; s.equals(((CountedString)o).s) &amp;&amp; id == ((CountedString)o).id;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Map&lt;CountedString, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;CountedString, Integer&gt;();</span><br><span class="line">		CountedString cs[] = <span class="keyword">new</span> CountedString[<span class="number">5</span>];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cs.length; i++) &#123;</span><br><span class="line">			cs[i] = <span class="keyword">new</span> CountedString(<span class="string">"hi"</span>);</span><br><span class="line">			map.put(cs[i], i);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(map);</span><br><span class="line">		<span class="keyword">for</span> (CountedString cstring : cs) &#123;</span><br><span class="line">			System.out.println(<span class="string">"Looking up "</span> + cstring);</span><br><span class="line">			System.out.println(map.get(cstring));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;String: hi  id: 4 hashCode(): 146450=3, String: hi  id: 5 hashCode(): 146451=4, String: hi  id: 2 hashCode(): 146448=1, String: hi  id: 3 hashCode(): 146449=2, String: hi  id: 1 hashCode(): 146447=0&#125;</span><br><span class="line">Looking up String: hi  id: 1 hashCode(): 146447</span><br><span class="line">0</span><br><span class="line">Looking up String: hi  id: 2 hashCode(): 146448</span><br><span class="line">1</span><br><span class="line">Looking up String: hi  id: 3 hashCode(): 146449</span><br><span class="line">2</span><br><span class="line">Looking up String: hi  id: 4 hashCode(): 146450</span><br><span class="line">3</span><br><span class="line">Looking up String: hi  id: 5 hashCode(): 146451</span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+<p>例子中的<code>CountedString</code>有两个成员变量：<code>String s</code>和<code>int id</code>。根据Joshua Bloch规则，int类型直接取这个值本身，而Object则取该对象hashCode()函数的值。从输出例子也可以看到，这种算法的hashCode计算结果受（有意义的）成员变量影响较大，可以产生较均匀的分配。（后面的结论是我杜撰的）。</p>
+<p>&lt;br&gt;</p>
+<h3 id="性能测试">性能测试</h3>
+<p>Java提供的容器类型实在太多，具体该选用哪个实现呢？这一节探讨不同容器之间的异同。（书中测试代码较多，本人认为要想真正认识这些容器还是应该从源代码入手，所以准备改天再花时间对这些容器的源码做一层剖析）</p>
+<p>由于<code>List</code>比较熟悉了，所以以下只关注<code>Set</code>、<code>Map</code>这些稍微复杂的容器。</p>
+<h4 id="对set的选择">对<code>Set</code>的选择</h4>
+<p><code>Set</code>的类型无非是<code>TreeSet</code>、<code>HashSet</code>、<code>LinkedHashSet</code>。<code>TreeSet</code>的优点是可以维持元素的顺序，所以只有当需要一个排好序的<code>Set</code>时，才应该使用<code>TreeSet</code>。<code>HashSet</code>是首选目标，因为相比排序操作，添加和查找元素往往更为常见，所以<code>HashSet</code>的性能总体上优于<code>TreeSet</code>。对于插入操作，<code>LinkedHashSet</code>比<code>HashSet</code>代价更高，这是由维护链表所带来的额外开销造成的（这一点出人意料）。</p>
+<h4 id="对map的选择">对<code>Map</code>的选择</h4>
+<p><code>Map</code>的实现有<code>TreeMap</code>，<code>HashMap</code>，<code>LinkedHashMap</code>，<code>IdentifyHashMap</code>，<code>WeakHashMap</code>，<code>Hashtable</code>这几种。除了<code>IdentifyHashMap</code>，所有<code>Map</code>的插入操作都会随着<code>Map</code>尺寸的变大而明显变慢，但是查找的代价通常比插入小得多。</p>
+<p><code>TreeMap</code>通常比<code>HashMap</code>慢（想想数据库里的动态哈希跟B+树，前者在定位某个特定位置时，在溢出链不长的情况下几乎是一步得到，而<code>TreeMap</code>的效率应该还没有B+树高，所以<code>HashMap</code>的查找和插入操作比<code>TreeMap</code>快很多）。</p>
+<p><code>LinkedHashMap</code>的性能特点与<code>LinkedHashSet</code>一样，可类比。</p>
+<h4 id="hashmap的性能因子"><code>HashMap</code>的性能因子</h4>
+<p>我们可以手工调整<code>HashMap</code>的性能，这主要通过调整性能参数实现（下面是几个术语的意思，有些是可以手工设置的）：</p>
+<ul>
+<li>容量：表中桶的位数</li>
+<li>初始容量：表在创建时所拥有的桶位数。可以在构造函数指定</li>
+<li>尺寸：表中当前存储的项数</li>
+<li>负载因子：尺寸/容量。空表的负载因子是0，而半满表是0.5。负载轻的表产生冲突的可能性小，因此对于插入和查找效果较理想（但用迭代器遍历元素时速度会偏慢，因为空元素太多）。<code>HashMap</code>在负载情况达到负载因子时会自动增加容量，并重新散列（很像数据库的动态散列存储技术）。<code>HashMap</code>的默认负载因子是0.75。</li>
+</ul>
+<p>&lt;br&gt;</p>
+<h3 id="使用方法">使用方法</h3>
+<h4 id="collection或map的同步控制"><code>Collection</code>或<code>Map</code>的同步控制</h4>
+<p>容器中的线程同步是一个很重要的问题，Java在<code>Collections</code>中提供了一种工具方法来解决不同步的问题。</p>
+<p>使用方法的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Synchronization</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Collection&lt;String&gt; c = Collections.synchronizedCollection(<span class="keyword">new</span> ArrayList&lt;String&gt;());</span><br><span class="line">		List&lt;String&gt; list = Collections.synchronizedList(<span class="keyword">new</span> ArrayList&lt;String&gt;());</span><br><span class="line">		Set&lt;String&gt; s = Collections.synchronizedSet(<span class="keyword">new</span> HashSet&lt;String&gt;());</span><br><span class="line">		Set&lt;String&gt; ss = Collections.synchronizedSortedSet(<span class="keyword">new</span> TreeSet&lt;String&gt;());</span><br><span class="line">		Map&lt;String, String&gt; m = Collections.synchronizedMap(<span class="keyword">new</span> HashMap&lt;String, String&gt;());</span><br><span class="line">		Map&lt;String, String&gt; sm = Collections.synchronizedSortedMap(<span class="keyword">new</span> TreeMap&lt;String, String&gt;());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，java提供了一种快速报错的机制防止多线程修改造成的“灾难”:</p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FailTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Collection&lt;String&gt; c = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">		Iterator&lt;String&gt; it = c.iterator();</span><br><span class="line">		c.add(<span class="string">"An object"</span>);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String s = it.next();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (ConcurrentModificationException e) &#123;</span><br><span class="line">			System.out.println(e);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码会抛出<code>java.util.ConcurrentModificationException</code>，因为在得到迭代器<code>Iterator</code>后，又往集合中加入新的对象，导致<code>Iterator</code>失效了。</p>
+<p>Java SE5中新增的<code>ConcurrentHashMap</code>、<code>CopyOnWriteArrayList</code>和<code>CopyOnWriteArraySet</code>提供了避免<code>java.util.ConcurrentModificationException</code>的机制。</p>
+<p>&lt;br&gt;</p>
+<h3 id="持有引用">持有引用</h3>
+<p>java.lang.ref类库中包含了一组类用于垃圾回收机制。有三个继承自<code>Reference</code>的类：<code>SoftReference</code>，<code>WeakReference</code>，<code>PhantomReference</code>，它们为垃圾回收提供了不同级别的指示。</p>
+<p><code>SoftReference</code>，<code>WeakReference</code>，<code>PhantomReference</code>由强到弱排列。</p>
+<p>在<code>WeakHashMap</code>的实现中，将插入的键和值用<code>WeakReference</code>封装了一遍，我的理解是，这样可以防止<code>Map</code>长期hold住对象的引用而不被回收，因为<code>WeakHashMap</code>中的引用跟普通对象的引用相比，回收的级别更高。</p>
+<p>&lt;br&gt;</p>
+<h3 id="java-1.01.1-的容器">Java 1.0/1.1 的容器</h3>
+<p>回顾历史，不要踩坑！</p>
+<p>Java最开始的版本中内置了<code>Vector</code>、<code>Enumeration</code>、<code>Hashtable</code>、<code>Stack</code>，这些容器只在历史版本中工作了，它们中不乏失败的地方，因此不应该再被使用。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/" title="Thinking in Java — 容器类深入研究">https://jermmy.github.io/2016/09/25/2016-9-25-Thinking-In-Java-容器类深入研究/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/21/2016-9-21-Android-Volley-源码浅析/" rel="next" title="Android Volley源码浅析">
+                <i class="fa fa-chevron-left"></i> Android Volley源码浅析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/04/2016-10-4-Android-内存泄漏那些事/" rel="prev" title="Android内存泄漏那些事">
+                Android内存泄漏那些事 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#完整的容器分类法"><span class="nav-number">1.</span> <span class="nav-text">完整的容器分类法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set和存储顺序"><span class="nav-number">2.</span> <span class="nav-text">Set和存储顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#hashset-treeset-linkedhashset"><span class="nav-number">2.1.</span> <span class="nav-text">HashSet, TreeSet, LinkedHashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sortedset"><span class="nav-number">2.2.</span> <span class="nav-text">SortedSet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列"><span class="nav-number">3.</span> <span class="nav-text">队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优先级队列"><span class="nav-number">3.1.</span> <span class="nav-text">优先级队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解map"><span class="nav-number">4.</span> <span class="nav-text">理解Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#map-的基本实现"><span class="nav-number">4.1.</span> <span class="nav-text">Map 的基本实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sortedmap"><span class="nav-number">4.2.</span> <span class="nav-text">SortedMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linkedhashmap"><span class="nav-number">4.3.</span> <span class="nav-text">LinkedHashMap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列与散列码"><span class="nav-number">5.</span> <span class="nav-text">散列与散列码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#hashmap底层原理"><span class="nav-number">5.1.</span> <span class="nav-text">HashMap底层原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#覆盖hashcode"><span class="nav-number">5.2.</span> <span class="nav-text">覆盖hashCode()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试"><span class="nav-number">6.</span> <span class="nav-text">性能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对set的选择"><span class="nav-number">6.1.</span> <span class="nav-text">对Set的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对map的选择"><span class="nav-number">6.2.</span> <span class="nav-text">对Map的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hashmap的性能因子"><span class="nav-number">6.3.</span> <span class="nav-text">HashMap的性能因子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">7.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#collection或map的同步控制"><span class="nav-number">7.1.</span> <span class="nav-text">Collection或Map的同步控制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持有引用"><span class="nav-number">8.</span> <span class="nav-text">持有引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-1.01.1-的容器"><span class="nav-number">9.</span> <span class="nav-text">Java 1.0/1.1 的容器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
