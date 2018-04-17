@@ -94,19 +94,19 @@
 
 
 
-<meta name="description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」 以及「提升树」方法，最后总结一下这两种方法的套路「前向分步加法模型」。">
+<meta name="description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。">
 <meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅析boosting算法">
 <meta property="og:url" content="https://jermmy.github.io/2018/04/16/2018-4-16-boosting-algorithm/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
-<meta property="og:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」 以及「提升树」方法，最后总结一下这两种方法的套路「前向分步加法模型」。">
+<meta property="og:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-4-16/Figure_1.png">
-<meta property="og:updated_time" content="2018-04-16T16:26:53.000Z">
+<meta property="og:updated_time" content="2018-04-17T02:33:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅析boosting算法">
-<meta name="twitter:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」 以及「提升树」方法，最后总结一下这两种方法的套路「前向分步加法模型」。">
+<meta name="twitter:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2018-4-16/Figure_1.png">
 
 
@@ -404,7 +404,7 @@
       
 
       
-        <p>我在很久以前的一篇<a href="https://jermmy.github.io/2017/04/12/2017-4-12-bagging-boosting-bootstrap/">短文</a>提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」 以及「提升树」方法，最后总结一下这两种方法的套路「前向分步加法模型」。</p>
+        <p>我在很久以前的一篇<a href="https://jermmy.github.io/2017/04/12/2017-4-12-bagging-boosting-bootstrap/">短文</a>提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。</p>
 <a id="more"></a>
 <h2 id="adaboost">Adaboost</h2>
 <p>学过机器学习的同学，想必对 Adaboost 都不会陌生，就算不知道算法原理，也听过算法的名字。正如我之前提到的，Adaboost 采用的思想源于一句古老的俗语「三个臭皮匠，赛过诸葛亮」。不过，与 Bagging 类算法（典型如随机森林）不同的是，Adaboost 希望这三个臭皮匠的分工能逐步提高团队的效益，而不是仅仅起到平等投票的作用。具体到机器学习中，假设我们已经有了几个比较弱的分类器，Adaboost 首先从这些分类器中选出一个分类性能最好的，但这个性能最好的分类器总归有分错的样本，对这些分错的样本，Adaboost 再从剩下的分类器中选一个能把这些样本分得最好的分类器，和刚开始的分类器组合成一个新的分类器，依此类推下去，直到所有弱分类器都组合在一起，成为一个更强的分类器。</p>
