@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/embedding%20space.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/network.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-10/Shape-Guided%20Image%20Editing.png">
-<meta property="og:updated_time" content="2018-03-18T02:38:14.000Z">
+<meta property="og:updated_time" content="2018-05-11T10:35:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Joint Embeddings of Shapes and Images via CNN Image Purification">
 <meta name="twitter:description" content="今天分享的这篇论文是 SIGGRAPH 2015 的入选论文，标题比较长，但它做的事情其实很简单：通过一张图片，找到和这张图片最相似的 3D 形状👇。  image query">
@@ -448,6 +448,7 @@
 <p>构造出 <span class="math inline">\(D^{-}\)</span> 空间后，我们相当于把一个 3D 模型 <span class="math inline">\(S_i\)</span> 映射到 <span class="math inline">\(D^{-}\)</span> 中的一个点 <span class="math inline">\(P_{S_{i}}\)</span>。下一步，就是要把图像也映射进这个空间，这相当于一个特征提取的工作，而 CNN 正是完成该工作的最佳选择之一。</p>
 <p>我们的目标是训练一个 CNN 网络，这个网络的输入是一张图片，输出是一个向量 <span class="math inline">\(P_{I} \in D^{-}\)</span>。要求是，如果图片 <span class="math inline">\(I\)</span> 描述的是一个形状类似于 <span class="math inline">\(S_i\)</span> 的物体，那么 <span class="math inline">\(P_{I}\)</span> 要接近于 <span class="math inline">\(P_{S_{i}}\)</span>。</p>
 <h4 id="training-image-synthesis">Training Image Synthesis</h4>
+<p>这一步将准备合成训练图片。需要先明确一点，论文中用到的所有训练图片，都是对 3D 模型进行投影渲染合成的。换句话说，这些图片并不是真实世界中的物体图片。不过，由于论文中用到的 3D 模型在制作上都非常真实，因此这些模型渲染出来的图片和真实图片很相似。</p>
 <p>由于我们是要把一张图片转换成一个特征向量，因此训练数据的格式应该是:（图片，向量）。由于之前构造空间 <span class="math inline">\(D^{-}\)</span> 的时候，我们已经计算出了每个形状 <span class="math inline">\(S_i\)</span> 对应的特征向量，因此，只需要对 <span class="math inline">\(S_i\)</span> 各个角度的投影进行渲染得到一个图片集 <span class="math inline">\(R_i\)</span>，对于图片集中的每张图片 <span class="math inline">\(R_{i,r}\)</span>，我们相当于得到了一个训练样本 <span class="math inline">\((R_{i,r}, P_{S_{i}})\)</span>。由于 CNN 容易过拟合，因此，除了生成大量训练样本外，论文还在渲染投影图片的时候，加入一些额外的「噪声」，比如：添加不同的光照、采用多个角度进行投影，以及融合一些随机背景等。</p>
 <p>论文中总共生成了约 100 万张训练图片。</p>
 <h4 id="network-architecture-and-training">Network Architecture and Training</h4>

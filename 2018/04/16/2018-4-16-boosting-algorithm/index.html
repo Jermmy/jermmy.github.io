@@ -103,7 +103,7 @@
 <meta property="og:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-4-16/Figure_1.png">
-<meta property="og:updated_time" content="2018-04-17T02:33:11.000Z">
+<meta property="og:updated_time" content="2018-04-17T02:33:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅析boosting算法">
 <meta name="twitter:description" content="我在很久以前的一篇短文提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。">
@@ -444,6 +444,11 @@ G(x)=sign(f(x))=sign(\sum_{m=1}^M \alpha_m G_m(x))
 </center>
 <p>这个函数在 <span class="math inline">\(e_m &gt; 0.5\)</span> 时会取到负值，由于开始时所有样本的权重均匀，加之弱分类器准确率超过 50%，因此算法开始执行时 <span class="math inline">\(e_m &gt; 0.5\)</span> 的情况是不会发生的，但随着样本权重的改变，如果之后构造的弱分类器的准确率低于 50%，为了防止分类器权值为负，算法就会终止。如果一个分类器的 <span class="math inline">\(e_m\)</span> 越小，证明它的错分率越低，效果越好，则它的权重会越大。</p>
 <p>每轮计算完弱分类器后，算法会根据公式 <span class="math inline">\(\frac{w_{m,i}}{Z_m}\exp(-\alpha_m y_i G_m(x_i))\)</span> 更新样本权重，如果这一轮得到的分类器 <span class="math inline">\(G_m\)</span> 对某个样本的预测错误，证明这个样本仍然是块「硬骨头」，这种情况下，<span class="math inline">\(\exp(-\alpha_m y_i G_m(x_i))&gt;1\)</span>，表示该样本的权重相比上一次而言增大了，这样一来，在下一次构造弱分类器时，该样本会得到更多的关注，而对那些已经正确分类的样本，权重反而会降低。因此，在每轮构造弱分类器的过程中，为了得到更好的分类效果，弱分类器会去挑选那些能把「硬骨头」样本分得更好的特征，所以，Adaboost 在某种程度上来说，具备特征选择的作用。</p>
+<h2 id="提升树">提升树</h2>
+<p>提升树也属于一种 boosting 方法，只不过由算法的名字我们也可以推测，这种方法采用的弱分类器是「树」。如果要解决分类问题，可以用决策树，而回归问题则可以用回归树（关于决策树和回归树，可以参考其他资料，或者我之前整理的一篇<a href="https://jermmy.github.io/2017/04/13/2017-4-13-decision-tree/">文章</a>）。</p>
+<p>既然是 boosting 方法，那么提升树也和 Adaboost 一样，遵循同样的方法论。如果弱分类器采用的是决策树，那么提升树方法其实等同于弱分类器为决策树的 Adaboost，其算法流程和 Adaboost 一样，所以这里就不再展开讲了。下面分析一下回归问题中提升树的算法原理。</p>
+<p>在回归问题中，提升树采用的弱分类器（或者说，弱回归器）是 CART。同样地，假设有一个训练数据集 <span class="math inline">\(T={(x_1, y_1), (x_2, y_2), … (x_N, y_N)}\)</span>，其中，<span class="math inline">\(x_i \in X \subseteq \mathbf{R^n}\)</span>，<span class="math inline">\(y_i \in Y \subseteq \mathbf{R}\)</span>。</p>
+<h2 id="前向分步加法模型">前向分步加法模型</h2>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://book.douban.com/subject/26708119/" target="_blank" rel="noopener">机器学习</a></li>
@@ -679,7 +684,7 @@ G(x)=sign(f(x))=sign(\sum_{m=1}^M \alpha_m G_m(x))
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#adaboost"><span class="nav-number">1.</span> <span class="nav-text">Adaboost</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法流程"><span class="nav-number">1.1.</span> <span class="nav-text">算法流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#adaboost"><span class="nav-number">1.</span> <span class="nav-text">Adaboost</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法流程"><span class="nav-number">1.1.</span> <span class="nav-text">算法流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">2.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前向分步加法模型"><span class="nav-number">3.</span> <span class="nav-text">前向分步加法模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
