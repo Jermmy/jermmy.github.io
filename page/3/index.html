@@ -287,6 +287,179 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/09/02/2017-9-2-paper-notes-batch-normalization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/" itemprop="url">
+                  论文笔记：Batch Normalization
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-02T22:06:20+08:00">
+                2017-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/02/2017-9-2-paper-notes-batch-normalization/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/09/02/2017-9-2-paper-notes-batch-normalization/" class="leancloud_visitors" data-flag-title="论文笔记：Batch Normalization">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在神经网络的训练过程中，总会遇到一个很蛋疼的问题：梯度消失/爆炸。关于这个问题的根源，我在上一篇文章的<a href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5">读书笔记</a>里也稍微提了一下。原因之一在于我们的输入数据（网络中任意层的输入）分布在激活函数收敛的区域，拿 sigmoid 函数举例：</p>
+<figure>
+<img src="/images/2017-7-20/sigmoid.jpg" alt="sigmoid"><figcaption>sigmoid</figcaption>
+</figure>
+<p>如果数据分布在 [-4, 4] 这个区间两侧，sigmoid 函数的导数就接近于 0，这样一来，BP 算法得到的梯度也就消失了。</p>
+<p>之前的笔记虽然找到了原因，但并没有提出解决办法。最近在实战中遇到这个问题后，束手无策之际，在网上找到了这篇论文 <a href="https://arxiv.org/abs/1502.03167" target="_blank" rel="noopener">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a>。原来早在 2015 年就有人提出了解决方案，而且基本已经成为神经网络的组成部分之一了。本文仅仅是对这篇论文做一些梳理，并总结一些我个人的理解。论文中还有很多不解的地方，因此总结的过程中难免存在错误，还请发现的同学指正☺️</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/02/2017-9-2-paper-notes-batch-normalization/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/08/26/2017-8-26-reading-notes-neuralnetworkanddeeplearning-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1817,178 +1990,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jermmy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jermmy's Lazy Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/08/2017-5-8-paper-notes-rcnn/" itemprop="url">
-                  论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T20:40:06+08:00">
-                2017-05-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机视觉</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/05/08/2017-5-8-paper-notes-rcnn/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/05/08/2017-5-8-paper-notes-rcnn/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/05/08/2017-5-8-paper-notes-rcnn/" class="leancloud_visitors" data-flag-title="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照<strong>定位</strong>+<strong>分割</strong>+<strong>识别</strong>的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理方法，因此很难有通用的解决策略。在深度学习火起来之后，很多研究人员开始尝试用深度学习的特征提取能力来解决定位的问题，本文学习的这篇论文，就是被誉为用 CNN 解决物体定位的开山之作：<strong>R-CNN</strong>。</p>
-<p>这篇文章打算浅浅地分析一下 R-CNN。</p>
-<figure>
-<img src="/images/2017-5-8/rcnn.png" alt="rcnn"><figcaption>rcnn</figcaption>
-</figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/05/08/2017-5-8-paper-notes-rcnn/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2038,7 +2039,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2049,7 +2050,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

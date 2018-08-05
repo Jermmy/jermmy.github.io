@@ -287,6 +287,235 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/" itemprop="url">
+                  如何在手机上跑深度神经网络
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-04T13:20:37+08:00">
+                2018-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习-深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习, 深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/" class="leancloud_visitors" data-flag-title="如何在手机上跑深度神经网络">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。</p>
+<p>接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。</p>
+<p>老板又说，怎么实现是你的事，我要的只是这个功能。</p>
+<p>嗯。。。。。。</p>
+<h2 id="初步尝试mobilenet-v1">初步尝试：MobileNet v1</h2>
+<h3 id="问题出在哪">问题出在哪</h3>
+<p>要在手机上跑深度网络，需要在模型参数和计算量上进行优化。</p>
+<p>那深度神经网络的计算量和参数量主要体现在哪呢？这里以 VGG16 为例：</p>
+<center>
+<p><img src="/images/2018-8-4/vgg16.png"></p>
+</center>
+<p><strong>第一层卷积</strong>： [224 x 224 x 3] –&gt; [224 x 224 x 64]，卷积核大小为 3 x 3（简单起见，这里的计算量只考虑相乘）</p>
+<p>计算量为：<span class="math inline">\(3 \times 3 \times 3 \times 224 \times 224 \times 64 \approx 8.7 \times 10^7\)</span></p>
+<p>参数量为：<span class="math inline">\(3 \times 3 \times 3 \times 64 = 1728\)</span></p>
+<p><strong>第二层卷积</strong>：[112 x 112 x 64] –&gt; [112 x 112 x 128]，卷积核大小为 3 x 3。</p>
+<p>计算量为：<span class="math inline">\(3 \times 3 \times 64 \times 112 \times 112 \times 128 \approx 9.2 \times 10^8\)</span></p>
+<p>参数量为：<span class="math inline">\(3 \times 3 \times 64 \times 128 = 73728\)</span></p>
+<p>……</p>
+<p><strong>第一层全连接层</strong>：[14 x 14 x 512] –&gt; [4096]。</p>
+<p>计算量为：<span class="math inline">\(14 \times 14 \times 512 \times 4096 \approx 4.1 \times 10^8\)</span></p>
+<p>参数量为：<span class="math inline">\(4096 \times 1000 = 4096000\)</span></p>
+<p>……</p>
+<p>两相对比，同时考虑到网络中卷积层比全连层多，就不难发现深度卷积网络中的计算量主要由卷积层承包，而参数则集中在全链接层。因此，要想对模型做优化，可以在卷积层的计算上做点手脚，同时减小全连接层的维度。</p>
+<h3 id="separable-convolution">Separable Convolution</h3>
+<p>虽然找到了问题所在，但具体要如何优化卷积层的计算量呢？幸运的是，你在搜索的过程中发现已经有人针对这个问题给出了解决方案：<strong>Separable Convolution</strong>。这是一种对卷积运算进行分解的方法。</p>
+<p>以下例子摘自文末链接：<a href="https://yinguobing.com/separable-convolution/" target="_blank" rel="noopener">卷积神经网络中的Separable Convolution</a></p>
+<p>假设现在需要做这样一个卷积操作：[64 x 64 x 3] –&gt; [64 x 64 x 4]，那么通常的操作是这样的（假设卷积核大小为 3 x 3）：</p>
+<center>
+<p><img src="/images/2018-8-4/conv-std.jpg" width="400px"></p>
+</center>
+<p>这种做法的计算量为：<span class="math inline">\(3 \times 3 \times 3 \times 64 \times 64 \times 4 = 442368\)</span>，</p>
+<p>参数量为：<span class="math inline">\(3 \times 3 \times 3 \times 4 = 108\)</span>。</p>
+<p>而 Separable Convolution 会将该操作分解为两步：<strong>Depthwise Convolution</strong> 和 <strong>Pointwise Convolution</strong>。</p>
+<p><strong>Depthwise Convolution</strong> 的过程其实非常简单，顾名思义，Depthwise 就是每个通道单独做一遍卷积：</p>
+<center>
+<p><img src="/images/2018-8-4/depthwise-conv.jpg" width="400px"></p>
+</center>
+<p>这种做法的效果是：[64 x 64 x 3] –&gt; [64 x 64 x 3]，由于是 Depthwise 的，所以只需要三个 [3 x 3 x 1] 的 filter 即可。</p>
+<p>因此计算量为：<span class="math inline">\(3 \times 3 \times 64 \times 64 \times 3=110592\)</span>，</p>
+<p>参数量为：<span class="math inline">\(3 \times 3 \times 3 = 27\)</span>。</p>
+<p>不过 Depthwise 将不同通道之间的联系断开了，而且输出的通道数与输入是一样的。为了得到 [64 x 64 x 4] 的输出，还需要经过 Pointwise Convolution。</p>
+<p><strong>Pointwise Convolution</strong> 的过程在 Depthwise 之后进行，它是用一个 [1 x 1] 的卷积核把 [64 x 64 x 3] 的 feature map 转换为 [64 x 64 x 4]：</p>
+<center>
+<p><img src="/images/2018-8-4/pointwise-conv.jpg" width="400px"></p>
+</center>
+<p>计算量为：<span class="math inline">\(1 \times 1 \times 64 \times 64 \times 3 \times 4=49152\)</span>，</p>
+<p>参数量为：<span class="math inline">\(1 \times 1 \times 3 \times 4 = 12\)</span>。</p>
+<p>我们发现，通过 Separable Convolution 这种分解的方法也可以拼凑出一个 [64 x 64 x 4] 的 feature map，</p>
+<p>而这种方法的计算量为：<span class="math inline">\(110592 + 49152=159744\)</span>，而总的参数量为：<span class="math inline">\(27 + 12 = 39\)</span>。</p>
+<p>对比原先的 442368 (计算量) 和 108 (参数量)，简直实惠了好多。</p>
+<p>于是，你通过这种套路构造出了一个适合手机端运行的深度网络，并简化了全连接层的参数：</p>
+<center>
+<p><img src="/images/2018-8-4/mobilenet_v1.png" width="400px"></p>
+</center>
+<p>图中的 Conv dw 指的就是 Depthwise Convolution。由于是为手机设计的网络，因此你取了个形象的名字：Mobilenet。</p>
+<p>不过，这个网络的精度会不会下降呢？你赶紧在 ImageNet 数据集上做了实验：</p>
+<center>
+<p><img src="/images/2018-8-4/mobilenet_v1_result.png" width="400px"></p>
+</center>
+<p>这个结果实在是太感人了，精度几乎和 GoogleNet 相当。但计算量却只有后者的三分之一，参数量也减少了三分之一。</p>
+<p>你开心地将结果发给老板，想着今天可以准时下班了。</p>
+<p>未完待续。。。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://yinguobing.com/separable-convolution/" target="_blank" rel="noopener">卷积神经网络中的Separable Convolution</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/04/16/2018-4-16-boosting-algorithm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1822,177 +2051,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jermmy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jermmy's Lazy Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/" itemprop="url">
-                  论文笔记：Deep feature learning with relative distance comparison for person re-identification
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-14T11:20:44+08:00">
-                2017-12-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机视觉</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/" class="leancloud_visitors" data-flag-title="论文笔记：Deep feature learning with relative distance comparison for person re-identification">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这篇论文是要解决 person re-identification 的问题。所谓 person re-identification，指的是在不同的场景下识别同一个人（如下图所示）。这里的难点是，由于不同场景下的角度、背景亮度等等因素的差异，同一个人的图像变化非常大，因而不能使用一般的图像分类的方法。论文采用了一种相似性度量的方法来促使神经网络学习出图像的特征，并根据特征向量的欧式距离来确定相似性。除此之外，论文通过对网络的训练过程进行分析，提出了一种计算效率更高的模型训练方法。</p>
-<center>
-<p><img src="/images/2017-12-14/person re-identification.png" width="400px"></p>
-</center>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/12/14/2017-12-14-paper-note-deep-feature-learning-with-relative-distance-comparison/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2042,7 +2100,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2053,7 +2111,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
