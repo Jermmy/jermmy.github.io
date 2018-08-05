@@ -94,13 +94,13 @@
 
 
 
-<meta name="description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。 初步尝试：MobileNet v1 问题出在哪 要在手机上跑深度网络，需要在模型参数和计算量上进行优化。 那深度">
+<meta name="description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
 <meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在手机上跑深度神经网络">
 <meta property="og:url" content="https://jermmy.github.io/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
-<meta property="og:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。 初步尝试：MobileNet v1 问题出在哪 要在手机上跑深度网络，需要在模型参数和计算量上进行优化。 那深度">
+<meta property="og:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/vgg16.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/conv-std.jpg">
@@ -108,10 +108,10 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/pointwise-conv.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/mobilenet_v1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/mobilenet_v1_result.png">
-<meta property="og:updated_time" content="2018-08-05T15:57:57.000Z">
+<meta property="og:updated_time" content="2018-08-05T16:10:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在手机上跑深度神经网络">
-<meta name="twitter:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。 初步尝试：MobileNet v1 问题出在哪 要在手机上跑深度网络，需要在模型参数和计算量上进行优化。 那深度">
+<meta name="twitter:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2018-8-4/vgg16.png">
 
 
@@ -413,6 +413,7 @@
 <p>接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。</p>
 <p>老板又说，怎么实现是你的事，我要的只是这个功能。</p>
 <p>嗯。。。。。。</p>
+<a id="more"></a>
 <h2 id="初步尝试mobilenet-v1">初步尝试：MobileNet v1</h2>
 <h3 id="问题出在哪">问题出在哪</h3>
 <p>要在手机上跑深度网络，需要在模型参数和计算量上进行优化。</p>
