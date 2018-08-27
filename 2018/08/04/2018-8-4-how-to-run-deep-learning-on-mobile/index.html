@@ -94,13 +94,13 @@
 
 
 
-<meta name="description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
+<meta name="description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 你默默地点了点头。">
 <meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在手机上跑深度神经网络">
 <meta property="og:url" content="https://jermmy.github.io/2018/08/04/2018-8-4-how-to-run-deep-learning-on-mobile/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
-<meta property="og:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
+<meta property="og:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 你默默地点了点头。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/vgg16.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/conv-std.jpg">
@@ -108,10 +108,12 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/pointwise-conv.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/mobilenet_v1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/mobilenet_v1_result.png">
-<meta property="og:updated_time" content="2018-08-05T16:10:49.000Z">
+<meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/shufflenet_v1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2018-8-4/shufflenet_unit.png">
+<meta property="og:updated_time" content="2018-08-27T16:20:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在手机上跑深度神经网络">
-<meta name="twitter:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 嗯。。。。。。">
+<meta name="twitter:description" content="这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。 接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。 老板又说，怎么实现是你的事，我要的只是这个功能。 你默默地点了点头。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2018-8-4/vgg16.png">
 
 
@@ -412,7 +414,7 @@
         <p>这天，老板跟你说，希望能在手机上跑深度神经网络，并且准确率要和 VGG、GoogleNet 差不多。</p>
 <p>接到这个任务后你有点懵逼，这些网络别说计算量大，就连网络参数也要 100MB 的空间才存得下，放在手机上跑？开玩笑呗。</p>
 <p>老板又说，怎么实现是你的事，我要的只是这个功能。</p>
-<p>嗯。。。。。。</p>
+<p>你默默地点了点头。</p>
 <a id="more"></a>
 <h2 id="初步尝试mobilenet-v1">初步尝试：MobileNet v1</h2>
 <h3 id="问题出在哪">问题出在哪</h3>
@@ -421,7 +423,7 @@
 <center>
 <p><img src="/images/2018-8-4/vgg16.png"></p>
 </center>
-<p><strong>第一层卷积</strong>： [224 x 224 x 3] –&gt; [224 x 224 x 64]，卷积核大小为 3 x 3（简单起见，这里的计算量只考虑相乘）</p>
+<p><strong>第一层卷积</strong>： [224 x 224 x 3] –&gt; [224 x 224 x 64]，卷积核大小为 3 x 3（简单起见，这里计算量的计算忽略激活函数）</p>
 <p>计算量为：<span class="math inline">\(3 \times 3 \times 3 \times 224 \times 224 \times 64 \approx 8.7 \times 10^7\)</span></p>
 <p>参数量为：<span class="math inline">\(3 \times 3 \times 3 \times 64 = 1728\)</span></p>
 <p><strong>第二层卷积</strong>：[112 x 112 x 64] –&gt; [112 x 112 x 128]，卷积核大小为 3 x 3。</p>
@@ -469,9 +471,23 @@
 <center>
 <p><img src="/images/2018-8-4/mobilenet_v1_result.png" width="400px"></p>
 </center>
-<p>这个结果实在是太感人了，精度几乎和 GoogleNet 相当。但计算量却只有后者的三分之一，参数量也减少了三分之一。</p>
-<p>你开心地将结果发给老板，想着今天可以准时下班了。</p>
-<p>未完待续。。。</p>
+<p>这个结果实在是太感人了，精度几乎和 GoogleNet 相当，但计算量却只有后者的三分之一，参数量也减少了三分之一（当然也可能是图像分类这个问题相对简单）。</p>
+<p>为了方便对模型大小的进一步调整，你提供了两个额外的参数： <span class="math inline">\(\alpha\)</span>、 <span class="math inline">\(\rho\)</span>。<span class="math inline">\(\alpha\)</span> 又称为 <strong>Width Multiplier</strong>，主要用来控制 feature map 的 channel 数目，因为在某些任务中，很多 feature map 的 channel 可能包含很少的信息，因此少一些，而有些情况可能需要更多的 channel。<span class="math inline">\(\alpha=1\)</span> 时就是上文中提出的基准网络。<span class="math inline">\(\rho\)</span> 则是图像的分辨率，由它控制输入图片的大小。</p>
+<h2 id="进阶shufflenet-v1">进阶：ShuffleNet v1</h2>
+<p>Separable Convolution 其实就是 MobileNet v1 的精华了，个人认为，MobileNet v1 能取得成功主要还是那些大网络在处理简单任务时存在大量的冗余，所以 MobileNet v1 用更少的参数量拼凑出同样大小的 feature map 时，性能并没有明显下降。</p>
+<p>而 ShuffleNet v1 则是在此基础上进一步压榨卷积操作，它的重点放在了 Pointwise Convolution 上。Pointwise Convolution 的作用是把 feature map 的所有 channel 信息联系起来，但这种联系可能本身就存在冗余。举个例子，一个 [64 x 64 x 4] 的 feature map，通过 [1 x 1 x 4] 的卷积核后，可以得到 [64 x 64 x 1] 的输出，这个 [1 x 1 x 4] 的卷积核其实就是把原来 feature map 上每个位置的所有 channel 信息（一个 [1 x 1 x 4] 的通道向量）进行加权求和，得到下一层 feature map 上的一个点。不过，真的有必要融和整个通道向量的信息吗？如果只对<strong>两个通道</strong>的信息进行相加，得到的结果会比<strong>四个通道</strong>差吗？为了探究这个问题，炼丹师们把原来的 Pointwise Convolution 改造成了 <strong>Group Convolution</strong>，这个 Group Convolution 其实也不是什么新鲜玩意，当年 AlexNet 刚出来的时候，由于显存不足，就曾将卷积操作分为两组，用两张显卡来装 feature map，这种做法导致更少的参数量和计算量，而且在某些任务中并不会对性能产生很大影响。ShuffleNet v1 的炼丹师显然发现了这一点。</p>
+<p>Group Convolution 的操作非常简单，还是举之前的例子：一个 [64 x 64 x 4] 的 feature map，要想进一步得到 [64 x 64 x 2] 的 feature map，直接用 Pointwise Convolution 处理的话，需要一个 [1 x 1 x 4 x 2] 的卷积张量。但用上 Group Convolution 后，我们可以这样操作，用一个 [1 x 1 x 2 x 1] 的卷积张量对原来 feature map <strong>四层通道</strong>中的<strong>前面两层</strong>进行卷积操作，得到一个 [64 x 64 x 1] 的 feature map，之后，用另一个 [1 x 1 x 2 x 1] 的卷积张量继续对<strong>后面两层</strong>进行卷积操作，同样得到一个 [64 x 64 x 1] 的 feature map，这两块 feature map 拼在一起，最终得到一个 [64 x 64 x 2] 的 feature map。</p>
+<p>仔细数数，原来 Pointwise Convolution 的计算量为：<span class="math inline">\(1 \times 1 \times 64 \times 64 \times 4 \times 2=32768\)</span>，参数量为：<span class="math inline">\(1 \times 1 \times 4 \times 2=8\)</span>，而现在拆成 Group Convolution 后，计算量为：<span class="math inline">\(1 \times 1 \times 64 \times 64 \times 2 \times 2=16384\)</span>，参数量为：<span class="math inline">\(1 \times 1 \times 2 \times 2=4\)</span>，计算量和参数量都减少了一半。</p>
+<p>鸡贼的读者可能还发现，如果把 Group Convolution 做到极致，每个 Group 只有一个 channel 的话，就变成 Depthwise + Pointwise Convolution 了，哈哈，原来又是拼凑游戏，笑出声。</p>
+<p>不过，仅仅用 Group Convolution，说性能不会影响很多人是不信的，毕竟本身就是 Pointwise Convolution，相邻点之间的信息已经忽略了，要是通道上的信息也忽略太多，难免会存在问题。所以，ShuffleNet v1 的 Shuffle 该登场了。炼丹师为了增强 Group Convolution 的鲁棒性，在对通道进行相加时，故意打乱了通道顺序。这样一来，在上面的例子中，本来是 1、2 通道结合得到一个新的点，就变成了 1、3 通道结合，2、4 通道结合了。</p>
+<p>这也就是这篇论文的精华所在：</p>
+<center>
+<p><img src="/images/2018-8-4/shufflenet_v1.png" width="400px"></p>
+</center>
+<p>当然啦，估计是考虑到 Group Convolution 本身损失的信息有点严重，论文又特意加了 ResNet 中的短路连接，算是弥补了一点信息：</p>
+<center>
+<p><img src="/images/2018-8-4/shufflenet_unit.png" width="400px"></p>
+</center>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://yinguobing.com/separable-convolution/" target="_blank" rel="noopener">卷积神经网络中的Separable Convolution</a></li>
@@ -706,7 +722,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初步尝试mobilenet-v1"><span class="nav-number">1.</span> <span class="nav-text">初步尝试：MobileNet v1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题出在哪"><span class="nav-number">1.1.</span> <span class="nav-text">问题出在哪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#separable-convolution"><span class="nav-number">1.2.</span> <span class="nav-text">Separable Convolution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初步尝试mobilenet-v1"><span class="nav-number">1.</span> <span class="nav-text">初步尝试：MobileNet v1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题出在哪"><span class="nav-number">1.1.</span> <span class="nav-text">问题出在哪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#separable-convolution"><span class="nav-number">1.2.</span> <span class="nav-text">Separable Convolution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶shufflenet-v1"><span class="nav-number">2.</span> <span class="nav-text">进阶：ShuffleNet v1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
