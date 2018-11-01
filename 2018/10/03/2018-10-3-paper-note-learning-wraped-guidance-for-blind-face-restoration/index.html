@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/wrapnet.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/wrap.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/recnet.png">
-<meta property="og:updated_time" content="2018-10-04T06:45:25.000Z">
+<meta property="og:updated_time" content="2018-11-01T15:06:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Learning wrapped guidance for blind face restoration">
 <meta name="twitter:description" content="这篇论文主要是讲人脸修复的，所谓人脸修复，其实就是将低清的，或者经过压缩等操作的人脸图像进行高清复原。这可以近似为针对人脸的图像修复工作。在图像修复中，我们都会假设退化的图像是高清图像经过某种函数映射后得到的（比如，由高清图像得到一张模糊的图像可能是使用了高斯模糊核），因此，图像修复的本质就是把这个函数映射找出来。由于神经网络可以近似任意函数，因此在深度学习时代，图像修复已经是一个被解决得比较好的">
@@ -408,7 +408,7 @@
 
       
         <p>这篇论文主要是讲人脸修复的，所谓人脸修复，其实就是将低清的，或者经过压缩等操作的人脸图像进行高清复原。这可以近似为针对人脸的图像修复工作。在图像修复中，我们都会假设退化的图像是高清图像经过某种函数映射后得到的（比如，由高清图像得到一张模糊的图像可能是使用了高斯模糊核），因此，图像修复的本质就是把这个函数映射找出来。由于神经网络可以近似任意函数，因此在深度学习时代，图像修复已经是一个被解决得比较好的问题了。比如，在图像去噪或者超分任务中，U-Net、FCN 之类的网络结构已经成为标配了。</p>
-<p>不过，针对人脸的图像修复则是一个要求更为严苛的任务。原因主要是以下两点：</p>
+<p>不过，针对人脸的图像修复则是一个更为严苛的任务。原因主要是以下两点：</p>
 <ol type="1">
 <li>对于一般的图像，大家可能不会太在意细节恢复得好还是差，但对于人脸来说，由于这是人类最熟悉的部分，因此人脸中的很多细节，如一些皱纹、酒窝等都需要恢复出来才能让人满意，因此，这是一个粒度更细的图像修复任务。</li>
 <li>另外，通常的图像修复都是针对一种退化场景设计的，比如，在去噪任务中，可能就只是针对某种或某几种噪声而言，而不考虑图像模糊等其他因素，因此任务相对简单。但如果退化的种类太多，退化函数本身可能会非常复杂，即使神经网络也未必能近似出来。正如标题中 <strong>blind</strong> 所言，退化函数的类型、数量我们是无法事先获悉的。事实上，论文考虑了 jpeg 压缩、高斯模糊、高斯噪声、图片放缩等退化方式，并且对每种方式进行随机组合，因此退化函数是非常复杂的。</li>
@@ -441,6 +441,8 @@
 <p>然而，对论文的这种设计方式，我个人持保留意见。首先，cGAN 的想法是正确的，但我认为这个 GAN 的作用应该是要让 RecNet 可以更好地恢复出纹理，因此判别器对纹理的识别能力应该要尽可能的强，而纹理这种东西和图像内容是无关的，也就是说，对于图像中的每个小块，它都能起到判别作用，因此，我觉得判别器的输入应该是一个个图片块，而不是整张图像或整个人脸区域，所以，我倾向于用 Patch cGAN 来做。</p>
 <h3 id="实验">实验</h3>
 <p>说来惭愧，我自己在复现这篇论文的时候，发现训练出来的模型成了一个普通的去噪/超分模型，对于纹理的修复效果很差，引导图几乎不起作用 (也就是说，不管引导图是什么，重建出来的图片几乎是一样的)。我觉得可能 RecNet 在设计上还可以再优化一下，比如把 content 和 style 分出来之类的。当然，可能是我的能力和大佬们有差距，做不出论文的效果。所以，实验的结果就只能请各位看官自己去论文里面找了。</p>
+<h5 id="update-2018.11.01">========== Update 2018.11.01 ==============</h5>
+<p>经过一个月的奋斗，博主终于复现出了原论文的效果😭。这里面的关键是训练的时候要加大退化的力度，增加退化图片的比例，这样，网络在重建图像的时候，为了获得更好的重建效果，会更多地考虑引导图的信息，从而加大引导图对应的权重系数。另一方面，我发现如果退化的程度较轻，网络会更多地从退化图本身获取信息，淡化引导图的影响，相当于起到<strong>开关</strong>的作用，而加不加 cGAN 的影响其实不大，这个发现倒是让我有点意外。</p>
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="https://arxiv.org/abs/1804.04829" target="_blank" rel="noopener">Learning Warped Guidance for Blind Face Restoration</a></li>
@@ -679,7 +681,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">1.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wrapnet"><span class="nav-number">1.1.</span> <span class="nav-text">WrapNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#recnet"><span class="nav-number">1.2.</span> <span class="nav-text">RecNet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验"><span class="nav-number">2.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文方法"><span class="nav-number">1.</span> <span class="nav-text">论文方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wrapnet"><span class="nav-number">1.1.</span> <span class="nav-text">WrapNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#recnet"><span class="nav-number">1.2.</span> <span class="nav-text">RecNet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验"><span class="nav-number">2.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#update-2018.11.01"><span class="nav-number">2.0.1.</span> <span class="nav-text">========== Update 2018.11.01 ==============</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
