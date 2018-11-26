@@ -1,0 +1,1053 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习,pytorch,tensorflow,nlp,rnn," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="曾经，为了处理一些序列相关的数据，我稍微了解了一点递归网络 (RNN) 的东西。由于当时只会 tensorflow，就从官网上找了一些 tensorflow 相关的 demo，中间陆陆续续折腾了两个多星期，才对 squence to sequence，sequence classification 这些常见的模型和代码有了一些肤浅的认识。虽然只是多了时间这个维度，但 RNN 相关的东西，不仅是模型">
+<meta name="keywords" content="深度学习,pytorch,tensorflow,nlp,rnn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RNN，写起来真的烦">
+<meta property="og:url" content="https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="曾经，为了处理一些序列相关的数据，我稍微了解了一点递归网络 (RNN) 的东西。由于当时只会 tensorflow，就从官网上找了一些 tensorflow 相关的 demo，中间陆陆续续折腾了两个多星期，才对 squence to sequence，sequence classification 这些常见的模型和代码有了一些肤浅的认识。虽然只是多了时间这个维度，但 RNN 相关的东西，不仅是模型">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2018-11-25/rnn.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2018-11-25/rnn.gif">
+<meta property="og:updated_time" content="2018-11-26T06:51:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RNN，写起来真的烦">
+<meta name="twitter:description" content="曾经，为了处理一些序列相关的数据，我稍微了解了一点递归网络 (RNN) 的东西。由于当时只会 tensorflow，就从官网上找了一些 tensorflow 相关的 demo，中间陆陆续续折腾了两个多星期，才对 squence to sequence，sequence classification 这些常见的模型和代码有了一些肤浅的认识。虽然只是多了时间这个维度，但 RNN 相关的东西，不仅是模型">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2018-11-25/rnn.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/"/>
+
+
+
+
+
+  <title>RNN，写起来真的烦 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RNN，写起来真的烦
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T17:49:42+08:00">
+                2018-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index">
+                    <span itemprop="name">NLP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/" class="leancloud_visitors" data-flag-title="RNN，写起来真的烦">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>曾经，为了处理一些序列相关的数据，我稍微了解了一点递归网络 (RNN) 的东西。由于当时只会 tensorflow，就从官网上找了一些 tensorflow 相关的 demo，中间陆陆续续折腾了两个多星期，才对 squence to sequence，sequence classification 这些常见的模型和代码有了一些肤浅的认识。虽然只是多了<strong>时间</strong>这个维度，但 RNN 相关的东西，不仅是模型搭建上，在数据处理方面的繁琐程度也比 CNN 要高一个 level。另外，我也是从那个时候开始对 tensorflow 产生抵触心理，在 tf 中，你知道 RNN 有几种写法吗？你知道 dynamic_rnn 和 static_rnn 有什么区别吗？各种纷繁复杂的概念无疑加大了初学者的门槛。后来我花了一两天的时间转向 pytorch 后，感觉整个世界瞬间清净了 (当然了，学 tf 的好处就是转其他框架的时候非常快，但从其他框架转 tf 却可能生不如死)。pytorch 在模型搭建和数据处理方面都非常好上手，比起 tf 而言，代码写起来更加整洁干净，而且开发人员更容易理解代码的运作流程。不过，在 RNN 这个问题上，新手还是容易犯嘀咕。趁着这一周刚刚摸清了 pytorch 搭建 RNN 的套路，我准备记录一下用 pytorch 搭建 RNN 的基本流程，以及数据处理方面要注意的问题，希望后来的同学们少流点血泪…</p>
+<p>至于 tf 怎么写 RNN，之后有闲再补上 (我现在是真的不想回去碰那颗烫手的山芋😩)</p>
+<center>
+<img src="/images/2018-11-25/rnn.png">
+</center>
+<a id="more"></a>
+<h2 id="什么是-rnn">什么是 RNN</h2>
+<p>虽然说我们用的是 API，但对于 RNN 是什么东西还是得了解一下吧。对于从没接触过 RNN 的小白来说，karpathy 这篇家喻户晓的<a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/" target="_blank" rel="noopener">文章</a>是一定要读一下的，如果想更加形象地了解它的工作机制，可以搜一些<strong>李宏毅</strong>的深度学习教程。</p>
+<p>RNN 其实也是一个普通的神经网络，只不过多了一个 hidden state 来保存历史信息。跟一般网络不同的是，RNN 网络的输入数据的维度通常是 <span class="math inline">\([batch\_size \times seq\_len \times input\_size ]\)</span>，它多了一个序列长度 <span class="math inline">\(seq\_len\)</span>。在前向过程中，我们会把样本 <span class="math inline">\(t\)</span> 个时间序列的信息不断输入同一个网络 (见上图)，因为是重复地使用同一个网络，所以称为递归网络。</p>
+<p>关于 RNN，你只需要记住一个公式：<span class="math inline">\(h_t = \tanh(w_{ih} x_t + b_{ih} + w_{hh} h_{(t-1)} + b_{hh})\)</span>。这也是 pytorch 官方文档中给出的最原始的 RNN 公式，其中 <span class="math inline">\(w_{*}\)</span> 表示 weight，<span class="math inline">\(b_{*}\)</span> 表示 bias，<span class="math inline">\(x_t\)</span> 是输入，<span class="math inline">\(h_t\)</span> 是隐藏状态。回忆一下，普通的神经网络只有 <span class="math inline">\(w_{ih} x_t + b_{ih}\)</span> 这一部分，而 RNN 无非就是多加了一个隐藏状态的信息 <span class="math inline">\(w_{hh} h_{(t-1)} + b_{hh}\)</span> 而已。</p>
+<p>普通网络都是一次前向传播就得到结果，而 RNN 因为多了 sequence 这个维度，所以需要跑 n 次前向。我们用 numpy 的写法把 RNN 的工作流程总结一下，就得到了如下代码 (部分抄自 <strong>karpathy</strong> 的文章)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里要啰嗦一句，karpathy在RNN的前向中还计算了一个输出向量output vector，</span></span><br><span class="line"><span class="comment"># 但根据RNN的原始公式，它的输出只有一个hidden state，至于整个网络最后的output vector，</span></span><br><span class="line"><span class="comment"># 在hidden state之后再接一个全连接层得到的，所以并不属于RNN的内容。</span></span><br><span class="line"><span class="comment"># 包括pytorch和tf框架中，RNN的输出也只有hidden state。理解这一点很重要。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RNN</span>:</span></span><br><span class="line">  <span class="comment"># ...</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">step</span><span class="params">(self, x, hidden)</span>:</span></span><br><span class="line">    <span class="comment"># update the hidden state</span></span><br><span class="line">    hidden = np.tanh(np.dot(self.W_hh, hidden) + np.dot(self.W_xh, x))</span><br><span class="line">    <span class="keyword">return</span> hidden</span><br><span class="line"></span><br><span class="line">rnn = RNN()</span><br><span class="line"><span class="comment"># x: [batch_size * seq_len * input_size]</span></span><br><span class="line">x = get_data()</span><br><span class="line">seq_len = x.shape[<span class="number">1</span>]</span><br><span class="line"><span class="comment"># 初始化一个hidden state，RNN中的参数没有包括hidden state，</span></span><br><span class="line"><span class="comment"># 只包括hidden state对应的权重W和b，</span></span><br><span class="line"><span class="comment"># 所以一般我们会手动初始化一个全零的hidden state</span></span><br><span class="line">hidden_state = np.zeros()</span><br><span class="line"><span class="comment"># 下面这个循环就是RNN的工作流程了，看到没有，每次输入的都是一个时间步长的数据，</span></span><br><span class="line"><span class="comment"># 然后同一个hidden_state会在循环中反复输入到网络中。</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(seq_len):</span><br><span class="line">    hidden_state = rnn(x[:, i, :], hidden_state)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>过来人血泪教训：一定要看懂上面的代码再往下读呀。</p>
+</blockquote>
+<h2 id="pytorch-中的-rnn">pytorch 中的 RNN</h2>
+<p>好了，现在可以进入本文正题了。我们分<strong>数据处理</strong>和<strong>模型搭建</strong>两部分来介绍。</p>
+<h3 id="数据处理">数据处理</h3>
+<p>pytorch 的数据读取框架方便易用，比 tf 的 <a href="https://www.tensorflow.org/guide/datasets?hl=zh-cn" target="_blank" rel="noopener">Dataset</a> 更有亲和力。另外，tf 的数据队列底层是用 C++ 的多线程实现的，因此数据读取和预处理都要使用 tf 内部提供的 API，否则就失去多线程的能力，这一点实在是令人脑壳疼。再者，过来人血泪教训，tf 1.4 版本的 Dataset api 有线程死锁的<a href="https://github.com/tensorflow/tensorflow/issues/10369" target="_blank" rel="noopener">bug</a>，谁用谁知道😈。而 pytorch 基于多进程的数据读取机制，避免 python GIL 的问题，同时代码编写上更加灵活，可以随意使用 opencv、PIL 进行处理，爽到飞起。</p>
+<p>pytorch 的数据读取队列主要靠 <code>torch.utils.data.Dataset</code> 和 <code>torch.utils.data.DataLoader</code> 实现，具体用法这里略过，主要讲一下在 RNN 模型中，数据处理有哪些需要注意的地方。</p>
+<p>在一般的数据读取任务中，我们只需要在 <code>Dataset</code> 的 <code>__getitem__</code> 方法中返回一个样本即可，pytorch 会自动帮我们把一个 batch 的样本组装起来，因此，在 RNN 相关的任务中，<code>__getitem__</code> 通常返回的是一个维度为 <span class="math inline">\([seq\_len \times input\_size]\)</span> 的数据。这时，我们会遇到第一个问题，那就是不同样本的 <span class="math inline">\(seq\_len\)</span> 是否相同。如果相同的话，那之后就省事太多了，但如果不同，这个地方就会成为初学者第一道坎。因此，下面就针对 <span class="math inline">\(seq\_len\)</span> 不同的情况介绍一下通用的处理方法。</p>
+<p>首先需要明确的是，如果 <span class="math inline">\(seq\_len\)</span> 不同，那么 pytorch 在组装 batch 的时候会首先报错，因为一个 batch 必须是一个 n-dimensional 的 tensor，<span class="math inline">\(seq\_len\)</span> 不同的话，证明有一个维度的长度是不固定的，那就没法组装成一个方方正正的 tensor 了。因此，在数据预处理时，需要记录下每个样本的 <span class="math inline">\(seq\_len\)</span>，然后统计出一个均值或者最大值，之后，每次取数据的时候，都必须把数据的 <span class="math inline">\(seq\_len\)</span> 填充 (补0) 或者裁剪到这个固定的长度，而且要记得把该样本真实的 <span class="math inline">\(seq\_len\)</span> 也一起取出来 (后面有大用)。例如下面的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, idx)</span>:</span></span><br><span class="line">    <span class="comment"># data: seq_len * input_size</span></span><br><span class="line">    data, label, seq_len = self.train_data[idx]</span><br><span class="line">    <span class="comment"># pad_data: max_seq_len * input_size</span></span><br><span class="line">    pad_data = np.zeros(shape=(self.max_seq_len, data.shape[<span class="number">1</span>]))</span><br><span class="line">    pad_sketch[<span class="number">0</span>:data.shape[<span class="number">0</span>]] = data</span><br><span class="line">    sample = &#123;<span class="string">'data'</span>: pad_data, <span class="string">'label'</span>: label, <span class="string">'seq_len'</span>: seq_len&#125;</span><br><span class="line">    <span class="keyword">return</span> sample</span><br></pre></td></tr></table></figure>
+<p>这样，你从外部拿到的 batch 数据就是一个 <span class="math inline">\([batch\_size \times max\_seq\_len \times input\_size]\)</span> 的 tensor。</p>
+<h3 id="模型搭建">模型搭建</h3>
+<h4 id="rnn">RNN</h4>
+<p>拿到数据后，下面就要正式用 pytorch 的 RNN 了。从我最开始写的那段 RNN 的代码也能看出，RNN 其实就是在一个循环中不断的 forward 而已。但直接循环调用其实是非常低效的，pytoch 内部会用 CUDA 的函数来加速这里的操作，对于直接调 API 的我们来说，只需要知道 <code>RNN</code> 返回给我们的是什么即可。让我们翻开<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.RNN" target="_blank" rel="noopener">官方文档</a>：</p>
+<blockquote>
+<p>class torch.nn.RNN(*args, **kwargs)</p>
+<p>Parameters: <strong>input_size</strong>, <strong>hidden_size</strong>, <strong>num_layers</strong>, …</p>
+<p>Inputs: input, h_0</p>
+<ul>
+<li><strong>input</strong> of shape (seq_len, batch, input_size)</li>
+<li><strong>h_0</strong> of shape (num_layers * num_directions, batch, hidden_size)</li>
+</ul>
+<p>Outputs: output, h_n</p>
+<ul>
+<li><strong>output</strong> of shape (seq_len, batch, num_directions * hidden_size)</li>
+<li><strong>h_n</strong> (num_layers * num_directions, batch, hidden_size)</li>
+</ul>
+</blockquote>
+<p>这里我只摘录初始化参数以及输入输出的 shape，记住这些信息就够了，下面会讲具体怎么用。注意，shape 里面有一个 <code>num_directions</code>，这玩意表示这个 RNN 是单向还是双向的，简单起见，我们这里默认都是单向的 (即<code>num_directions=1</code>)。</p>
+<p>现在借用这篇<a href="https://www.cnblogs.com/lindaxin/p/8052043.html" target="_blank" rel="noopener">文章</a>中的例子做讲解。</p>
+<p>首先，我们初始化一个<code>RNN</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">batch_size = <span class="number">2</span></span><br><span class="line">max_length = <span class="number">3</span></span><br><span class="line">hidden_size = <span class="number">2</span></span><br><span class="line">n_layers = <span class="number">1</span></span><br><span class="line"><span class="comment"># 这个RNN由两个全连接层组成，对应的两个hidden state的维度是2，输入向量维度是1</span></span><br><span class="line">rnn = nn.RNN(<span class="number">1</span>, hidden_size, n_layers, batch_first=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>然后，假设我们的输入数据是这样子的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">x = torch.FloatTensor([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]).resize_(<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">x = Variable(x)  <span class="comment"># [batch, seq, feature], [2, 3, 1]</span></span><br><span class="line">seq_lengths = np.array([<span class="number">1</span>, <span class="number">3</span>])  <span class="comment"># list of integers holding information about the batch size at each sequence step</span></span><br><span class="line">print(x)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tensor([[[ <span class="number">1.</span>],</span><br><span class="line">         [ <span class="number">0.</span>],</span><br><span class="line">         [ <span class="number">0.</span>]],</span><br><span class="line"></span><br><span class="line">        [[ <span class="number">1.</span>],</span><br><span class="line">         [ <span class="number">2.</span>],</span><br><span class="line">         [ <span class="number">3.</span>]]])</span><br></pre></td></tr></table></figure>
+<p>可以看到输入数据的维度是 <span class="math inline">\([2 \times 3 \times 1]\)</span>，也就是 <span class="math inline">\(batch\_size=2\)</span>，<span class="math inline">\(seq\_len=3\)</span>，<span class="math inline">\(input\_size=1\)</span>。但要注意一点，第一个样本的 <span class="math inline">\(seq\_len\)</span> 的有效长度其实是 1，后面两位都补了 0。那么，在实际计算的时候，第一个样本其实只要跑 1 遍 forward 即可，而第二个样本才需要跑 3 遍 forward。</p>
+<h4 id="pack_padded_sequence">pack_padded_sequence</h4>
+<p>那如何让<code>RNN</code>知道不同样本的序列长度不一样呢？幸运的是，pytorch 已经提供了很好的接口来处理这种情况了。如果输入样本的 <span class="math inline">\(seq\_len\)</span> 长度不一样，我们需要把输入的每个样本重新打包 (pack)。具体来讲，pytorch 提供了 <code>torch.nn.utils.rnn.pack_padded_sequence</code> 接口，它会帮我们把输入转为一个 <code>PackedSequence</code> 对象，而后者就包含了每个样本的 <span class="math inline">\(seq\_len\)</span> 信息。<code>pack_padded_sequence</code>最主要的输入是输入数据以及每个样本的 <span class="math inline">\(seq\_len\)</span> 组成的 list。需要注意的是，我们必须把输入数据按照 <span class="math inline">\(seq\_len\)</span> 从大到小排列后才能送入 <code>pack_padded_sequence</code>。我们继续之前的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对seq_len进行排序</span></span><br><span class="line">order_idx = np.argsort(seq_lengths)[::<span class="number">-1</span>]</span><br><span class="line">print(<span class="string">'order_idx:'</span>, str(order_idx))</span><br><span class="line">order_x = x[order_idx.tolist()]</span><br><span class="line">order_seq = seq_lengths[order_idx]</span><br><span class="line">print(order_x)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>order_idx: [<span class="number">1</span> <span class="number">0</span>]</span><br><span class="line">    tensor([[[ <span class="number">1.</span>],</span><br><span class="line">         [ <span class="number">2.</span>],</span><br><span class="line">         [ <span class="number">3.</span>]],</span><br><span class="line"></span><br><span class="line">        [[ <span class="number">1.</span>],</span><br><span class="line">         [ <span class="number">0.</span>],</span><br><span class="line">         [ <span class="number">0.</span>]]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 经过以上处理后，长序列的样本调整到短序列样本之前了</span></span><br><span class="line"><span class="comment"># pack it</span></span><br><span class="line">pack = pack_padded_sequence(order_tensor, order_seq, batch_first=<span class="keyword">True</span>)</span><br><span class="line">print(pack)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;PackedSequence(data=tensor([[ <span class="number">1.</span>],</span><br><span class="line">        [ <span class="number">1.</span>],</span><br><span class="line">        [ <span class="number">2.</span>],</span><br><span class="line">        [ <span class="number">3.</span>]]), batch_sizes=tensor([ <span class="number">2</span>,  <span class="number">1</span>,  <span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
+<p>理解这里的 <code>PackedSequence</code> 是关键。</p>
+<p>前面说到，<code>RNN</code> 其实就是在循环地 forward。在上面这个例子中，它每次 forward 的数据是这样的：</p>
+<center>
+<img src="/images/2018-11-25/rnn.gif" width="300px">
+</center>
+<p>第一个序列中，由于两个样本都有数据，所以可以看作是 <span class="math inline">\(batch\_size=2\)</span> 的输入，后面两个序列只有第一个样本有数据，所以可以看作是 <span class="math inline">\(batch\_size=1\)</span> 的输入。因此，我们其实可以把这三个序列的数据分解为三个 batch 样本，只不过 batch 的大小分别为 2，1，1。到这里你应该清楚 <code>PackedSequence</code> 里的 <code>data</code> 和 <code>batch_size</code> 是什么东西了吧，其实就是把我们的输入数据重新整理打包成 <code>data</code>，同时根据我们传入的 seq list 计算 <code>batch_size</code>，然后，<code>RNN</code> 会根据 <code>batch_size</code> 从打包好的 <code>data</code> 里面取数据，然后一遍遍的执行 forward 函数。</p>
+<p>理解这一步后，主要难点就解决了。</p>
+<h4 id="rnn的输出">RNN的输出</h4>
+<p>从文档中可以看出，<code>RNN</code> 输出两个东西：<code>output</code> 和 <code>h_n</code>。其中，<code>h_n</code> 是跑完整个时间序列后 hidden state 的数值。但 <code>output</code> 又是什么呢？之前不是说过原始的 <code>RNN</code> 只输出 hidden state 吗，为什么这里又会有一个 <code>output</code>？其实，这个 <code>output</code> 并不是我们理解的网络最后的 output vector，而是每次 forward 后计算得到的 hidden state。毕竟 <code>h_n</code> 只保留了最后一步的 hidden state，但中间的 hidden state 也有可能会参与计算，所以 pytorch 把中间每一步输出的 hidden state 都放到 <code>output</code> 中，因此，你可以发现这个 <code>output</code> 的维度是 <code>(seq_len, batch, num_directions * hidden_size)</code>。</p>
+<p>不过，如果你之前用 <code>pack_padded_sequence</code> 打包过数据，那么为了保证输入输出的一致性，pytorch 也会把 <code>output</code> 打包成一个 <code>PackedSequence</code> 对象，我们将上面例子的数据输入 <code>RNN</code> ，看看输出是什么样子的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># initialize</span></span><br><span class="line">h0 = Variable(torch.randn(n_layers, batch_size, hidden_size))</span><br><span class="line"><span class="comment"># forward</span></span><br><span class="line">out, _ = rnn(pack, h0)</span><br><span class="line">print(out)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>PackedSequence(data=tensor([[ <span class="number">-0.3207</span>, <span class="number">-0.4567</span>],</span><br><span class="line">        [ <span class="number">0.6665</span>,  <span class="number">0.0530</span>],</span><br><span class="line">        [ <span class="number">0.4456</span>,  <span class="number">0.1340</span>],</span><br><span class="line">        [ <span class="number">0.3373</span>, <span class="number">-0.3268</span>]]), batch_sizes=tensor([ <span class="number">2</span>,  <span class="number">1</span>,  <span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
+<p>输出的 <code>PackedSequence</code> 中包含两部分，其中 <code>data</code> 才是我们要的 <code>output</code>。但这个 <code>output</code> 的 shape 并不是 <code>(seq_len, batch, num_directions * hidden_size)</code>，因为 pytorch 已经把输入数据中那些填充的 0 去掉了，因此输出来的数据对应的是真实的序列长度。我们要把它重新填充回一个方方正正的 tensor 才方便处理，这里会用到另一个相反的操作函数 <code>torch.nn.utils.pad_packed_sequence</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># unpack</span></span><br><span class="line">unpacked = pad_packed_sequence(out)</span><br><span class="line">out, bz = unpacked[<span class="number">0</span>], unpacked[<span class="number">1</span>]</span><br><span class="line">print(out, bz)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tensor([[[ <span class="number">-0.3207</span>, <span class="number">-0.4567</span>],</span><br><span class="line">         [ <span class="number">0.6665</span>,  <span class="number">0.0530</span>]],</span><br><span class="line"></span><br><span class="line">        [[ <span class="number">0.4456</span>,  <span class="number">0.1340</span>],</span><br><span class="line">         [ <span class="number">0.0000</span>,  <span class="number">0.0000</span>]],</span><br><span class="line"></span><br><span class="line">        [[ <span class="number">0.3373</span>, <span class="number">-0.3268</span>],</span><br><span class="line">         [ <span class="number">0.0000</span>,  <span class="number">0.0000</span>]]]) tensor([ <span class="number">3</span>,  <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>现在，这个 <code>output</code> 的 shape 就是一个标准形式了。</p>
+<p>不过我一般更习惯 <code>batch_size</code> 作为第一个维度，所以可以稍微调整下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># seq_len x batch_size x hidden_size --&gt; batch_size x seq_len x hidden_size</span></span><br><span class="line">out = out.permute((<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>))</span><br><span class="line">print(<span class="string">"output"</span>, out)</span><br><span class="line">print(<span class="string">"input"</span>, order_x)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>output tensor([[[<span class="number">-0.1319</span>, <span class="number">-0.8469</span>],</span><br><span class="line">             [<span class="number">-0.3781</span>, <span class="number">-0.8940</span>],</span><br><span class="line">             [<span class="number">-0.4869</span>, <span class="number">-0.9621</span>]],</span><br><span class="line"></span><br><span class="line">            [[<span class="number">-0.8569</span>, <span class="number">-0.7509</span>],</span><br><span class="line">             [ <span class="number">0.0000</span>,  <span class="number">0.0000</span>],</span><br><span class="line">             [ <span class="number">0.0000</span>,  <span class="number">0.0000</span>]]])</span><br><span class="line">    intput tensor([[[ <span class="number">1.</span>],</span><br><span class="line">             [ <span class="number">2.</span>],</span><br><span class="line">             [ <span class="number">3.</span>]],</span><br><span class="line"></span><br><span class="line">            [[ <span class="number">1.</span>],</span><br><span class="line">             [ <span class="number">0.</span>],</span><br><span class="line">             [ <span class="number">0.</span>]]])</span><br></pre></td></tr></table></figure>
+<p>现在，输入输出就一一对应了。之后，你可以从 <code>output</code> 中取出你需要的 hidden state，然后接个全连接层之类的，得到真正意义上的 output vector。取出 hidden state 一般会用到 <code>torch.gather</code> 函数，比如，如果我想取出最后一个时间序列的 hidden state，可以这样写 (这段代码就不多解释了，请查一下 <code>torch.gather</code> 的用法，自行体会)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bz来自上面的例子, bz=tensor([ 3,  1])</span></span><br><span class="line">bz = (bz - <span class="number">1</span>).view(bz.shape[<span class="number">0</span>], <span class="number">1</span>, <span class="number">-1</span>)</span><br><span class="line">print(bz)</span><br><span class="line">bz = bz.repeat(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">print(bz)</span><br><span class="line">out = torch.gather(out, <span class="number">1</span>, bz)</span><br><span class="line">print(out)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tensor([[[<span class="number">2</span>]], [[<span class="number">0</span>]]])</span><br><span class="line">    tensor([[[<span class="number">2</span>, <span class="number">2</span>]], [<span class="number">0</span>, <span class="number">0</span>]])</span><br><span class="line">    tensor([[[<span class="number">-0.4869</span>, <span class="number">-0.9621</span>]],</span><br><span class="line"></span><br><span class="line">            [[<span class="number">-0.8569</span>, <span class="number">-0.7509</span>]]])</span><br></pre></td></tr></table></figure>
+<p>对了，最后要注意一点，因为 <code>pack_padded_sequence</code> 把输入数据按照 <span class="math inline">\(seq\_len\)</span> 从大到小重新排序了，所以后面在计算 loss 的时候，要么把 <code>output</code> 的顺序重新调整回去，要么把 target 数据的顺序也按照新的 <span class="math inline">\(seq\_len\)</span> 重新排序。当 target 是 label 时，调整起来还算方便，但如果 target 也是序列类型的数据，可能会多点体力活，可以参考这篇<a href="https://zhuanlan.zhihu.com/p/28472545" target="_blank" rel="noopener">文章</a>进行调整。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://www.zhihu.com/question/52200883" target="_blank" rel="noopener">tensor flow dynamic_rnn 与rnn有啥区别？</a></li>
+<li><a href="https://pytorch.org/docs/stable/nn.html#torch.nn.RNN" target="_blank" rel="noopener">pytorch官方文档</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/32103001" target="_blank" rel="noopener">读PyTorch源码学习RNN（1）</a></li>
+<li><a href="https://stackoverflow.com/questions/51030782/why-do-we-pack-the-sequences-in-pytorch" target="_blank" rel="noopener">why do we “pack” the sequences in pytorch?</a></li>
+<li><a href="https://www.cnblogs.com/lindaxin/p/8052043.html" target="_blank" rel="noopener">pytorch对可变长度序列的处理</a></li>
+<li><a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/" target="_blank" rel="noopener">The Unreasonable Effectiveness of Recurrent Neural Networks</a></li>
+<li><a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank" rel="noopener">Understanding LSTM Networks</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/28472545" target="_blank" rel="noopener">pytorch RNN 变长输入 padding</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/" title="RNN，写起来真的烦">https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/pytorch/" rel="tag"># pytorch</a>
+          
+            <a href="/tags/tensorflow/" rel="tag"># tensorflow</a>
+          
+            <a href="/tags/nlp/" rel="tag"># nlp</a>
+          
+            <a href="/tags/rnn/" rel="tag"># rnn</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/03/2018-10-3-paper-note-learning-warped-guidance-for-blind-face-restoration/" rel="next" title="论文笔记：Learning warped guidance for blind face restoration">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Learning warped guidance for blind face restoration
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars2.githubusercontent.com/u/7380327?v=3&u=00ca25dac0efb33afc8eb5a84eae545c398f0c00&s=140"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-rnn"><span class="nav-number">1.</span> <span class="nav-text">什么是 RNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch-中的-rnn"><span class="nav-number">2.</span> <span class="nav-text">pytorch 中的 RNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据处理"><span class="nav-number">2.1.</span> <span class="nav-text">数据处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型搭建"><span class="nav-number">2.2.</span> <span class="nav-text">模型搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rnn"><span class="nav-number">2.2.1.</span> <span class="nav-text">RNN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pack_padded_sequence"><span class="nav-number">2.2.2.</span> <span class="nav-text">pack_padded_sequence</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rnn的输出"><span class="nav-number">2.2.3.</span> <span class="nav-text">RNN的输出</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/';
+          this.page.identifier = '2018/11/25/2018-11-25-how-to-write-rnn-in-pytorch-and-tensorflow/';
+          this.page.title = 'RNN，写起来真的烦';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
