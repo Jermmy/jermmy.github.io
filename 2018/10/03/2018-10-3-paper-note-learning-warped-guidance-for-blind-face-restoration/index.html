@@ -102,15 +102,14 @@
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="这篇论文主要是讲人脸修复的，所谓人脸修复，其实就是将低清的，或者经过压缩等操作的人脸图像进行高清复原。这可以近似为针对人脸的图像修复工作。在图像修复中，我们都会假设退化的图像是高清图像经过某种函数映射后得到的（比如，由高清图像得到一张模糊的图像可能是使用了高斯模糊核），因此，图像修复的本质就是把这个函数映射找出来。由于神经网络可以近似任意函数，因此在深度学习时代，图像修复已经是一个被解决得比较好的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/network-arch.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/wrapnet.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/wrap.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-10-3/recnet.png">
-<meta property="og:updated_time" content="2018-11-25T14:51:14.000Z">
+<meta property="og:updated_time" content="2018-12-05T02:23:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Learning warped guidance for blind face restoration">
 <meta name="twitter:description" content="这篇论文主要是讲人脸修复的，所谓人脸修复，其实就是将低清的，或者经过压缩等操作的人脸图像进行高清复原。这可以近似为针对人脸的图像修复工作。在图像修复中，我们都会假设退化的图像是高清图像经过某种函数映射后得到的（比如，由高清图像得到一张模糊的图像可能是使用了高斯模糊核），因此，图像修复的本质就是把这个函数映射找出来。由于神经网络可以近似任意函数，因此在深度学习时代，图像修复已经是一个被解决得比较好的">
-<meta name="twitter:image" content="https://jermmy.github.io/images/2018-10-3/network-arch.png">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2018-10-3/wrapnet.png">
 
 
 
@@ -414,7 +413,7 @@
 <li>另外，通常的图像修复都是针对一种退化场景设计的，比如，在去噪任务中，可能就只是针对某种或某几种噪声而言，而不考虑图像模糊等其他因素，因此任务相对简单。但如果退化的种类太多，退化函数本身可能会非常复杂，即使神经网络也未必能近似出来。正如标题中 <strong>blind</strong> 所言，退化函数的类型、数量我们是无法事先获悉的。事实上，论文考虑了 jpeg 压缩、高斯模糊、高斯噪声、图片放缩等退化方式，并且对每种方式进行随机组合，因此退化函数是非常复杂的。</li>
 </ol>
 <center>
-<img src="/images/2018-10-3/network-arch.png" width="600px">
+&lt;img src=“/images/2018-10-3/network-arch.jpg” width=“600px”&gt;
 </center>
 <a id="more"></a>
 <h3 id="论文方法">论文方法</h3>
