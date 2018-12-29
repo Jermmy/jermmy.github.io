@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/bag-of-words.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/visual%20vocabulary.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/code-word.png">
-<meta property="og:updated_time" content="2018-01-04T12:27:11.000Z">
+<meta property="og:updated_time" content="2018-12-29T02:34:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅析 Bag of Feature">
 <meta name="twitter:description" content="Bag of Feature 是一种图像特征提取方法，它借鉴了文本分类的思路（Bag of Words），从图像抽象出很多具有代表性的「关键词」，形成一个字典，再统计每张图片中出现的「关键词」数量，得到图片的特征向量。">
@@ -409,7 +409,7 @@
       
         <p>Bag of Feature 是一种图像特征提取方法，它借鉴了文本分类的思路（Bag of Words），从图像抽象出很多具有代表性的「关键词」，形成一个字典，再统计每张图片中出现的「关键词」数量，得到图片的特征向量。</p>
 <center>
-<p><img src="/images/2017-4-29/bag-of-feature.png" width="600px"></p>
+<img src="/images/2017-4-29/bag-of-feature.png" width="500px">
 </center>
 <a id="more"></a>
 <h3 id="bag-of-words-模型">Bag of Words 模型</h3>
@@ -431,7 +431,7 @@
 <li>提取图像特征；</li>
 <li>对特征进行聚类，得到一部字典（ visual vocabulary ）；</li>
 <li>根据字典将图片表示成向量（直方图）；</li>
-<li>训练分类器（这一步严格来讲不属于「Bag of Feature」，但为了系统讲一下分类流程，我将它包含进来）。</li>
+<li>训练分类器或者用 KNN 进行检索（这一步严格来讲不属于「Bag of Feature」的范畴）。</li>
 </ol>
 <p>下面，我们简单分析一下每一步的实现过程。</p>
 <h4 id="提取图像特征">提取图像特征</h4>
@@ -450,7 +450,7 @@
 </figure>
 <p>例如：对于上图这辆车的图片，我们匹配图片的「SIFT」向量与字典中的 visual word，统计出最相似的向量出现的次数，最后得到这幅图片的直方图向量。</p>
 <h4 id="训练分类器">训练分类器</h4>
-<p>当我们得到每幅图片的直方图向量后，剩下的这一步跟以往的步骤是一样的。无非是根据数据库图片的向量以及图片的标签，训练分类器模型。然后对需要预测的图片，我们仍然按照上述方法，提取「SIFT」特征，再根据字典量化直方图向量，用分类器模型对直方图向量进行分类。</p>
+<p>当我们得到每幅图片的直方图向量后，剩下的这一步跟以往的步骤是一样的。无非是根据数据库图片的向量以及图片的标签，训练分类器模型。然后对需要预测的图片，我们仍然按照上述方法，提取「SIFT」特征，再根据字典量化直方图向量，用分类器模型对直方图向量进行分类。当然，也可以直接根据 KNN 算法对直方图向量做相似性判断。</p>
 <h3 id="bag-of-feature-在检索中的应用">Bag of Feature 在检索中的应用</h3>
 <p>「Bag of Feature」虽然是针对图像分类提出的算法，但它同样可以用到图像检索中。检索和分类本质上是同样的，但在细节上会有不同，事实上，我更愿意把检索当成一种精细分类，即得到图片的大致分类后，再在这个分类中找出最相似的图片。</p>
 <p>「Bag of Feature」在检索中的算法流程和分类几乎完全一样，唯一的区别在于，对于原始的 BOF 特征，也就是直方图向量，我们引入 TF-IDF 权值。</p>
@@ -483,7 +483,7 @@ s(\mathbf h, \overline{ \mathbf h}) =\frac{ &lt;\mathbf h, \overline{\mathbf h}&
 <p>由于向量中的每一个变量都是正数，因此余弦值的取值在 0 和 1 之间。如果余弦值为 0，证明向量夹角为 90 度，则这两个向量的相关性很低，图片基本不相似。如果余弦值靠近 1，证明两个向量的夹角靠近 0 度，则两个向量的相关性很高，图片很相似。</p>
 <p>更多关于向量相似性度量的方法，请参考其他文章。吴军老师的《数学之美》中也有更加详细的介绍。</p>
 <h3 id="bag-of-feature-的缺点">Bag of Feature 的缺点</h3>
-<p>没有什么方法会是十全十美的，Bag of Feature 也存在一个明显的不足，那就是它完全没有考虑到特征之间的位置关系，而位置信息对于人理解图片来说，作用是很明显的。有不少学者也提出了针对该缺点的改进，关于改进的方法，这里就不再介绍了。</p>
+<p>Bag of Feature 在提取特征时不需要相关的 label 进行学习，因此是一种弱监督的学习方法。当然，没有什么方法会是十全十美的，Bag of Feature 也存在一个明显的不足，那就是它完全没有考虑到特征之间的位置关系，而位置信息对于人理解图片来说，作用是很明显的。有不少学者也提出了针对该缺点的改进，关于改进的方法，这里就不再介绍了。</p>
 <h3 id="参考">参考</h3>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Bag-of-words_model_in_computer_vision" target="_blank" rel="noopener">Bag-of-words model in computer vision</a></li>
