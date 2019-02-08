@@ -183,10 +183,10 @@
     overflow: hidden;
 }
 
-.swiper-container .snow-container{
+/*.swiper-container .snow-container{
     width: 1080px;
     height: 1920px;
-}
+}*/
 
 .swiper-container .swiper-wrapper{
     width: 1080px;
@@ -224,20 +224,15 @@
     background-size: 100% 100%;
 }
 
-.swiper-slide1 h1{
-    font-size: 70px;color:#fff;letter-spacing: 15px;top:240px;left:165px;position: absolute;
-}
-.swiper-slide1 h2{
-    font-size: 32px;color:#fff;letter-spacing: 10px;top:360px;left:160px;position: absolute;
-}
 .swiper-slide1 h3{
-    font-size: 22px;
+    font-size: 25px;
     color: #ddd;
-    letter-spacing: 3px;
+    letter-spacing: 1px;
     position: absolute;
 }
 .swiper-slide1 .text{
-    font-size: 26px;
+    font-size: 25px;
+    /*font-size: 10%;*/
 }
 .swiper-slide1 .text1{
     top: 30%;
@@ -262,16 +257,19 @@
 }*/
 .swiper-slide1 .text6{
     font-size: 27px;
+    /*font-size: 6%;*/
     top: 29.8%;
     left: 37%;
 }
 .swiper-slide1 .text7{
     font-size: 27px;
+    /*font-size: 6%;*/
     top: 29.8%;
     left: 40%;
 }
 .swiper-slide1 .text8{
     font-size: 27px;
+    /*font-size: 6%;*/
     top: 29.8%;
     left: 43%;
 }
