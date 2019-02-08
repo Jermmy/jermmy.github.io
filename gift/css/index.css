@@ -178,48 +178,38 @@
 .swiper-container{
     width:1080px;
     height:1920px;
+    top: 0px;
+    left: 0px;
     overflow: hidden;
 }
 
+.swiper-container .snow-container{
+    width: 1080px;
+    height: 1920px;
+}
 
-/*#loading{
-    background: transparent url("../img/p1-mobile.png") no-repeat center top;
-    background-size: 100% 100%;
-    width:640px;
-    height:1140px;
-}*/
+.swiper-container .swiper-wrapper{
+    width: 1080px;
+    height: 1920px;
+    top: 0px;
+    left: 0px;
+}
+
+
 #loading{
     background: transparent url("../img/p1-mobile.png") no-repeat center top;
     background-size: 100% 100%;
     width:1080px;
     height:1920px;
 }
-/*#loading .icon{
-    position: absolute;
-    top:80px;left:260px;
-}
-#loading .puple{
-    position: absolute;
-    top:20px;left:430px;
-}*/
+
 #loading h1{
     font-size: 70px;color:#fff;letter-spacing: 15px;top:240px;left:165px;position: absolute;
 }
 #loading h2{
     font-size: 32px;color:#fff;letter-spacing: 10px;top:360px;left:160px;position: absolute;
 }
-/*#loading .line{
-    position: absolute;top: 345px;
-    left: 160px;
-    height:2px;
-    background: #fff;width:325px;
-}
-#loading .download{
-    width:325px;height:65px;display:block;
-    font-size: 35px;color:#fff;border-radius: 40px;
-    background: #00a2ff;text-align: center;
-    line-height: 65px;position: absolute;top:530px;left:160px;
-}*/
+
 #fountainTextG{
     padding:0px 225px;
     width:190px;
@@ -847,16 +837,7 @@
 .star:nth-child(7) {
     transform: translate(-5px, 20px);
 }
-/*.mountain {
-    width: 490px;
-    height: 490px;
-    margin: 10px auto 0;
-    background: linear-gradient(-225deg, #796f74, #534a4f 50%, #4a4246 50%);
-    border-radius: 60px;
-    transform: rotate(-45deg);
-    position: relative;
-    z-index: -2;
-}*/
+
 .train-container {
     position: absolute;
     bottom: -40px;

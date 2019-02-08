@@ -3,6 +3,26 @@
 
 <head lang="en">
     <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-transform ">
+    <script type="text/javascript">
+        var phoneWidth = parseInt(window.screen.width);
+        var phoneScale = phoneWidth/640;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=640, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=640, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
     <link rel="stylesheet" href="css/swiper-3.4.2.min.css">
     <link rel="stylesheet" href="css/animate.min.css">
     <link rel="stylesheet" href="css/index.css">
