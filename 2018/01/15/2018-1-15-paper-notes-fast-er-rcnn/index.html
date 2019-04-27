@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/sliding%20window.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/RPN.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/rcnn13.png">
-<meta property="og:updated_time" content="2018-03-30T02:52:23.000Z">
+<meta property="og:updated_time" content="2019-04-27T01:42:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Fast(er) RCNN">
 <meta name="twitter:description" content="在 RCNN 初步试水取得成功后，研究人员又迅速跟进，针对 RCNN 中的几点不足提出改进，接连推出了 fast-rcnn 和 faster-rcnn。关于这两篇论文，网上相关的文章实在是多如牛毛，因此，本篇博文不打算深入讲解，只是不落俗套地介绍一下它们改进的痛点，基本流程，以及我自己对一些小问题的理解。">
@@ -414,7 +414,7 @@
 <p>除此之外，为了简化训练的流程。作者把 SVM 分类器换成 Softmax，和 CNN 整合成一个网络，同时把 bounding box regression 也整合进网络中（相当于同一个网络同时进行物体判别和区域微调）。这样，可以在保证准确率的同时，提高训练的效率。</p>
 <p>Fast RCNN 的改进可以用下面两幅图概括。其中，左图是原 RCNN 的做法，而右图则是 Fast RCNN 的做法。</p>
 <center>
-<p><img src="/images/2018-1-15/rcnn-to-fast-rcnn.png"></p>
+<img src="/images/2018-1-15/rcnn-to-fast-rcnn.png">
 </center>
 <p>以上两点基本就是 Fast RCNN 所做的改进了。替换 SVM 这一步是很容易实现的，整合线性模型的操作也可以借助 <a href="https://zhuanlan.zhihu.com/p/22190532" target="_blank" rel="noopener">multi-task CNN</a> 的思想实现，但共享卷积操作却会遇到一个严重的问题。因为卷积得到的特征，最后都需要送入全联接层进行降维等操作，而全联接层输入向量的维度必须是固定。由于我们现在是在 feature map 上，根据 SS 提取的候选区域，截取了一小块区域的特征作为该区域的图片特征，因此肯定不符合全联接层的要求（原本的全联接层是针对整个 feature map 的维度进行计算的）。所以下面重点分析一下论文是怎么处理的。</p>
 <h3 id="roi-pooling-layer">ROI Pooling Layer</h3>
@@ -627,7 +627,7 @@ L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
