@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/sliding%20window.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/RPN.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2018-1-15/rcnn13.png">
-<meta property="og:updated_time" content="2019-04-27T01:42:38.000Z">
+<meta property="og:updated_time" content="2019-04-28T08:23:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Fast(er) RCNN">
 <meta name="twitter:description" content="在 RCNN 初步试水取得成功后，研究人员又迅速跟进，针对 RCNN 中的几点不足提出改进，接连推出了 fast-rcnn 和 faster-rcnn。关于这两篇论文，网上相关的文章实在是多如牛毛，因此，本篇博文不打算深入讲解，只是不落俗套地介绍一下它们改进的痛点，基本流程，以及我自己对一些小问题的理解。">
@@ -365,6 +365,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -422,7 +433,7 @@
 <p>那要如何调整 pooling 后的特征呢？论文提出了一种 ROI Pooling Layer 的方法（ROI 指的是 Region of Interest）。事实上，这种方法并不是 Fast RCNN 的原创，而是借鉴了 <a href="https://arxiv.org/abs/1406.4729" target="_blank" rel="noopener">SPPNet</a> 的思路。关于 SPPNet，网上资料很多，就不再赘述了，所以我开门见山讲一下 ROI Pooling Layer 是怎么处理的。假设首个全联接层接收的特征维度是 <span class="math inline">\(H * W * D\)</span>，例如 VGG16 的第一个 FC 层的输入是 7 * 7 * 512，其中 512 表示 feature map 的层数。那么，ROI Pooling Layer 的目标，就是让 feature map 上的 ROI 区域，在经过 pooling 操作后，其特征输出维度满足 <span class="math inline">\(H * W\)</span>。具体做法是，对原本 max pooling 的单位网格进行调整，使得 pooling 的每个网格大小动态调整为 <span class="math inline">\(\frac{h}{H} * \frac{w}{W}\)</span>（假设 ROI 区域的长宽为 <span class="math inline">\(h * w\)</span>）。这样，一个 ROI 区域可以得到 <span class="math inline">\(H * W\)</span> 个网格。然后，每个网格内依然采用 max pooling 操作。如此一来，不管 ROI 区域大小如何，最终得到的特征维度都是 <span class="math inline">\(H * W * D\)</span>。</p>
 <p>下图显示的，是在一张 feature map 上，对一个 5 * 7 的 ROI 区域进行 ROI Pooling 的结果，最后得到 2 * 2 的特征。</p>
 <center>
-<p><img src="/images/2018-1-15/roi pooling.gif" width="500px"></p>
+<img src="/images/2018-1-15/roi pooling.gif" width="500px">
 </center>
 <p>这时，可能有人会问，如果 ROI 区域太小怎么办？比如，拿 VGG16 来说，它要求 Pooling 后的特征为 7 * 7 * 512，如果碰巧 ROI 区域只有 6 * 6 大小怎么办？还是同样的办法，每个网格的大小取 <span class="math inline">\(\frac{6}{7} * \frac{6}{7} = 0.85 * 0.85\)</span>，然后，以宽为例，按照这样的间隔取网格：</p>
 <p><span class="math inline">\([0, 0.85, 1.7, 2.55, 3.4, 4.25, 5.1, 5.95]\)</span>，</p>
@@ -448,7 +459,7 @@ L(p,u,t^u,v)=L_{cls}(p,u)+\lambda[u \ge 1]L_{loc}(t^u,v)
 <p>上面就是 RPN 的基本思想了。总的来说，可以认为 RPN 就是在滑动窗口上，接着的一个小网络，这个网络会判断窗口内是否有物体，以及会对原图的窗口进行粗调整（原图的窗口是 feature map 上的窗口按比例换算得到的）。</p>
 <p>不过，直接根据滑动窗口换算回原图存在一个 bug。试想一下，如果 ground truth 只占这个滑动窗口的一部分（也就是说二者的 IoU 不满足筛选条件），但这一部分又刚好是物体的重要部位，那我们应该认为这个窗口有物体还是没物体呢？</p>
 <center>
-<p><img src="/images/2018-1-15/sliding window.png" width="400px"></p>
+<img src="/images/2018-1-15/sliding window.png" width="400px">
 </center>
 <p>所以，为了防止这种尴尬的事情发生，或者说，为了防止有些窗口被漏捡，我们在换算回原图的窗口时，要尝试不同的窗口尺寸，而不是规规矩矩按照固定的缩放比例。比如，我们可以稍微将原图的窗口调大一些，或调小一些，或将长宽的比例做调整，总之，就是尽可能 match 到窗口内的 ground truth。论文一共试了 k 种组合（实验中，取了 9 种组合，窗口面积为 {128, 256, 512} x 长宽比为 {1:1, 1:2, 2:1}）。feature map 上的一个点对应一个窗口，这个窗口内的特征输入 RPN 网络后，最终输出 <span class="math inline">\(k * 2\)</span> 个分类结果（表示 k 个窗口分别对应前景还是后景）以及 <span class="math inline">\(k * 4\)</span> 个窗口粗调整的结果（表示 k 个窗口应该怎样调整）。论文中，这些原图上的窗口又被称为 <strong>Anchor</strong>，以便和 feature map 上的滑动窗口区分开。注意，feature map 上的滑动窗口尺寸始终是 <span class="math inline">\(3 * 3\)</span>，而且每次都只移动一步。有人可能会问，如果滑动窗口对应的 Anchor 中，存在多个物体怎么办？不影响的，因为 RPN 只判断前景跟后景，不做细致分类，而且，RPN 的输出中，k 个窗口会对应 k 个输出。如果有两个 Anchor 对应两个物体，那么，RPN 会将这两个 Anchor 都标记为 前景，并且根据它们各自的输出，微调这两个 Anchor 的位置。</p>
 <p>训练的时候，作者随机挑选两张图片，并从每张图片上总共挑出 256 个 ground truth 作为 proposals（包括前景和后景），然后，再根据滑动窗口，挑选出大约 2400 个 Anchors。RPN 的 loss 函数包括两部分： <span class="math display">\[
@@ -461,13 +472,13 @@ L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{
 <p>归一化项中，<span class="math inline">\(N_{cls}\)</span> 取 batch 的大小（256），<span class="math inline">\(N_{reg}\)</span> 取 Anchors 的数目（约为 2400）。</p>
 <p>总的来说，RPN 可以用下面这幅图表示：</p>
 <center>
-<p><img src="/images/2018-1-15/RPN.png"></p>
+<img src="/images/2018-1-15/RPN.png">
 </center>
 <h3 id="rpn-fast-rcnn">RPN + Fast RCNN</h3>
 <p>RPN 训练完成后，我们相当于得到一个神经网络版本的 Selective Search。那接下来的工作跟 Fast RCNN 就基本一样了，根据 RPN 找到的 proposal，Fast RCNN 在 feature map 上对这个 proposal 区域的特征进一步分析，判断是什么物体，以及对窗口位置进一步微调。</p>
 <p>不过，这其中有很多可以优化的细节。比如，在 RPN 网络之前，我们需要先对图像做卷积操作，而这一部分操作和 Fast RCNN 是可以共享的。这里借用<a href="http://shartoo.github.io/RCNN-series/" target="_blank" rel="noopener">参考博文</a>的一张图来介绍一下整个网络架构。</p>
 <center>
-<p><img src="/images/2018-1-15/rcnn13.png"></p>
+<img src="/images/2018-1-15/rcnn13.png">
 </center>
 <p>首先，原始图片会经过一个共享的卷积层，得到 feature map。之后，RPN 在这个 feature map 上按照之前的描述提取 proposal，而 Fast RCNN 部分会继续输入到它的卷积层中，得到更高层的 feature map，然后在这个 feature map 上，根据提取到的 proposal，按照 Fast RCNN 的流程判断物体，以及做 bounding box regression。</p>
 <p>训练的时候，RPN 和 Fast RCNN 是分开交替进行训练的，这里面涉及到的 trick 较多，很多文章也都有介绍，我这里就不赘述了。预测部分则是一气呵成，不用再经过其他处理，完全实现了 end-to-end。</p>
@@ -579,7 +590,12 @@ L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{
           
   <div class="comments" id="comments">
     
-      <div id="SOHUCS"></div>
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -849,6 +865,26 @@ L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{
 
   
 
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/';
+          this.page.identifier = '2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/';
+          this.page.title = '论文笔记：Fast(er) RCNN';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
 
 
 
@@ -867,10 +903,6 @@ L({p_i}, {t_i})=\frac{1}{N_{cls}}\sum_i L_{cls}(p_i, p_i^*)+\lambda \frac{1}{N_{
   
 
 
-
-
-
-  
 
 
 
