@@ -83,7 +83,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-18/旋转、缩放图像1.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-18/屏幕快照%202016-07-19%20下午10.41.39.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2016-7-18/屏幕快照%202016-07-19%20下午10.42.01.png">
-<meta property="og:updated_time" content="2018-01-04T12:08:47.000Z">
+<meta property="og:updated_time" content="2019-05-02T03:50:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用双线性插值做旋转缩放操作">
 <meta name="twitter:description" content="缩放操作 缩放无非就是放大和缩小两种，不管是哪种操作，都可以得到长宽各自缩放的比值。得到的新图要么是像素增加了（拉长），要么是像素减少了（缩短）。不管是哪种情况，都需要对新图中的像素值赋值（也叫插值）。本文只介绍一下最常见的最邻近插值和双线性插值。">
@@ -393,9 +393,7 @@
 <p>二、向后映射：这里我们是反过来求出新图到原图的映射变换（按照线性代数的知识，就是将向前映射取一个逆），然后遍历新图中的每个像素，计算出它们在原图中的对应位置，再取值。同样的，这个位置可能不是整数，简单的做法可以直接取整，比较好的做法是综合一下周围点的像素值取一个均值。前一种做法称为最邻近插值，后一种做法根据综合像素的方式又分为几种方法，这里只讲最常见的双线性插值。</p>
 <h4 id="最邻近插值">最邻近插值</h4>
 <p>我们就拿一个方向的缩放为例。</p>
-<figure>
-<img src="/images/2016-7-18/屏幕快照%202016-07-18%20下午10.25.07.png" alt="屏幕快照 2016-07-18 下午10.25.07"><figcaption>屏幕快照 2016-07-18 下午10.25.07</figcaption>
-</figure>
+<p><img src="/images/2016-7-18/屏幕快照%202016-07-18%20下午10.25.07.png"></p>
 <p>假设右边两个像素点的图是原图，左边四个像素点的图是新图，对于这种宽度扩大两倍，高度保持不变的情况，最邻近插值的做法是这样：我们先计算出新图回到原图的缩放因子是 0.5，所以，对新图中的每个像素，我们计算出它们乘以 0.5 后得到的位置，这个位置是它们对应于原图的位置。新图中，1、2 像素点的位置分别为 (0,0)、(0,1)，缩小后得到的新位置为 (0,0)，也就是它们对应原图中的 1 像素点，所以它们的像素值都取原图中 1 像素点的值，同理，3、4 像素点的值取原图中 2 像素点的值。这样，新图的像素肯定能被插满。对于原图缩小的情况道理是一样的。</p>
 <p>这种做法的优点是简单粗暴，计算量小且容易理解，缺点是由于太过简单粗暴，导致没有很好的利用原图的信息，比方说上图，原图被拉长后，1 和 2 之间的像素应该要有一个过渡，这样人眼看的时候才不会觉得突兀（或者说变化太快），图像中常见的锯齿就是这种由突兀产生的。</p>
 <p>上一段简单的代码，用到了 CImg 库（太简单不解释）：</p>
@@ -442,7 +440,6 @@ y_1=y_0*cosA+x_0*sinA
 </center>
 <h3 id="参考">参考</h3>
 <p><a href="http://blog.csdn.net/liyuan02/article/details/6750828" target="_blank" rel="noopener">图像旋转算法原理– 旋转矩阵</a></p>
-<h5 id="以上代码均在-httpsgithub.comjermmycomputervision_hwtreemasterex1src">以上代码均在 https://github.com/Jermmy/ComputerVision_hw/tree/master/Ex1/src</h5>
 
       
     </div>
@@ -677,7 +674,7 @@ y_1=y_0*cosA+x_0*sinA
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#缩放操作"><span class="nav-number">1.</span> <span class="nav-text">缩放操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是插值"><span class="nav-number">1.1.</span> <span class="nav-text">什么是插值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最邻近插值"><span class="nav-number">1.2.</span> <span class="nav-text">最邻近插值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双线性插值"><span class="nav-number">1.3.</span> <span class="nav-text">双线性插值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转操作"><span class="nav-number">2.</span> <span class="nav-text">旋转操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#以上代码均在-httpsgithub.comjermmycomputervision_hwtreemasterex1src"><span class="nav-number">3.0.1.</span> <span class="nav-text">以上代码均在 https://github.com/Jermmy/ComputerVision_hw/tree/master/Ex1/src</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#缩放操作"><span class="nav-number">1.</span> <span class="nav-text">缩放操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是插值"><span class="nav-number">1.1.</span> <span class="nav-text">什么是插值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最邻近插值"><span class="nav-number">1.2.</span> <span class="nav-text">最邻近插值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#双线性插值"><span class="nav-number">1.3.</span> <span class="nav-text">双线性插值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转操作"><span class="nav-number">2.</span> <span class="nav-text">旋转操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

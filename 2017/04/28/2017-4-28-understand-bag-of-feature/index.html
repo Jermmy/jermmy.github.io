@@ -78,9 +78,8 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/bag-of-feature.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/bag-of-words.png">
-<meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/visual%20vocabulary.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-29/code-word.png">
-<meta property="og:updated_time" content="2018-12-29T02:34:26.000Z">
+<meta property="og:updated_time" content="2019-04-29T09:53:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅析 Bag of Feature">
 <meta name="twitter:description" content="Bag of Feature 是一种图像特征提取方法，它借鉴了文本分类的思路（Bag of Words），从图像抽象出很多具有代表性的「关键词」，形成一个字典，再统计每张图片中出现的「关键词」数量，得到图片的特征向量。">
@@ -389,9 +388,9 @@
 <h3 id="bag-of-words-模型">Bag of Words 模型</h3>
 <p>要了解「Bag of Feature」，首先要知道「Bag of Words」。</p>
 <p>「Bag of Words」 是文本分类中一种通俗易懂的策略。一般来讲，如果我们要了解一段文本的主要内容，最行之有效的策略是抓取文本中的关键词，根据关键词出现的频率确定这段文本的中心思想。比如：如果一则新闻中经常出现「iraq」、「terrorists」，那么，我们可以认为这则新闻应该跟伊拉克的恐怖主义有关。而如果一则新闻中出现较多的关键词是「soviet」、「cuba」，我们又可以猜测这则新闻是关于冷战的（见下图）。</p>
-<figure>
-<img src="/images/2017-4-29/bag-of-words.png" alt="bag-of-words"><figcaption>bag-of-words</figcaption>
-</figure>
+<center>
+<img src="/images/2017-4-29/bag-of-words.png" width="400px">
+</center>
 <p>这里所说的关键词，就是<strong>「Bag of words」</strong>中的 <strong>words</strong> ，它们是区分度较高的单词。根据这些 words ，我们可以很快地识别出文章的内容，并快速地对文章进行分类。</p>
 <p>而<strong>「Bag of Feature」</strong>也是借鉴了这种思路，只不过在图像中，我们抽出的不再是一个个「word」，而是图像的关键特征「Feature」，所以研究人员将它更名为「Bag of Feature」。</p>
 <h3 id="bag-of-feature-算法">Bag of Feature 算法</h3>
@@ -412,16 +411,16 @@
 <p>特征必须具有较高的区分度，而且要满足旋转不变性以及尺寸不变性等，因此，我们通常都会采用「SIFT」特征（有时为了降低计算量，也会采用其他特征，如：SURF ）。「SIFT」会从图片上提取出很多特征点，每个特征点都是 128 维的向量，因此，如果图片足够多的话，我们会提取出一个巨大的特征向量库。</p>
 <h4 id="训练字典-visual-vocabulary">训练字典（ visual vocabulary ）</h4>
 <p>提取完特征后，我们会采用一些聚类算法对这些特征向量进行聚类。最常用的聚类算法是 <strong>k-means</strong>。至于 k-means 中的 k 如何取，要根据具体情况来确定。另外，由于特征的数量可能非常庞大，这个聚类的过程也会非常漫长。</p>
-<figure>
-<img src="/images/2017-4-29/visual%20vocabulary.png" alt="visual vocabulary"><figcaption>visual vocabulary</figcaption>
-</figure>
+<center>
+&lt;img src=“/images/2017-4-29/visual vocabulary.png” width=“400px”
+</center>
 <p>聚类完成后，我们就得到了这 k 个向量组成的字典，这 k 个向量有一个通用的表达，叫 <strong>visual word</strong>。</p>
 <h4 id="图片直方图表示">图片直方图表示</h4>
 <p>上一步训练得到的字典，是为了这一步对图像特征进行量化。对于一幅图像而言，我们可以提取出大量的「SIFT」特征点，但这些特征点仍然属于一种浅层（low level）的表达，缺乏代表性。因此，这一步的目标，是根据字典重新提取图像的高层特征。</p>
 <p>具体做法是，对于图像中的每一个「SIFT」特征，都可以在字典中找到一个最相似的 visual word，这样，我们可以统计一个 k 维的直方图，代表该图像的「SIFT」特征在字典中的相似度频率。</p>
-<figure>
-<img src="/images/2017-4-29/code-word.png" alt="code-word"><figcaption>code-word</figcaption>
-</figure>
+<center>
+<img src="/images/2017-4-29/code-word.png" width="400px">
+</center>
 <p>例如：对于上图这辆车的图片，我们匹配图片的「SIFT」向量与字典中的 visual word，统计出最相似的向量出现的次数，最后得到这幅图片的直方图向量。</p>
 <h4 id="训练分类器">训练分类器</h4>
 <p>当我们得到每幅图片的直方图向量后，剩下的这一步跟以往的步骤是一样的。无非是根据数据库图片的向量以及图片的标签，训练分类器模型。然后对需要预测的图片，我们仍然按照上述方法，提取「SIFT」特征，再根据字典量化直方图向量，用分类器模型对直方图向量进行分类。当然，也可以直接根据 KNN 算法对直方图向量做相似性判断。</p>

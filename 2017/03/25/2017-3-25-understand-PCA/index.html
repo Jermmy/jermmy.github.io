@@ -76,7 +76,7 @@
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="最近频繁在论文中看到「PCA」的影子，所以今天决定好好把「PCA」的原理和算法过程弄清楚。 「PCA」是什么 PCA，又称主成分分析，英文全称「Principal Components Analysis」。维基百科上的解释是：「PCA」是一种分析、简化数据集的技术，经常用于减少数据集的维数，同时保持数据集中对方差贡献最大的特征。说得通俗一点，就是把数据集中重要的特征保存下来，把不重要的特征去除掉。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-30T05:42:19.000Z">
+<meta property="og:updated_time" content="2019-05-02T03:35:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCA算法浅析">
 <meta name="twitter:description" content="最近频繁在论文中看到「PCA」的影子，所以今天决定好好把「PCA」的原理和算法过程弄清楚。 「PCA」是什么 PCA，又称主成分分析，英文全称「Principal Components Analysis」。维基百科上的解释是：「PCA」是一种分析、简化数据集的技术，经常用于减少数据集的维数，同时保持数据集中对方差贡献最大的特征。说得通俗一点，就是把数据集中重要的特征保存下来，把不重要的特征去除掉。">
@@ -409,7 +409,7 @@ eigenvectors=\left( \begin{matrix} -0.735178656 &amp; -0.677873399 \\ 0.67787339
 FinalData(m*k)=\begin{array}{c|lcr} x \\ \hline -0.82797 \\ 1.77758 \\ -0.992197494 \\ -0.27421 \\ -1.67580 \\ -0.91294 \\ 0.09910 \\ 1.14457 \\ 0.43804 \\ 1.22382 \\  \end{array}
 \]</span> 这样，我们就将原始的 n 维特征数据变成了 k 维（本例中，是 2 维到 1 维）。</p>
 <h4 id="总结">总结</h4>
-<p>讲到这，「PCA」的流程就基本结束了。 不过，总结之前还有个细节要交代。虽然 step1 的时候我们已经对数据做了归一化，让数据的特征值都平移到原点附近，但对不同特征之间方差差异较大的问题仍然没解决（比如：样本第一个特征是汽车速度「0～100」，第二个特征是汽车座位数「2～6」，那么很明显，第一个特征的方差比第二个大很多）。不解决这个问题会有什么问题暂不清楚。消除这种差异的方法，除了减去均值外，还需要除以各自的标准差，流程归纳如下：</p>
+<p>讲到这，「PCA」的流程就基本结束了。 不过，总结之前还有个细节要交代。虽然 step1 的时候我们已经对数据做了归一化，让数据的特征值都平移到原点附近，但对不同特征之间方差差异较大的问题仍然没解决（比如：样本第一个特征是汽车速度「0～100」，第二个特征是汽车座位数「2～6」，那么很明显，第一个特征的方差比第二个大很多）。这个问题会导致方差较大的特征对样本起到主导作用。为了消除这种差异的方法，除了减去均值外，还需要除以各自的标准差，流程归纳如下：</p>
 <ol type="1">
 <li>Let <span class="math inline">\(\mu = \frac{1}{m} \sum_{i=1}^m{x^{(i)}}\)</span></li>
 <li>Replace each <span class="math inline">\(x^{(i)} \text{with} \  x^{(i)}-\mu\)</span></li>

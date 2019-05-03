@@ -80,7 +80,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-y-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/rotate-z-axis.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-3-28/3d-angle-rotation.png">
-<meta property="og:updated_time" content="2017-10-18T09:17:44.000Z">
+<meta property="og:updated_time" content="2019-05-02T07:21:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3D中的旋转变换">
 <meta name="twitter:description" content="相比 2D 中的旋转变换，3D 中的旋转变换复杂了很多。关于 2D 空间的旋转，可以看这篇文章。本文主要粗略地探讨一下 3D 空间中的旋转。 旋转的要素 所谓旋转要素就是说，我们只有知道了这些条件，才知道怎么旋转一个物体。回忆 2D 空间中的旋转，我们需要确定旋转中心、旋转角以及旋转方向才能旋转一个图形。以此类推，到了 3D 空间，我们仍然需要确定三个要素：一个旋转轴、旋转角以及旋转方向。 下面，">
@@ -390,7 +390,7 @@
 <h3 id="绕-x-y-z-轴旋转">绕 x / y / z 轴旋转</h3>
 <p>这是最简单的旋转情况，只要把 2D 中的旋转延伸到 3D 空间就可以了。</p>
 <h4 id="绕-x-轴旋转">绕 x 轴旋转</h4>
-<p><img src="/images/2017-3-28/rotate-x-axis.png" alt="rotate-x-axis"> 上图是一个绕 x 轴旋转的图示。假设我们需要从点(<span class="math inline">\(x, y, z\)</span>)绕 x 轴旋转 <span class="math inline">\(\theta\)</span> 角到点 (<span class="math inline">\(x^,, y^,, z^,\)</span>)，那么，旋转过程中，x 的坐标值始终都是固定不变的，因此，我们可以把它当作是在<span class="math inline">\(x=x^,\)</span>这个平面上进行旋转，从而退化成一个 2D 旋转的问题。 上图右边的两个矩阵，上面那个是 2D 旋转矩阵，而底下那个只是把该矩阵延伸到 3D 空间而已（为了将平移也纳入矩阵运算，3D 的变换都是采用齐次坐标）。因为 x 轴是旋转轴，因此实际上是在 yoz 平面上做 2D 旋转。只要你知道 2D 空间那个旋转矩阵怎么计算，3D 的变换只是依葫芦画瓢而已。</p>
+<p><img src="/images/2017-3-28/rotate-x-axis.png" alt="rotate-x-axis"> 上图是一个绕 x 轴旋转的图示。假设我们需要从点(<span class="math inline">\(x, y, z\)</span>)绕 x 轴旋转 <span class="math inline">\(\theta\)</span> 角到点 (<span class="math inline">\(x^{&#39;}, y^{&#39;}, z^{&#39;}\)</span>)，那么，旋转过程中，x 的坐标值始终都是固定不变的，因此，我们可以把它当作是在<span class="math inline">\(x=x^{&#39;}\)</span>这个平面上进行旋转，从而退化成一个 2D 旋转的问题。 上图右边的两个矩阵，上面那个是 2D 旋转矩阵，而底下那个只是把该矩阵延伸到 3D 空间而已（为了将平移也纳入矩阵运算，3D 的变换都是采用齐次坐标）。因为 x 轴是旋转轴，因此实际上是在 yoz 平面上做 2D 旋转。只要你知道 2D 空间那个旋转矩阵怎么计算，3D 的变换只是依葫芦画瓢而已。</p>
 <h4 id="绕-y-轴旋转">绕 y 轴旋转</h4>
 <p>同理，这里不再赘述。 <img src="/images/2017-3-28/rotate-y-axis.png" alt="rotate-y-axis"></p>
 <h4 id="绕-z-轴旋转">绕 z 轴旋转</h4>
