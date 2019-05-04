@@ -1407,7 +1407,7 @@
       
         
           <p>关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：<strong><a href="https://en.wikipedia.org/wiki/ID3_algorithm" target="_blank" rel="noopener">ID3</a></strong>，<strong><a href="https://en.wikipedia.org/wiki/C4.5_algorithm" target="_blank" rel="noopener">C4.5</a></strong> 以及 <strong><a href="https://en.wikipedia.org/wiki/Predictive_analytics#Classification_and_regression_trees_.28CART.29" target="_blank" rel="noopener">CART</a></strong>。</p>
-<h3 id="构造的原则">构造的原则</h3>
+<h2 id="构造的原则">构造的原则</h2>
 <p>熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而决策树的生成其实是依次挑选这些属性组成自己的节点，到最终可以明确得出结论的时候（也就是叶子结点），整棵树便生成了。所以，我们的目标就是按照某种方法依次挑选出这些属性。</p>
 <p>我们挑选的原则是：每次选出这个属性后，可以最大限度地减小分类的可能性。回到 gay 这个问题，如果摆在我们眼前的属性有：「性取向」，「是否喜欢日漫」，「是否长发披肩」，那么，选择「性取向」这个属性，对我们之后的判断，帮助无疑是最大的。因为得知「性取向」之后，基本也就得到结论了。所以，对这个例子而言，「性取向」是我们优先挑选的属性。</p>
 <p>那么，我们如何衡量这种帮助的大小呢？请往下看👇。</p>
