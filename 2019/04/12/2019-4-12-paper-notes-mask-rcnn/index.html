@@ -85,7 +85,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/roialign-roipooling.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/loss.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/feature.jpg">
-<meta property="og:updated_time" content="2019-04-28T08:15:28.000Z">
+<meta property="og:updated_time" content="2019-05-10T07:50:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Mask R-CNN">
 <meta name="twitter:description" content="之前在一次组会上，师弟诉苦说他用 UNet 处理一个病灶分割的任务，但效果极差，我看了他的数据后发现，那些病灶区域比起整张图而言非常的小，而 UNet 采用的损失函数通常是逐像素的分类损失，如此一来，网络只要能够分割出大部分背景，那么 loss 的值就可以下降很多，自然无法精细地分割出那些细小的病灶。反过来想，这其实类似于正负样本极不均衡的情况，网络拟合了大部分负样本后，即使正样本拟合得较差，整体">

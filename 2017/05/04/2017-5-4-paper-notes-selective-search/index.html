@@ -79,7 +79,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-4/result.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-4/image%20seg.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-4/algorithm.png">
-<meta property="og:updated_time" content="2017-09-03T14:12:51.000Z">
+<meta property="og:updated_time" content="2019-05-05T01:55:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Selective Search for Object Recognition">
 <meta name="twitter:description" content="与 Selective Search 初次见面是在著名的物体检测论文 Rich feature hierarchies for accurate object detection and semantic segmentation ，因此，这篇论文算是阅读 R-CNN 的准备。 这篇论文的标题虽然也提到了 Object Recognition ，但就创新点而言，其实在 Selective Sear">
@@ -384,15 +384,15 @@
 <p>这篇论文的标题虽然也提到了 Object Recognition ，但就创新点而言，其实在 Selective Search 。所以，这里只简单介绍 Selective Search 的思想和算法过程，对于 Object Recognition 则不再赘述。</p>
 <h3 id="什么是-selective-search">什么是 Selective Search</h3>
 <p>Selective Search，说的简单点，就是从图片中找出物体可能存在的区域。</p>
-<figure>
-<img src="/images/2017-5-4/result.png" alt="result"><figcaption>result</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-4/result.png" width="400px">
+</center>
 <p>上面这幅宇航员的图片中，那些红色的框就是 Selective Search 找出来的可能存在物体的区域。</p>
 <a id="more"></a>
 <p>在进一步探讨它的原理之前，我们分析一下，如何判别哪些 region 属于一个物体？</p>
-<figure>
-<img src="/images/2017-5-4/image%20seg.png" alt="image seg"><figcaption>image seg</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-4/image seg.png" width="400px">
+</center>
 <p>作者在论文中用以上四幅图，分别描述了四种可能的情况：</p>
 <ol type="1">
 <li>图 a ，物体之间可能存在层级关系，比如：碗里有个勺；</li>
@@ -402,7 +402,7 @@
 </ol>
 <p>所以，我们没法用单一的特征来定位物体，需要综合考虑多种策略，这一点是 Selective Search 精要所在。</p>
 <h3 id="需要考虑的问题">需要考虑的问题</h3>
-<p>在学习 Selective Search 算法之前，我曾在计算机视觉课上学到过关于物体（主要是人脸）检测的方法。通常来说，最常规也是最简单粗暴的方法，就是用不同尺寸的矩形框，一行一行地扫描整张图像，通过提取矩形框内的特征判断是否是待检测物体。这种方法的复杂度极高，所以又被称为 <strong>exhaustive search</strong>。在人脸识别中，由于使用了 Haar 特征，因此可以借助 <strong>Paul Viola</strong> 和 <strong>Michael Jones</strong> 两位大牛提出的积分图，使检测在常规时间内完成。但并不是每种特征都适用于积分图，尤其在神经网络中，积分图这种动态规划的思路就没什么作用了。</p>
+<p>在学习 Selective Search 算法之前，我曾在计算机视觉课上学到过关于物体（主要是人脸）检测的方法。通常来说，最常规也是最简单粗暴的方法，就是用不同尺寸的矩形框，一行一行地扫描整张图像，通过提取矩形框内的特征判断是否是待检测物体。这种方法的复杂度极高，所以又被称为 <strong>exhaustive search</strong>。在人脸识别中，由于使用了 Haar 特征，因此可以借助 <strong>Paul Viola</strong> 和 <strong>Michael Jones</strong> 提出的积分图，使检测在常规时间内完成。但并不是每种特征都适用于积分图，尤其在神经网络中，积分图这种动态规划的思路就没什么作用了。</p>
 <p>针对传统方法的不足，Selective Search 从三个角度提出了改进：</p>
 <ol type="1">
 <li>我们没法事先得知物体的大小，在传统方法中需要用不同尺寸的矩形框检测物体，防止遗漏。而 Selective Search 采用了一种具备层次结构的算法来解决这个问题；</li>
@@ -410,9 +410,9 @@
 <li>另外，结合上一节提出的，采用多种先验知识来对各个区域进行简单的判别，避免一些无用的搜索，提高速度和精度。</li>
 </ol>
 <h3 id="算法框架">算法框架</h3>
-<figure>
-<img src="/images/2017-5-4/algorithm.png" alt="algorithm"><figcaption>algorithm</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-4/algorithm.png" width="400px">
+</center>
 <p>论文中给出的这个算法框架还是很详细的，这里再简单翻译一下。</p>
 <ul>
 <li>输入：彩色图片。</li>

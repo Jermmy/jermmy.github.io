@@ -79,7 +79,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/eg.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/tree1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-4-13/tree2.png">
-<meta property="og:updated_time" content="2019-05-04T07:42:11.000Z">
+<meta property="og:updated_time" content="2019-05-04T08:05:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="决策树生成算法">
 <meta name="twitter:description" content="关于决策树，想必大部分人都已经耳熟能详了，这是一种用来预测行为的树状分叉结构。本文主要想总结一下最常用的决策树生成算法：ID3，C4.5 以及 CART。 构造的原则 熟悉决策树的你一定记得，决策树每个非叶子结点对应的其实是一个属性。比方说，想判断一个男生是不是 gay，我们首先需要判断他的性别是不是男的，是的话继续判断他的性取向，之后继续判断他的其他行为……这里的「性别」，「性取向」就是属性，而">
@@ -443,12 +443,12 @@ Gain(L)=0.879-0.603=0.276
 </center>
 <p>剩下的只有 H 属性，因此最后加上 H 节点。由于剩下的样本中只有 H=no 的数据，因此 yes 节点的数据没法判断（这种情况在数据量很大的时候一般不会遇到，因为数据量越大，涵盖的情况会更多），而剩下的两个样本存在 yes 和 no 两种情况，因此 no 节点往下也只能随机选择一种类别进行判断（这种情况一般是根据进行「多数表决」，即选择出现次数最多的类别作为最终类别，在数据量很大的情况下，出现次数一样多的情况几乎不会发生）。</p>
 <h3 id="属性为连续值的情况">属性为连续值的情况</h3>
-<p>上面给出的例子中，样本的特征都是离散值（e.g. s，m，l），而 ID3 算法确实也只对离散值起作用。如果遇到特征为连续值的情况，一般需要先将其离散化，例如：可以选定几个阈值<span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2\)</span>，<span class="math inline">\(a_3\)</span>（<span class="math inline">\(a_1\)</span>&lt;<span class="math inline">\(a_2\)</span>&lt;<span class="math inline">\(a_3\)</span>），根据这些阈值，将样本特征分为四类：<span class="math inline">\(f &lt; a_1\)</span>，<span class="math inline">\(a_1 &lt; f &lt; a_2\)</span>，<span class="math inline">\(a_2 &lt; f &lt; a_3\)</span>，<span class="math inline">\(f &gt; a_3\)</span>。然后，便可以按照一般的思路构建决策树了。</p>
+<p>上面给出的例子中，样本的特征都是离散值（e.g. s，m，l），而 ID3 算法确实也只对离散值起作用。如果遇到特征为连续值的情况，一般需要先将其离散化，例如：可以选定几个阈值<span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2\)</span>，<span class="math inline">\(a_3\)</span>（<span class="math inline">\(a_1&lt;a_2&lt;a_3\)</span>），根据这些阈值，将样本特征分为四类：<span class="math inline">\(f &lt; a_1\)</span>，<span class="math inline">\(a_1 &lt; f &lt; a_2\)</span>，<span class="math inline">\(a_2 &lt; f &lt; a_3\)</span>，<span class="math inline">\(f &gt; a_3\)</span>。然后，便可以按照一般的思路构建决策树了。</p>
 <h2 id="c4.5算法">C4.5算法</h2>
 <p>C4.5 算法主要对 ID3 进行了改进，用「增益率」来衡量属性的信息增益效率。算法中定义了「分裂信息」：</p>
 <p><span class="math inline">\(SplitInfo(A)=-\sum_{j=1}^{v}{\frac{|D_j|}{|D|}log_2{\frac{|D_j|}{|D|}}}\)</span></p>
 <p>然后，通过该信息，定义增益率公式为：</p>
-<p><span class="math inline">\(GainRatio(A)=\frac{Gain(A)}{SplitInfo(A)}\)</span>。</p>
+<p><span class="math inline">\(GainRatio(A)=\frac{Gain(A)}{SplitInfo(A)}\)</span></p>
 <p>C4.5选择具有最大「增益率」的属性作为分裂属性，而其余步骤，和 ID3 完全一致。</p>
 <h2 id="cart">CART</h2>
 <p>CART 指的是分类回归树（Classification And Regression Tree）。顾名思义，这是一棵既可以用于分类，也可以用于回归的树。不同于上面的两种树，CART 每一个非叶子节点只有有两个分支，所以 CART 是一棵<strong>二叉树</strong>。下面我们按照分类和回归两个用途分别介绍 CART 的构建。</p>

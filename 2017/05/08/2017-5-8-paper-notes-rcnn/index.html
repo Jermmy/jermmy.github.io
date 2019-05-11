@@ -80,7 +80,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/IoU.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2017-5-8/cnn%20feature.png">
-<meta property="og:updated_time" content="2018-02-20T08:11:44.000Z">
+<meta property="og:updated_time" content="2019-05-06T12:25:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Rich feature hierarchies for accurate object detection and semantic segmentation">
 <meta name="twitter:description" content="在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照定位+分割+识别的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理">
@@ -383,9 +383,9 @@
       
         <p>在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照<strong>定位</strong>+<strong>分割</strong>+<strong>识别</strong>的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理方法，因此很难有通用的解决策略。在深度学习火起来之后，很多研究人员开始尝试用深度学习的特征提取能力来解决定位的问题，本文学习的这篇论文，就是被誉为用 CNN 解决物体定位的开山之作：<strong>R-CNN</strong>。</p>
 <p>这篇文章打算浅浅地分析一下 R-CNN。</p>
-<figure>
-<img src="/images/2017-5-8/rcnn.png" alt="rcnn"><figcaption>rcnn</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-8/rcnn.png">
+</center>
 <a id="more"></a>
 <h3 id="r-cnn是什么">R-CNN是什么</h3>
 <p>R-CNN 中的 R 指的是 Region，所以，R-CNN 其实就是用 CNN 来定位 Region。它由 <a href="http://www.rossgirshick.info/" target="_blank" rel="noopener">Ross Girshick</a> 等人于 2014 年提出，当时实现了物体检测上 state-of-art（最好） 的精度，而且速度上也比以往的方法有所提高。</p>
@@ -400,17 +400,17 @@
 <p>训练阶段分为 CNN 和 SVM 两部分。</p>
 <h4 id="supervised-pre-training">1. Supervised pre-training</h4>
 <p>CNN 模型直接采用了 Krizhevsky 等人在 2012 年的分类网络模型</p>
-<figure>
-<img src="/images/2017-5-8/cnn.jpg" alt="cnn"><figcaption>cnn</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-8/cnn.jpg">
+</center>
 <p>这个网络的参数比较多（超过一百万），因此需要大量的训练数据。作者直接将 Krizhevsky 在 ILSVRC 2012 上训练好的参数复制过来，有人称这种做法为「迁移学习」，因为 CNN 的本质就是提取图片的特征（类似于 SIFT ），因此，尽管训练集不同，训练出来的参数其实是可以通用的。当然啦，对于一些更具体的任务（如手写体识别），个人觉得最好还是单独训练一下。</p>
 <h4 id="domain-specific-fine-tuning">2. Domain-specific fine-tuning</h4>
 <p>前面刚说了，直接用其他数据集训练好的参数不太保险，作者马上用行动打消了我的疑虑。这一步，为了让 CNN 适应新的数据集，作者在原来参数的基础上，用 PASCAL VOC 的数据继续训练网络（PASCAL VOC 是论文采用的数据集）。另外，考虑到 VOC 的数据集比较小（ILSVRC 2012 有 1000 种类别，VOC 只有 20 种），论文将原网络最后一层 1000 classification 的输出层减小为 21 classification（20个类别 + 背景），并将这一层 fc 的参数随机初始化，这一步相当于优化参数 (fine-tuning) 的作用。除此之外，为了获得大量的训练样本，还需要事先对 VOC 数据集标定出物体所在的矩形区域（这一步比单纯的图片类别标记难度要大得多，因此数据量很少，且缺乏背景数据）。</p>
 <p>之后，论文采用 Selective Search 在 VOC 上选出很多矩形框，将与标准矩形框的覆盖区域 &gt;= <strong>0.5 IoU</strong> 的标为正样本，其余的标为负样本（负样本应该就是背景了）。然后，采用 SGD，以 0.001 为学习率进行训练。每次训练的 batch 为 32 个正样本和 96 个背景样本。这里之所以让背景样本多于正样本，原因在于图片中的正样本窗口相比于背景窗口，数量很少。</p>
 <p>关于 IoU，这里简单提一下。IoU 指的是 intersection-over-union，是一个定位精度的评价标准。因为算法的结果不可能百分之百跟人工标定的矩形数据吻合，因此就需要有一个标准判断结果的准确性。</p>
-<figure>
-<img src="/images/2017-5-8/IoU.jpg" alt="IoU"><figcaption>IoU</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-8/IoU.jpg">
+</center>
 <p>上面这幅图摘自文末<a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="noopener">链接</a>。IoU 的计算方法为：<span class="math inline">\(IOU=(A \bigcap B) / (A \bigcup B)\)</span>。</p>
 <h4 id="object-category-classifiers">3. Object category classifiers</h4>
 <p>训练完 CNN 后，我们就可以通过它提取物体的特征了。这里使用 fc7 层输出的 4096 维的向量作为特征。</p>
@@ -428,9 +428,9 @@
 <p>论文中采用的应该是各向异性的方法，但我倾向于采用各向同性的方法。</p>
 <h4 id="cnn对特征的提取">2. CNN对特征的提取</h4>
 <p>CNN 中包含很多层，具体要选用哪一层的输出作为特征呢？为此，作者进行了多次对比试验：</p>
-<figure>
-<img src="/images/2017-5-8/cnn%20feature.png" alt="cnn feature"><figcaption>cnn feature</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-8/cnn feature.png">
+</center>
 <p>实验结果显示，如果没有进行 fine-tuning，那么 pool5、fc6 以及 fc7 的结果都相差无几，而如果进行 fine-tuning 后，fc6 和 fc7 的结果有了显著提升。</p>
 <p>前面说过，FT 就是针对特定情景的训练集，将原本最后一层的 1000 维输出转变为 21 维的输出。如果没有进行 FT，那么相当于把 CNN 当作一种通用的图像特征来使用（只在 ILSVRC 2012 上训练的 CNN，效果上类似 SIFT），其结果表明，pool5、fc6 以及 fc7 效果上差不多，也就是说，在这种情况下，fc6 和 fc7 对特征的表达几乎不起作用，因此我们可以得出这样一个结论：在没有 FT 的时候，CNN 的特征主要是由卷积层（这里是 pool5）学习出来的。</p>
 <p>但如果对 CNN 做过 FT 处理，fc6 和 fc7 的效果会有显著提升，反倒是 pool5 的提升效果比较小。对此，我的理解是这样的：pool5 提取的更像是一种通用的特征，不针对特定的训练集，而 fc6 和 fc7 则更具有导向性，对具体的应用场景比较敏感。套用文末<a href="http://blog.csdn.net/u011534057/article/details/51218250" target="_blank" rel="noopener">参考链接</a>的例子，如果我们要通过图像中的人脸预测性别，那么 pool5 提取的是通用的人脸特征，而 fc6 和 fc7 提取的则是更多跟性别相关的信息。</p>

@@ -1241,9 +1241,9 @@
         
           <p>在上计算机视觉这门课的时候，老师曾经留过一个作业：识别一张 A4 纸上的手写数字。按照传统的做法，这种手写体或者验证码识别的项目，都是按照<strong>定位</strong>+<strong>分割</strong>+<strong>识别</strong>的套路。但凡上网搜一下，就能找到一堆识别的教程，分割的文章次之，而定位的文章就少之又少了。这其中的缘由也很简单：识别目前来说已经不是什么难事了，所以容易写，但分割和定位却仍然是一个头疼不已的问题，不同场景方法不同，甚至同一场景也要结合多种图像处理方法，因此很难有通用的解决策略。在深度学习火起来之后，很多研究人员开始尝试用深度学习的特征提取能力来解决定位的问题，本文学习的这篇论文，就是被誉为用 CNN 解决物体定位的开山之作：<strong>R-CNN</strong>。</p>
 <p>这篇文章打算浅浅地分析一下 R-CNN。</p>
-<figure>
-<img src="/images/2017-5-8/rcnn.png" alt="rcnn"><figcaption>rcnn</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-8/rcnn.png">
+</center>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/05/08/2017-5-8-paper-notes-rcnn/#more" rel="contents">
@@ -1415,9 +1415,9 @@
 <p>这篇论文的标题虽然也提到了 Object Recognition ，但就创新点而言，其实在 Selective Search 。所以，这里只简单介绍 Selective Search 的思想和算法过程，对于 Object Recognition 则不再赘述。</p>
 <h3 id="什么是-selective-search">什么是 Selective Search</h3>
 <p>Selective Search，说的简单点，就是从图片中找出物体可能存在的区域。</p>
-<figure>
-<img src="/images/2017-5-4/result.png" alt="result"><figcaption>result</figcaption>
-</figure>
+<center>
+<img src="/images/2017-5-4/result.png" width="400px">
+</center>
 <p>上面这幅宇航员的图片中，那些红色的框就是 Selective Search 找出来的可能存在物体的区域。</p>
           <!--noindex-->
           <div class="post-button text-center">
