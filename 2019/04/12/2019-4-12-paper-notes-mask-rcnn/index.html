@@ -85,7 +85,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/roialign-roipooling.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/loss.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/feature.jpg">
-<meta property="og:updated_time" content="2019-05-10T07:50:09.000Z">
+<meta property="og:updated_time" content="2019-05-15T15:02:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Mask R-CNN">
 <meta name="twitter:description" content="之前在一次组会上，师弟诉苦说他用 UNet 处理一个病灶分割的任务，但效果极差，我看了他的数据后发现，那些病灶区域比起整张图而言非常的小，而 UNet 采用的损失函数通常是逐像素的分类损失，如此一来，网络只要能够分割出大部分背景，那么 loss 的值就可以下降很多，自然无法精细地分割出那些细小的病灶。反过来想，这其实类似于正负样本极不均衡的情况，网络拟合了大部分负样本后，即使正样本拟合得较差，整体">
@@ -318,6 +318,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -538,6 +560,10 @@ L=L_{cls}+L_{box}+L_{mask}
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/05/12/2019-5-12-pytorch-cpp-extension/" rel="prev" title="PyTorch中的C++扩展">
+                PyTorch中的C++扩展 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -615,7 +641,7 @@ L=L_{cls}+L_{box}+L_{mask}
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -626,7 +652,7 @@ L=L_{cls}+L_{box}+L_{mask}
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -637,7 +663,7 @@ L=L_{cls}+L_{box}+L_{mask}
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -261,6 +261,177 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/05/12/2019-5-12-pytorch-cpp-extension/" itemprop="url">
+                  PyTorch中的C++扩展
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-12T23:47:07+08:00">
+                2019-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PyTorch/" itemprop="url" rel="index">
+                    <span itemprop="name">PyTorch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/12/2019-5-12-pytorch-cpp-extension/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/05/12/2019-5-12-pytorch-cpp-extension/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/05/12/2019-5-12-pytorch-cpp-extension/" class="leancloud_visitors" data-flag-title="PyTorch中的C++扩展">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>今天要聊聊用 PyTorch 进行 C++ 扩展。</p>
+<p>在正式开始前，我们需要了解 PyTorch 如何自定义 <code>module</code>。这其中，最常见的就是在 <code>python</code> 中继承 <code>torch.nn.Module</code>，用 PyTorch 中已有的 operator 来组装成自己的模块。这种方式实现简单，但是，计算效率却未必最佳，另外，如果我们想实现的功能过于复杂，可能 PyTorch 中那些已有的函数也没法满足我们的要求。这时，用 C、C++、CUDA 来扩展 PyTorch 的模块就是最佳的选择了。</p>
+<p>由于目前市面上大部分深度学习系统（TensorFlow、PyTorch 等）都是基于 C、C++ 构建的后端，因此这些系统基本都存在 C、C++ 的扩展接口。PyTorch 是基于 Torch 构建的，而 Torch 底层采用的是 C 语言，因此 PyTorch 天生就和 C 兼容，因此用 C 来扩展 PyTorch 并非难事。而随着 PyTorch1.0 的发布，官方已经开始考虑将 PyTorch 的底层代码用 caffe2 替换，因此他们也在逐步重构 ATen，后者是目前 PyTorch 使用的 C++ 扩展库。总的来说，C++ 是未来的趋势。至于 CUDA，这是几乎所有深度学习系统在构建之初就采用的工具，因此 CUDA 的扩展接口是标配。</p>
+<p>本文用一个简单的例子，梳理一下进行 C++ 扩展的步骤，至于一些具体的实现，不做深入探讨。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/12/2019-5-12-pytorch-cpp-extension/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2019/04/12/2019-4-12-paper-notes-mask-rcnn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -310,6 +481,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1786,174 +1979,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jermmy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jermmy's Lazy Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/" itemprop="url">
-                  论文笔记：Fast(er) RCNN
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T16:13:14+08:00">
-                2018-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机视觉/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机视觉</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/" class="leancloud_visitors" data-flag-title="论文笔记：Fast(er) RCNN">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>在 <a href="http://jermmy.github.io/2017/05/08/2017-5-8-paper-notes-rcnn/">RCNN</a> 初步试水取得成功后，研究人员又迅速跟进，针对 RCNN 中的几点不足提出改进，接连推出了 fast-rcnn 和 faster-rcnn。关于这两篇论文，网上相关的文章实在是多如牛毛，因此，本篇博文不打算深入讲解，只是不落俗套地介绍一下它们改进的痛点，基本流程，以及我自己对一些小问题的理解。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/15/2018-1-15-paper-notes-fast-er-rcnn/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2003,7 +2028,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2014,7 +2039,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2025,7 +2050,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

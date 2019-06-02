@@ -1,0 +1,1002 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习,PyTorch," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="今天要聊聊用 PyTorch 进行 C++ 扩展。 在正式开始前，我们需要了解 PyTorch 如何自定义 module。这其中，最常见的就是在 python 中继承 torch.nn.Module，用 PyTorch 中已有的 operator 来组装成自己的模块。这种方式实现简单，但是，计算效率却未必最佳，另外，如果我们想实现的功能过于复杂，可能 PyTorch 中那些已有的函数也没法满足我们">
+<meta name="keywords" content="深度学习,PyTorch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyTorch中的C++扩展">
+<meta property="og:url" content="https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="今天要聊聊用 PyTorch 进行 C++ 扩展。 在正式开始前，我们需要了解 PyTorch 如何自定义 module。这其中，最常见的就是在 python 中继承 torch.nn.Module，用 PyTorch 中已有的 operator 来组装成自己的模块。这种方式实现简单，但是，计算效率却未必最佳，另外，如果我们想实现的功能过于复杂，可能 PyTorch 中那些已有的函数也没法满足我们">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-02T04:18:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PyTorch中的C++扩展">
+<meta name="twitter:description" content="今天要聊聊用 PyTorch 进行 C++ 扩展。 在正式开始前，我们需要了解 PyTorch 如何自定义 module。这其中，最常见的就是在 python 中继承 torch.nn.Module，用 PyTorch 中已有的 operator 来组装成自己的模块。这种方式实现简单，但是，计算效率却未必最佳，另外，如果我们想实现的功能过于复杂，可能 PyTorch 中那些已有的函数也没法满足我们">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/"/>
+
+
+
+
+
+  <title>PyTorch中的C++扩展 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PyTorch中的C++扩展
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-12T23:47:07+08:00">
+                2019-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PyTorch/" itemprop="url" rel="index">
+                    <span itemprop="name">PyTorch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/12/2019-5-12-pytorch-cpp-extension/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/05/12/2019-5-12-pytorch-cpp-extension/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/05/12/2019-5-12-pytorch-cpp-extension/" class="leancloud_visitors" data-flag-title="PyTorch中的C++扩展">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天要聊聊用 PyTorch 进行 C++ 扩展。</p>
+<p>在正式开始前，我们需要了解 PyTorch 如何自定义 <code>module</code>。这其中，最常见的就是在 <code>python</code> 中继承 <code>torch.nn.Module</code>，用 PyTorch 中已有的 operator 来组装成自己的模块。这种方式实现简单，但是，计算效率却未必最佳，另外，如果我们想实现的功能过于复杂，可能 PyTorch 中那些已有的函数也没法满足我们的要求。这时，用 C、C++、CUDA 来扩展 PyTorch 的模块就是最佳的选择了。</p>
+<p>由于目前市面上大部分深度学习系统（TensorFlow、PyTorch 等）都是基于 C、C++ 构建的后端，因此这些系统基本都存在 C、C++ 的扩展接口。PyTorch 是基于 Torch 构建的，而 Torch 底层采用的是 C 语言，因此 PyTorch 天生就和 C 兼容，因此用 C 来扩展 PyTorch 并非难事。而随着 PyTorch1.0 的发布，官方已经开始考虑将 PyTorch 的底层代码用 caffe2 替换，因此他们也在逐步重构 ATen，后者是目前 PyTorch 使用的 C++ 扩展库。总的来说，C++ 是未来的趋势。至于 CUDA，这是几乎所有深度学习系统在构建之初就采用的工具，因此 CUDA 的扩展接口是标配。</p>
+<p>本文用一个简单的例子，梳理一下进行 C++ 扩展的步骤，至于一些具体的实现，不做深入探讨。</p>
+<a id="more"></a>
+<h2 id="pytorch的cccuda扩展">PyTorch的C、C++、CUDA扩展</h2>
+<p>关于 PyTorch 的 C 扩展，可以参考<a href="https://pytorch.org/tutorials/advanced/c_extension.html" target="_blank" rel="noopener">官方教程</a>或者这篇<a href="https://oldpan.me/archives/pytorch-combine-c-and-cuda" target="_blank" rel="noopener">博文</a>，其操作并不难，无非是借助原先 Torch 提供的 <code>&lt;TH/TH.h&gt;</code> 和 <code>&lt;THC/THC.h&gt;</code> 等接口，再利用 PyTorch 中提供的 <code>torch.util.ffi</code> 模块进行扩展。需要注意的是，随着 PyTorch 版本升级，这种做法在新版本的 PyTorch 中可能会失效。</p>
+<p>本文主要介绍 C++（未来可能加上 CUDA）的扩展方法。</p>
+<h3 id="c扩展">C++扩展</h3>
+<p>首先，介绍一下基本流程。在 PyTorch 中扩展 C++/CUDA 主要分为几步：</p>
+<ol type="1">
+<li>安装好 pybind11 模块（通过 pip 或者 conda 等安装），这个模块会负责 python 和 C++ 之间的绑定；</li>
+<li>用 C++ 写好自定义层的功能，包括前向传播 <code>forward</code> 和反向传播 <code>backward</code>；</li>
+<li>写好 <code>setup.py</code>，并用 python 提供的 <code>setuptools</code> 来编译并加载 C++ 代码。</li>
+<li>编译安装，在 python 中调用 C++ 扩展接口。</li>
+</ol>
+<p>接下来，我们就用一个简单的例子（<code>z=2x+y</code>）来演示这几个步骤。</p>
+<h4 id="第一步">第一步</h4>
+<p>安装 <code>pybind11</code> 比较简单，直接略过。我们先写好 C++ 相关的文件：</p>
+<p>头文件 <code>test.h</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 前向传播</span></span><br><span class="line">torch::<span class="function">Tensor <span class="title">Test_forward_cpu</span><span class="params">(<span class="keyword">const</span> torch::Tensor&amp; inputA,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">const</span> torch::Tensor&amp; inputB)</span></span>;</span><br><span class="line"><span class="comment">// 反向传播</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; Test_backward_cpu(<span class="keyword">const</span> torch::Tensor&amp; gradOutput);</span><br></pre></td></tr></table></figure>
+<p>注意，这里引用的 <code>&lt;torch/extension.h&gt;</code> 头文件至关重要，它主要包括三个重要模块：</p>
+<ul>
+<li>pybind11，用于 C++ 和 python 交互；</li>
+<li>ATen，包含 Tensor 等重要的函数和类；</li>
+<li>一些辅助的头文件，用于实现 ATen 和 pybind11 之间的交互。</li>
+</ul>
+<p>源文件 <code>test.cpp</code> 如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"test.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 前向传播，两个 Tensor 相加。这里只关注 C++ 扩展的流程，具体实现不深入探讨。</span></span><br><span class="line">torch::<span class="function">Tensor <span class="title">Test_forward_cpu</span><span class="params">(<span class="keyword">const</span> torch::Tensor&amp; x,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">const</span> torch::Tensor&amp; y)</span> </span>&#123;</span><br><span class="line">    AT_ASSERTM(x.sizes() == y.sizes(), <span class="string">"x must be the same size as y"</span>);</span><br><span class="line">    torch::Tensor z = torch::zeros(x.sizes());</span><br><span class="line">    z = <span class="number">2</span> * x + y;</span><br><span class="line">    <span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反向传播</span></span><br><span class="line"><span class="comment">// 在这个例子中，z对x的导数是2，z对y的导数是1。</span></span><br><span class="line"><span class="comment">// 至于这个backward函数的接口（参数，返回值）为何要这样设计，后面会讲。</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; Test_backward_cpu(<span class="keyword">const</span> torch::Tensor&amp; gradOutput) &#123;</span><br><span class="line">    torch::Tensor gradOutputX = <span class="number">2</span> * gradOutput * torch::ones(gradOutput.sizes());</span><br><span class="line">    torch::Tensor gradOutputY = gradOutput * torch::ones(gradOutput.sizes());</span><br><span class="line">    <span class="keyword">return</span> &#123;gradOutputX, gradOutputY&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// pybind11 绑定</span></span><br><span class="line">PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) &#123;</span><br><span class="line">  m.def(<span class="string">"forward"</span>, &amp;Test_forward_cpu, <span class="string">"TEST forward"</span>);</span><br><span class="line">  m.def(<span class="string">"backward"</span>, &amp;Test_backward_cpu, <span class="string">"TEST backward"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="第二步">第二步</h4>
+<p>新建一个编译安装的配置文件 <code>setup.py</code>，文件目录安排如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">└── csrc</span><br><span class="line">    ├── cpu</span><br><span class="line">    │   ├── test.cpp</span><br><span class="line">    │   └── test.h</span><br><span class="line">    └── setup.py</span><br></pre></td></tr></table></figure>
+<p>以下是 <code>setup.py</code> 中的内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">from</span> torch.utils.cpp_extension <span class="keyword">import</span> BuildExtension, CppExtension</span><br><span class="line"></span><br><span class="line"><span class="comment"># 头文件目录</span></span><br><span class="line">include_dirs = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"><span class="comment"># 源代码目录</span></span><br><span class="line">source_cpu = glob.glob(os.path.join(include_dirs, <span class="string">'cpu'</span>, <span class="string">'*.cpp'</span>))</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    name=<span class="string">'test_cpp'</span>,  <span class="comment"># 模块名称，需要在python中调用</span></span><br><span class="line">    version=<span class="string">"0.1"</span>,</span><br><span class="line">    ext_modules=[</span><br><span class="line">        CppExtension(<span class="string">'test_cpp'</span>, sources=source_cpu, include_dirs=[include_dirs]),</span><br><span class="line">    ],</span><br><span class="line">    cmdclass=&#123;</span><br><span class="line">        <span class="string">'build_ext'</span>: BuildExtension</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>注意，这个 C++ 扩展被命名为 <code>test_cpp</code>，意思是说，在 python 中可以通过 <code>test_cpp</code> 模块来调用 C++ 函数。</p>
+<h4 id="第三步">第三步</h4>
+<p>在 <code>cpu</code> 这个目录下，执行下面的命令编译安装 C++ 代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
+<p>之后，可以看到一堆输出，该 C++ 模块会被安装在 python 的 site-packages 中。</p>
+<p>完成上面几步后，就可以在 python 中调用 C++ 代码了。在 PyTorch 中，按照惯例需要先把 C++ 中的前向传播和反向传播封装成一个函数 <code>op</code>（以下代码放在 <code>test.py</code> 文件中）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> test_cpp</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestFunction</span><span class="params">(Function)</span>:</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(ctx, x, y)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> test_cpp.forward(x, y)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(ctx, gradOutput)</span>:</span></span><br><span class="line">        gradX, gradY = test_cpp.backward(gradOutput)</span><br><span class="line">        <span class="keyword">return</span> gradX, gradY</span><br></pre></td></tr></table></figure>
+<p>这样一来，我们相当于把 C++ 扩展的函数嵌入到 PyTorch 自己的框架内。</p>
+<p>我查看了这个 <code>Function</code> 类的代码，发现是个挺有意思的东西：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Function</span><span class="params">(with_metaclass<span class="params">(FunctionMeta, _C._FunctionBase, _ContextMethodMixin, _HookMixin)</span>)</span>:</span></span><br><span class="line">  </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(ctx, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="string">r"""Performs the operation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        This function is to be overridden by all subclasses.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        It must accept a context ctx as the first argument, followed by any</span></span><br><span class="line"><span class="string">        number of arguments (tensors or other types).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The context can be used to store tensors that can be then retrieved</span></span><br><span class="line"><span class="string">        during the backward pass.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(ctx, *grad_outputs)</span>:</span></span><br><span class="line">        <span class="string">r"""Defines a formula for differentiating the operation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        This function is to be overridden by all subclasses.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        It must accept a context :attr:`ctx` as the first argument, followed by</span></span><br><span class="line"><span class="string">        as many outputs did :func:`forward` return, and it should return as many</span></span><br><span class="line"><span class="string">        tensors, as there were inputs to :func:`forward`. Each argument is the</span></span><br><span class="line"><span class="string">        gradient w.r.t the given output, and each returned value should be the</span></span><br><span class="line"><span class="string">        gradient w.r.t. the corresponding input.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The context can be used to retrieve tensors saved during the forward</span></span><br><span class="line"><span class="string">        pass. It also has an attribute :attr:`ctx.needs_input_grad` as a tuple</span></span><br><span class="line"><span class="string">        of booleans representing whether each input needs gradient. E.g.,</span></span><br><span class="line"><span class="string">        :func:`backward` will have ``ctx.needs_input_grad[0] = True`` if the</span></span><br><span class="line"><span class="string">        first input to :func:`forward` needs gradient computated w.r.t. the</span></span><br><span class="line"><span class="string">        output.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br></pre></td></tr></table></figure>
+<p>这里需要注意一下 <code>backward</code> 的实现规则。该接口包含两个参数：<code>ctx</code> 是一个辅助的环境变量，<code>grad_outputs</code> 则是来自前一层网络的梯度列表，而且这个梯度列表的数量与 <code>forward</code> 函数返回的参数数量相同，这也符合链式法则的原理，因为链式法则就需要把前一层中所有相关的梯度与当前层进行相乘或相加。同时，<code>backward</code> 需要返回 <code>forward</code> 中每个输入参数的梯度，如果 <code>forward</code> 中包括 n 个参数，就需要一一返回 n 个梯度。所以，在上面这个例子中，我们的 <code>backward</code> 函数接收一个参数作为输入（<code>forward</code> 只输出一个变量），并返回两个梯度（<code>forward</code> 接收上一层两个输入变量）。</p>
+<p>定义完 <code>Function</code> 后，就可以在 <code>Module</code> 中使用这个自定义 <code>op</code> 了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span><span class="params">(torch.nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(Test, self).__init__()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, inputA, inputB)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> TestFunction.apply(inputA, inputB)</span><br></pre></td></tr></table></figure>
+<p>现在，我们的文件目录变成：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── csrc</span><br><span class="line">│   ├── cpu</span><br><span class="line">│   │   ├── test.cpp</span><br><span class="line">│   │   └── test.h</span><br><span class="line">│   └── setup.py</span><br><span class="line">└── test.py</span><br></pre></td></tr></table></figure>
+<p>之后，我们就可以将 <code>test.py</code> 当作一般的 PyTorch 模块进行调用了。</p>
+<h4 id="测试">测试</h4>
+<p>下面，我们测试一下前向传播和反向传播：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> test <span class="keyword">import</span> Test</span><br><span class="line"></span><br><span class="line">x = Variable(torch.Tensor([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]), requires_grad=<span class="keyword">True</span>)</span><br><span class="line">y = Variable(torch.Tensor([<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]), requires_grad=<span class="keyword">True</span>)</span><br><span class="line">test = Test()</span><br><span class="line">z = test(x, y)</span><br><span class="line">z.sum().backward()</span><br><span class="line">print(<span class="string">'x: '</span>, x)</span><br><span class="line">print(<span class="string">'y: '</span>, y)</span><br><span class="line">print(<span class="string">'z: '</span>, z)</span><br><span class="line">print(<span class="string">'x.grad: '</span>, x.grad)</span><br><span class="line">print(<span class="string">'y.grad: '</span>, y.grad)</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x:  tensor([1., 2., 3.], requires_grad=True)</span><br><span class="line">y:  tensor([4., 5., 6.], requires_grad=True)</span><br><span class="line">z:  tensor([ 6.,  9., 12.], grad_fn=&lt;TestFunctionBackward&gt;)</span><br><span class="line">x.grad:  tensor([2., 2., 2.])</span><br><span class="line">y.grad:  tensor([1., 1., 1.])</span><br></pre></td></tr></table></figure>
+<p>可以看出，前向传播满足 <code>z=2x+y</code>，而反向传播的结果也在意料之中。</p>
+<h3 id="cuda扩展">CUDA扩展</h3>
+<p>虽然 C++ 写的代码可以直接跑在 GPU 上，但它的性能还是比不上直接用 CUDA 编写的代码，毕竟 ATen 没法并不知道如何去优化算法的性能。不过，由于我对 CUDA 仍一窍不通，因此这一步只能暂时略过，留待之后补充～囧～。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://pytorch.org/tutorials/advanced/c_extension.html" target="_blank" rel="noopener">CUSTOM C EXTENSIONS FOR PYTORCH</a></li>
+<li><a href="https://pytorch.org/tutorials/advanced/cpp_extension.html" target="_blank" rel="noopener">CUSTOM C++ AND CUDA EXTENSIONS</a></li>
+<li><a href="https://oldpan.me/archives/pytorch-combine-c-and-cuda" target="_blank" rel="noopener">Pytorch拓展进阶(一)：Pytorch结合C以及Cuda语言</a></li>
+<li><a href="https://oldpan.me/archives/pytorch-cuda-c-plus-plus" target="_blank" rel="noopener">Pytorch拓展进阶(二)：Pytorch结合C++以及Cuda拓展</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/" title="PyTorch中的C++扩展">https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/PyTorch/" rel="tag"># PyTorch</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/12/2019-4-12-paper-notes-mask-rcnn/" rel="next" title="论文笔记：Mask R-CNN">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Mask R-CNN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch的cccuda扩展"><span class="nav-number">1.</span> <span class="nav-text">PyTorch的C、C++、CUDA扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#c扩展"><span class="nav-number">1.1.</span> <span class="nav-text">C++扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步"><span class="nav-number">1.1.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步"><span class="nav-number">1.1.2.</span> <span class="nav-text">第二步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三步"><span class="nav-number">1.1.3.</span> <span class="nav-text">第三步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">1.1.4.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda扩展"><span class="nav-number">1.2.</span> <span class="nav-text">CUDA扩展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2019/05/12/2019-5-12-pytorch-cpp-extension/';
+          this.page.identifier = '2019/05/12/2019-5-12-pytorch-cpp-extension/';
+          this.page.title = 'PyTorch中的C++扩展';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
