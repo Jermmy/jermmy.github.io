@@ -92,6 +92,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/NIMA-net.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/NIMA-exp.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/EnhanceGAN.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatism-eg.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-rectangular.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-ABP.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/good-view-hunting-eg.png">
@@ -104,7 +105,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-dataset.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-exp.png">
-<meta property="og:updated_time" content="2019-09-14T15:17:46.000Z">
+<meta property="og:updated_time" content="2019-09-15T15:28:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="让计算机审美，这可能吗?">
 <meta name="twitter:description" content="这一个月来一直在研究计算机美学 (photo aesthetic) 的课题，因为有一个需求是帮助用户筛选出一些拍的比较好的图片。这段时间陆陆续续看了很多相关的文章，也一直在思考这个问题：让计算机来对图片进行审美，到底有没有可能？毕竟审美是一件很主观的事情，美的定义本身也不清晰，让需要明确指令的计算机来做一件人类都不明确的事情，这看起来就不太现实。 本文会记录一下我最近看过的一些文章，总结一下这个领">
@@ -572,7 +573,11 @@
 </center>
 <p>这里的判别器本身不是一个随机初始化的网络，而是已经训练过，能很好地识别低质量和高质量图片的模型。因此，这个判别器本身可以度量这两个分布之间的差异，它可以进一步引导生成器学习，从而摆脱对 ground truth 的依赖。</p>
 <h3 id="creatism-a-deep-learning-photographer-capable-of-creating-professional-work-arxiv-2017">2. Creatism: A deep-learning photographer capable of creating professional work (arXiv 2017)</h3>
-<p>这篇论文出自 Google 之手，事实上并没有正式发表，但从<a href="https://google.github.io/creatism/" target="_blank" rel="noopener">结果</a>来看，确实非常的惊艳。</p>
+<p>这篇论文出自 Google 之手，事实上并没有正式发表，但从<a href="https://google.github.io/creatism/" target="_blank" rel="noopener">结果</a>来看，确实非常的惊艳👇</p>
+<center>
+<img src="/images/2019-8-6/creatism-eg.jpg" width="550px">
+</center>
+<p>这篇论文主要做的是一个自动后期处理工具。说的直白点，就是学习一个滤波器对图片进行增强。论文最值得借鉴的做法就是把整个图像增强的任务分解为一系列互不影响的滤波器，通过把这些滤波器串联起来，完成最后的增强效果。这其中，有的滤波器负责调整饱和度，有的负责调整光照，有的裁剪图片调整构图，等等。而为了让这些滤波器互不影响，</p>
 <h2 id="自动裁剪">自动裁剪</h2>
 <p>自动裁剪，就是在图片中裁出一块区域，这块区域要么构图很好，要么包含最主要的内容，总之，裁出来的这块图片总体上比原图要更加赏心悦目。在计算机美学出现的同时，图片自动裁剪作为一种衍生品也在不断发展。工业界中已经有相关的产品落地，比如 iphone xs 的相册中，有一个功能是对相册图片进行裁剪，并把裁剪出来的图片以幻灯片的形式做成视频，还有常见的缩略图功能也会用到自动裁剪的技术。</p>
 <p>目前，自动裁剪技术的实现方案局限在两种思路上。第一种，借用注意力机制 (或者显著性物体检测)，裁剪出图片中最重要的部分；第二种，借助计算机美学评分，在众多滑动窗口中选出美学评分最高的窗口进行裁剪。</p>
