@@ -93,6 +93,8 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/NIMA-exp.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/EnhanceGAN.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatism-eg.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatisim-lighting.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatism-mask.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-rectangular.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-ABP.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/good-view-hunting-eg.png">
@@ -105,7 +107,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-dataset.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-exp.png">
-<meta property="og:updated_time" content="2019-09-15T15:28:50.000Z">
+<meta property="og:updated_time" content="2019-10-07T06:52:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="让计算机审美，这可能吗?">
 <meta name="twitter:description" content="这一个月来一直在研究计算机美学 (photo aesthetic) 的课题，因为有一个需求是帮助用户筛选出一些拍的比较好的图片。这段时间陆陆续续看了很多相关的文章，也一直在思考这个问题：让计算机来对图片进行审美，到底有没有可能？毕竟审美是一件很主观的事情，美的定义本身也不清晰，让需要明确指令的计算机来做一件人类都不明确的事情，这看起来就不太现实。 本文会记录一下我最近看过的一些文章，总结一下这个领">
@@ -577,7 +579,16 @@
 <center>
 <img src="/images/2019-8-6/creatism-eg.jpg" width="550px">
 </center>
-<p>这篇论文主要做的是一个自动后期处理工具。说的直白点，就是学习一个滤波器对图片进行增强。论文最值得借鉴的做法就是把整个图像增强的任务分解为一系列互不影响的滤波器，通过把这些滤波器串联起来，完成最后的增强效果。这其中，有的滤波器负责调整饱和度，有的负责调整光照，有的裁剪图片调整构图，等等。而为了让这些滤波器互不影响，</p>
+<p>这篇论文主要做的是一个自动后期处理工具。说的直白点，就是学习一个滤波器对图片进行增强。论文最值得借鉴的做法就是把整个图像增强的任务分解为一系列互不影响的滤波器，通过把这些滤波器串联起来，完成最后的增强效果。这其中，有的滤波器负责调整饱和度，有的负责调整光照，有的裁剪图片调整构图，等等。而为了让这些滤波器互不影响，在训练的时候，需要针对不同的滤波器，用不同的数据进行训练。举个例子，在训练饱和度相关的滤波器时，我们先用一些图像处理工具，只针对饱和度这一点在原图上进行修改，这样就得到修改前和修改后的一对图片，再根据这对图片来训练饱和度相关的滤波器。其他滤波器也同理。这种用一对图片、并针对某个因素单独训练的方法，相比上一篇论文而言，可以降低模型学习的难度。当然，这样训练的前提条件是我们手头上要有质量很高的图片，如此一来才能通过一些图像处理软件进行处理，批量得到质量很差的图片，从而用一对图片进行训练。</p>
+<p>论文的另一个难点在于对图片进行打光处理。在自然环境下，物体反射的光并不是均匀的，受材质、光源等各种因素影响，总是有部分地方的光比较亮，有部分地方的光比较暗。比如下面这张图片，由于云遮挡了阳光，导致部分山体的光线偏弱。适当的光照，可以让图片质量提升一个档次。</p>
+<center>
+<img src="/images/2019-8-6/creatisim-lighting.jpg" width="400px">
+</center>
+<p>不过，这里我们没法再套用前面的方法来生成一对图片样本了。因为光照本身是一个很复杂的东西，如何用软件来批量添加或去除光照，本身就可以当作一个课题研究了。既然没法用软件来处理，那就只能换种训练方式了。论文采用 GAN 的弱监督学习方法，来训练光线处理的滤波器。举个例子，我们假设现在手上拥有的图片都是一些光照处理非常好的图片，接着，我们可以用图像处理工具大幅度的降低这些图片的亮度。注意，这种降低对所有像素是「一视同仁」的，并不会刻意区分哪些区域应该更低，哪些区域应该更亮。然后，我们用一个生成网络来生成一个光照的 mask，把它作用到这些亮度很低的图片上进行打光，并用一个判别器网络来区分原图和这些打光后的图片。通过这种博弈的方式来训练生成网络。只要训练得好，最后生成器就能生成出一个打光效果最好的 mask，这个 mask 会告诉我们哪些地方亮度要更高，哪些地方亮度要更低。下图分别是打光前、mask 以及打光后的图片效果：</p>
+<center>
+<img src="/images/2019-8-6/creatism-mask.jpg">
+</center>
+<p>更具体的细节，还请参考原论文。</p>
 <h2 id="自动裁剪">自动裁剪</h2>
 <p>自动裁剪，就是在图片中裁出一块区域，这块区域要么构图很好，要么包含最主要的内容，总之，裁出来的这块图片总体上比原图要更加赏心悦目。在计算机美学出现的同时，图片自动裁剪作为一种衍生品也在不断发展。工业界中已经有相关的产品落地，比如 iphone xs 的相册中，有一个功能是对相册图片进行裁剪，并把裁剪出来的图片以幻灯片的形式做成视频，还有常见的缩略图功能也会用到自动裁剪的技术。</p>
 <p>目前，自动裁剪技术的实现方案局限在两种思路上。第一种，借用注意力机制 (或者显著性物体检测)，裁剪出图片中最重要的部分；第二种，借助计算机美学评分，在众多滑动窗口中选出美学评分最高的窗口进行裁剪。</p>
@@ -686,13 +697,13 @@ ABP网络
 <p>由于这个课题有一定应用前景，跟自然语言处理的联系也比较紧密，算是一个跨模态任务，可以挖的点很多，可以预见，未来会有更多的工作填这个坑。</p>
 </blockquote>
 <h2 id="总结">总结</h2>
-<p>看了这么多论文，总的来说一句话：一流的工作挖坑，二流的工作用推土机填坑，三流的工作修推土机。</p>
+<p>总的来说，计算机美学由于主观性非常强，因此难点在于如何把问题定义好。比如美学评价里面，如何对图片进行评价就是最根本的问题，而自动裁剪任务中，又需要研究怎样裁剪得到的图片最好。根据定义好的问题，收集数据集，再建立相关的模型进行学习。这个任务另一个难点在于建模本身非常的困难，因为我们不清楚美学本身的数学模型长什么样子，因此也就很难在模型中加入一些显性的知识作为引导。熟悉这块工作的读者也会发现，在机器学习尤其是深度学习的背景下，几乎所有计算机美学的模型都是针对数据集进行构建的，而这些模型本身是否真的在学习鉴赏图片，nobody knows.</p>
+<p>另外，看了这么多论文后，也可以对各类研究工作归个类。打个比方就是：一流的工作挖坑，二流的工作用推土机填坑，三流的工作修推土机。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzczNzY0Mw==&amp;mid=2648542581&amp;idx=1&amp;sn=41aa4792cafdc7f04265b518ad116bc5&amp;chksm=872359b1b054d0a7e667a12bd5e6ad9967e62fbf7e5e9b81644e68ac926d282744c12514b3e3&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">干掉柯洁的下一步，阿尔法狗创始人又要毁掉这个行业（深度学习）</a></li>
 <li><a href="https://blog.csdn.net/GitChat/article/details/78787839" target="_blank" rel="noopener">深度学习在摄影技术中的应用与发展</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/37307679" target="_blank" rel="noopener">【技术综述】图像美学质量评价调研报告</a></li>
-<li></li>
 </ul>
 
       
