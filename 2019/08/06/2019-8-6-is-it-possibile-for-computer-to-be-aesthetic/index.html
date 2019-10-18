@@ -97,6 +97,10 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatism-mask.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-rectangular.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-ABP.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-fig1.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-fig2.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-framework.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-exp.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/good-view-hunting-eg.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/good-view-hunting-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-critiques-PCCD.png">
@@ -107,7 +111,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-dataset.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-exp.png">
-<meta property="og:updated_time" content="2019-10-07T06:52:15.000Z">
+<meta property="og:updated_time" content="2019-10-18T14:57:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="让计算机审美，这可能吗?">
 <meta name="twitter:description" content="这一个月来一直在研究计算机美学 (photo aesthetic) 的课题，因为有一个需求是帮助用户筛选出一些拍的比较好的图片。这段时间陆陆续续看了很多相关的文章，也一直在思考这个问题：让计算机来对图片进行审美，到底有没有可能？毕竟审美是一件很主观的事情，美的定义本身也不清晰，让需要明确指令的计算机来做一件人类都不明确的事情，这看起来就不太现实。 本文会记录一下我最近看过的一些文章，总结一下这个领">
@@ -618,6 +622,41 @@ ABP网络
 <p>这篇论文的工作量有点大，毕竟 Faster RCNN 本身就不是简单的东西。但看完后我总感觉有点南辕北辙。论文是先预测 Attention Map 所在的候选矩形框，然后再用 AA 网络挑选最好的，那为何不直接让网络预测 Attention Map，再根据 Attention Map 来生成候选矩形框呢？没想通。。</p>
 <h3 id="a2-rl-aesthetics-aware-reinforcement-learning-for-image-cropping-cvpr-2018">4. A2-RL: Aesthetics Aware Reinforcement Learning for Image Cropping (CVPR 2018)</h3>
 <h3 id="reliable-and-efficient-image-cropping-a-grid-anchor-based-approach-cvpr-2019">5. Reliable and Efficient Image Cropping: A Grid Anchor based Approach (CVPR 2019)</h3>
+<p>这篇论文的核心思想都在题目的 Reliable 和 Efficient 两个词中，即裁剪出来的区域必须是真的好看的（Reliable），而且裁剪的过程要足够的高效，不能花太长的时间（Efficient）。</p>
+<p>那如何评价是否 Reliable 呢？之前的方法都是将模型输出的裁剪框跟数据集中的 ground truth 计算 IoU 以及裁剪框四个坐标点的差值，这很明显是采纳了物体检测中的评价标准。但对于图片裁剪来说，这并不是一个特别好的评价标准。理由见下面这张图的最后一列。</p>
+<center>
+<img src="/images/2019-8-6/GAIC-fig1.png">
+<figcaption>
+最后一列中，最底下的图片跟中间的图片有更高的IoU值，但它裁剪出来的内容很差。
+</figcaption>
+</center>
+<p>因此，论文提出了两个新的评估指标：SRCC (Spearman’s rank-order correlation) 和 <span class="math inline">\(Acc_{K/N}\)</span> (return K of top-N accuracy)。</p>
+<ul>
+<li><p>SRCC 是衡量两个排序相关性常用的指标。虽然 IoU 没法衡量裁剪框的可靠性，但对于同一张图片来说，模型输出的所有裁剪框之间的好坏关系大体还是要跟 ground truth 匹配上的。在实际使用时，需要把 ground truth 中标好的矩形框让模型来一一打分，然后用 SRCC 计算这些矩形框的分数高低跟真实标定的分数的一致性。</p></li>
+<li><p><span class="math inline">\(Acc_{K/N}\)</span> 则是这篇论文提出的一种计算方式。在实际应用中，用户更在意的可能是算法输出的若干个裁剪框中有多少个是真正合理的。因此，可以比对一下 ground truth 标记分数最高的前 N 个裁剪框以及模型计算得到的分数最高的前 K 个裁剪框，看看这个交集有多大。交集越大，证明模型输出的裁剪框质量越好，模型的可靠性就越高。</p></li>
+</ul>
+<p>解决 Reliable 问题还需要有一个质量非常高的数据集，毕竟算法是没法知道美丑的，只能通过数据本身来告诉它。论文构建了一个包含 1236 张图片，总共标记有 106860 个裁剪框的数据集（GAICD），其中每个裁剪框都包含有若干个人的打分，根据他们的平均值作为每个裁剪框的美学分数。</p>
+<p>针对算法效率的问题，这篇论文采用的方法是人为制定一些规则来限制裁剪框的位置。由于图片中的主体或者主要内容一般位于中间位置，因此可以把裁剪框的位置「大致」固定在中间，并设定它的面积应该大于某个阈值。由此可以将裁剪框的搜索面积大比例缩小。</p>
+<center>
+<img src="/images/2019-8-6/GAIC-fig2.png" width="500px">
+<figcaption>
+将裁剪框左上角和右下角的点限制在蓝色区域内
+</figcaption>
+</center>
+<p>下图是论文算法的总体框架，由于裁剪框已经事先定义好了，因此只要逐个预测裁剪框内的分数即可。总体模型就是一个回归模型。作者先用一个网络提取整张图片的特征，并在最后的特征图上，根据裁剪框内的区域计算分数。由于分数预测的模块比较小，即使要计算的矩形框很多，总体花费的时间并不大。这里用到一个 trick：由于构图这个东西除了考虑裁剪框内的因素外，还需要考虑框内的元素在整幅图中的效果，即需要兼顾 local 和 global 的信息，因此在计算分数的时候，作者把裁剪框内的 feature 以及整幅图 (挖掉裁剪框内的部分) 的 feature 结合在一起，共同输入网络中计算。</p>
+<center>
+<img src="/images/2019-8-6/GAIC-framework.jpg" width="600px">
+<figcaption>
+算法框架
+</figcaption>
+</center>
+<p>从实验结果来看，这篇论文的算法效率有很大的优势，裁剪效果也不差：</p>
+<center>
+<img src="/images/2019-8-6/GAIC-exp.jpg" width="600px">
+<figcaption>
+从结果来看，这篇论文的算法效率很感人
+</figcaption>
+</center>
 <h2 id="自动构图">自动构图</h2>
 <p>自动构图 (Compose) 与自动裁剪 (Crop) 本质上属于一个东西，都是让计算机从图片中找出更好看的区域。但相比较而言，自动构图更侧重于美学中的构图因素。</p>
 <h3 id="learning-to-compose-with-professional-photographs-on-the-web-acm-mm-2017">1. Learning to Compose with Professional Photographs on the Web (ACM MM 2017)</h3>
