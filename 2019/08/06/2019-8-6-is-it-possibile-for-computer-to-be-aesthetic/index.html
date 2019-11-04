@@ -97,6 +97,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/creatism-mask.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-rectangular.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/deep-crop-ABP.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/A2-RL.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-fig1.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-fig2.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/GAIC-framework.jpg">
@@ -111,7 +112,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-dataset.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-exp.png">
-<meta property="og:updated_time" content="2019-10-24T15:39:21.000Z">
+<meta property="og:updated_time" content="2019-11-04T15:20:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="让计算机审美，这可能吗?">
 <meta name="twitter:description" content="这一个月来一直在研究计算机美学 (photo aesthetic) 的课题，因为有一个需求是帮助用户筛选出一些拍的比较好的图片。这段时间陆陆续续看了很多相关的文章，也一直在思考这个问题：让计算机来对图片进行审美，到底有没有可能？毕竟审美是一件很主观的事情，美的定义本身也不清晰，让需要明确指令的计算机来做一件人类都不明确的事情，这看起来就不太现实。 本文会记录一下我最近看过的一些文章，总结一下这个领">
@@ -622,6 +623,13 @@ ABP网络
 <p>这篇论文的工作量有点大，毕竟 Faster RCNN 本身就不是简单的东西。但看完后我总感觉有点南辕北辙。论文是先预测 Attention Map 所在的候选矩形框，然后再用 AA 网络挑选最好的，那为何不直接让网络预测 Attention Map，再根据 Attention Map 来生成候选矩形框呢？没想通。。</p>
 <h3 id="a2-rl-aesthetics-aware-reinforcement-learning-for-image-cropping-cvpr-2018">4. A2-RL: Aesthetics Aware Reinforcement Learning for Image Cropping (CVPR 2018)</h3>
 <p>这篇论文从强化学习的思路入手解决自动裁剪的问题。</p>
+<p>自动裁剪的过程可以理解为不断地调整矩形框，直到获得较高的美学评分。这就是一个不断试错的过程，和强化学习本身的工作原理非常类似。由于我对强化学习一窍不通，具体算法请查看原文。</p>
+<center>
+<img src="/images/2019-8-6/A2-RL.jpg" width="500px">
+<figcaption>
+算法框架
+</figcaption>
+</center>
 <h3 id="reliable-and-efficient-image-cropping-a-grid-anchor-based-approach-cvpr-2019">5. Reliable and Efficient Image Cropping: A Grid Anchor based Approach (CVPR 2019)</h3>
 <p>这篇论文的核心思想都在题目的 Reliable 和 Efficient 两个词中，即裁剪出来的区域必须是真的好看的（Reliable），而且裁剪的过程要足够的高效，不能花太长的时间（Efficient）。</p>
 <p>那如何评价是否 Reliable 呢？之前的方法都是将模型输出的裁剪框跟数据集中的 ground truth 计算 IoU 以及裁剪框四个坐标点的差值，这很明显是采纳了物体检测中的评价标准。但对于图片裁剪来说，这并不是一个特别好的评价标准。理由见下面这张图的最后一列。</p>
