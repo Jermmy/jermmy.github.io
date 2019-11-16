@@ -112,7 +112,7 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-dataset.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-framework.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-8-6/aesthetic-attributes-assessment-exp.png">
-<meta property="og:updated_time" content="2019-11-04T15:20:11.000Z">
+<meta property="og:updated_time" content="2019-11-13T14:19:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="让计算机审美，这可能吗?">
 <meta name="twitter:description" content="这一个月来一直在研究计算机美学 (photo aesthetic) 的课题，因为有一个需求是帮助用户筛选出一些拍的比较好的图片。这段时间陆陆续续看了很多相关的文章，也一直在思考这个问题：让计算机来对图片进行审美，到底有没有可能？毕竟审美是一件很主观的事情，美的定义本身也不清晰，让需要明确指令的计算机来做一件人类都不明确的事情，这看起来就不太现实。 本文会记录一下我最近看过的一些文章，总结一下这个领">
@@ -423,7 +423,7 @@
 <p>下面，我们就根据不同的应用类型，看看各个相关领域的课题都是怎么玩的。</p>
 <h2 id="美学评分">美学评分</h2>
 <p>最容易想到的应用自然是让计算机给一张图片进行打分。这里的打分可以是输出一个分数，也可以是对图片进行分类，抑或是输出一个美的等级等各种评价手段。前几年很火各种的测颜值 APP，就是美学评分最直接的应用。</p>
-<p>这个任务现在来看似乎很简单，无非是将图片丢入一个网络后，再输出一个分数即可。但在没有深度学习的时代，人们通常只能计算一些手工特征（类似颜色直方图、饱和度等），再用一个分类器或回归模型来训练，效果并不好，因而只能是一些实验室 demo，或者在论文中灌灌水。而等到卷积网络大行其道后，美学评分也像其他任务一样，被研究人员从角落里捡起来，加入到各种刷分比赛中，甚至已经被工业界落地成产品。</p>
+<p>这个任务现在来看似乎很简单，无非是将图片丢入一个模型后，再输出一个分数即可。但在没有深度学习的时代，人们通常只能计算一些手工特征（类似颜色直方图、饱和度等），再用一个分类器或回归模型来训练，效果并不好，因而只能是一些实验室 demo，或者在论文中灌灌水。而等到卷积网络大行其道后，美学评分也像其他任务一样，被研究人员从角落里捡起来，加入到各种刷分比赛中，甚至已经被工业界落地成产品。</p>
 <p>要想让计算机对图像进行打分，就得先搞清楚美的定义是什么。遗憾的是，对于美的定义，连人类自己都模糊不清，一千个摄影师，就有一千张不同的摄影技巧。因此，为了推动这个领域的研究，人们构造了很多数据集，并且让很多人来对每张图片进行打分，从统计的意义上讲，只要打分的人数足够多，那么平均所有人的评分后，得到的均值就是符合大部分人审美的分数。目前常用的几个数据集包括 <a href="http://personal.ie.cuhk.edu.hk/~dy015/ImageAesthetics/Image_Aesthetic_Assessment.html" target="_blank" rel="noopener">CUHK-PQ</a>、<a href="http://academictorrents.com/details/71631f83b11d3d79d8f84efe0a7e12f0ac001460" target="_blank" rel="noopener">AVA</a>、<a href="https://github.com/aimerykong/deepImageAestheticsAnalysis" target="_blank" rel="noopener">AADB</a> 等，其中被用得比较广的当属 AVA 了，因为这个数据集的图片数量异常庞大，且标签也比较丰富，因此可以挖的点更多。</p>
 <p>接下来，美学打分的任务就是在这些数据集上刷分。</p>
 <p>下面就简单讲几篇典型的文章，虽然灌水严重，但也不乏启发性很强的好文。</p>
@@ -605,7 +605,7 @@
 <p>具体细节可参考原文。在数据量突飞猛进的今天，学术界和工业界更普遍的做法是用一个完整的模型实现端到端的训练。</p>
 <h3 id="deep-cropping-via-attention-box-prediction-and-aesthetics-assessment-iccv-2017">3. Deep Cropping via Attention Box Prediction and Aesthetics Assessment (ICCV 2017)</h3>
 <p>回想我们人类自己在裁剪图片的时候，都是先找出最重要的一块区域，框起来，再逐步调整这个裁剪框。这篇论文把这个过程建模为两步：首先，让网络找出图片中最重要的区域，并微调，由此得到一系列候选框，紧接着，用一个美学评分模型对这些候选框进行挑选，找出评分最高的候选框。这个思路跟其他论文的做法没有本质区别，但由于它在找候选框的过程中借用了物体检测的思想，跟其他基于显著性检测或者启发式搜索的方法不同，再加上它把整个论文的 motivation 跟人类自己的操作流程结合起来，因此显得很新颖。</p>
-<p>论文的算法框架分为 ABP(Attention Box Prediction) 和 AA(Aesthetics Assessment) 两个网络。前一个网络用于生成候选框，后一个网络用于打分。ABP 网络的训练需要大量的候选框 ground truth 作参考，由于作者是从注意力的角度出发定义的候选框，因此他们采用了一个视觉注意力相关的数据集 <a href="http://salicon.net/" target="_blank" rel="noopener">SALICON</a> 来生成 ground truth。除了包围注意力区域的候选框外，再根据 IOU 生成更多的正候选框 (注意力区域) 和负候选框 (背景区域)，以此获得大量的训练样本。</p>
+<p>论文的算法框架分为 ABP(Attention Box Prediction) 和 AA(Aesthetics Assessment) 两个网络。前一个网络用于生成候选框，后一个网络用于打分。ABP 网络的训练需要大量的候选框 ground truth 作参考，由于作者是从注意力的角度出发定义的候选框，因此他们采用了一个视觉注意力相关的数据集 <a href="http://salicon.net/" target="_blank" rel="noopener">SALICON</a> 来生成 ground truth。除了包围注意力区域的候选框外 (下图 c)，再根据 IOU 生成更多的正候选框 (注意力区域) 和负候选框 (背景区域) (下图 d)，以此获得大量的训练样本。</p>
 <center>
 <img src="/images/2019-8-6/deep-crop-rectangular.png" width="400px">
 <figcaption>
@@ -652,7 +652,7 @@ ABP网络
 将裁剪框左上角和右下角的点限制在蓝色区域内
 </figcaption>
 </center>
-<p>下图是论文算法的总体框架，由于裁剪框已经事先定义好了，因此只要逐个预测裁剪框内的分数即可。总体模型就是一个回归模型。作者先用一个网络提取整张图片的特征，并在最后的特征图上，根据裁剪框内的区域计算分数。由于分数预测的模块比较小，即使要计算的矩形框很多，总体花费的时间并不大。这里用到一个 trick：由于构图这个东西除了考虑裁剪框内的因素外，还需要考虑框内的元素在整幅图中的效果，即需要兼顾 local 和 global 的信息，因此在计算分数的时候，作者把裁剪框内的 feature 以及整幅图 (挖掉裁剪框内的部分) 的 feature 结合在一起，共同输入网络中计算。</p>
+<p>下图是论文算法的总体框架，由于裁剪框已经事先定义好了，因此只要逐个预测裁剪框内的分数即可。总体模型就是一个回归模型。作者先用一个网络提取整张图片的特征，并在最后的特征图上，根据裁剪框内的区域计算分数。由于分数预测的模块比较小，即使要计算的矩形框很多，总体花费的时间并不大。这里用到一个 trick：由于构图这个东西除了考虑裁剪框内的因素外，还需要考虑框内的元素在整幅图中的效果，即需要兼顾 local 和 global 的信息，因此在计算分数的时候，作者把裁剪框内的 feature 以及整幅图 (挖掉裁剪框内的部分) 的 feature 结合在一起，共同输入网络中计算 (不过这样没法体现位置信息，因此对这种做法我持保留态度)。</p>
 <center>
 <img src="/images/2019-8-6/GAIC-framework.jpg" width="600px">
 <figcaption>
@@ -675,7 +675,7 @@ ABP网络
 <center>
 <img src="/images/2019-8-6/good-view-hunting-eg.png" width="500px">
 <figcaption>
-论文效果图
+论文效果图，左边是原图，右边是裁剪的结果。
 </figcaption>
 </center>
 <p>上一篇论文虽然方法简单，但由于训练数据太粗糙，所以效果不可能很好。为此，这篇论文的作者自己制作了一个数据集 <a href="http://www.cs.stonybrook.edu/~cvl/projects/wei2018goods/VPN_CVPR2018s.html" target="_blank" rel="noopener">CPC</a>。这个数据集中的数据也是采用一对图片 (准确的说，是从图片里抠出的 patch) 进行比较 (rank) 的形式标注的 (实际标注步骤分两步，高效合理，值得借鉴)，整个数据集总共包含一百多万对图片的标注。</p>
