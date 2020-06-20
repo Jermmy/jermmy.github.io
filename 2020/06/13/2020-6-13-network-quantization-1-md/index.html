@@ -77,7 +77,7 @@
 <meta property="og:description" content="最近打算写一个关于神经网络量化的入门教程，包括网络量化的基本原理、离线量化、量化训练，以及全量化模型的推理过程，最后我会用 pytorch 从零构建一个量化模型，帮助读者形成更深刻的理解。 之所以要写这系列教程，主要是想帮助初次接触量化的同学快速入门。笔者在刚开始接触模型量化时走了很多弯路，并且发现网上的资料和论文对初学者来说太不友好。目前学术界的量化方法都过于花俏，能落地的极少，工业界广泛使用的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-6-13/net-eg.png">
-<meta property="og:updated_time" content="2020-06-20T05:45:51.000Z">
+<meta property="og:updated_time" content="2020-06-20T07:42:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络量化入门--基本原理">
 <meta name="twitter:description" content="最近打算写一个关于神经网络量化的入门教程，包括网络量化的基本原理、离线量化、量化训练，以及全量化模型的推理过程，最后我会用 pytorch 从零构建一个量化模型，帮助读者形成更深刻的理解。 之所以要写这系列教程，主要是想帮助初次接触量化的同学快速入门。笔者在刚开始接触模型量化时走了很多弯路，并且发现网上的资料和论文对初学者来说太不友好。目前学术界的量化方法都过于花俏，能落地的极少，工业界广泛使用的">
@@ -424,7 +424,7 @@ q_3^{i,k}=M\sum_{j=1}^N(q_1^{i,j}-Z_1)(q_2^{j,k}-Z_2)+Z_3=MP+Z_3 \tag{8}
 <p>这个网络只有三个模块，现在需要把 conv、fc、relu 量化。</p>
 <p>假设输入为 <span class="math inline">\(x\)</span>，我们可以事先统计样本的最大值和最小值，然后计算出 <span class="math inline">\(S_x\)</span>(scale) 和 <span class="math inline">\(Z_x\)</span>(zero point)。</p>
 <p>同样地，假设 conv、fc 的参数为 <span class="math inline">\(w_1\)</span>、<span class="math inline">\(w_2\)</span>，以及 scale 和 zero point 为 <span class="math inline">\(S_{w1}\)</span>、<span class="math inline">\(Z_{w1}\)</span>、<span class="math inline">\(S_{w2}\)</span>、<span class="math inline">\(Z_{w2}\)</span>。中间层的 feature map 为 <span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2\)</span>，并且事先统计出它们的 scale 和 zero point 为 <span class="math inline">\(S_{a1}\)</span>、<span class="math inline">\(Z_{a1}\)</span>、<span class="math inline">\(S_{a2}\)</span>、<span class="math inline">\(Z_{a2}\)</span>。</p>
-<p>我们可以把卷积运算表示成： <span class="math display">\[
+<p>卷积运算和全连接层的本质都是矩阵运算，因此我们可以把卷积运算表示成 (这里先忽略加 bias 的操作，这一步同样可以量化，不过中间有一些 trick，我们在之后的文章再仔细研究)： <span class="math display">\[
 a_1^{i,k}=\sum_{j=1}^N x^{i,j}w_1^{j,k} \tag{9}
 \]</span> 根据之前的转换，我们可以得到： <span class="math display">\[
 q_{a1}^{i,k}=M\sum_{j=1}^N(q_x^{i,j}-Z_x)(q_{w1}^{j,k}-Z_{w1})+Z_{a1} \tag{10}
