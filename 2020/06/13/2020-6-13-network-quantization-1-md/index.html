@@ -52,7 +52,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="计算机视觉,深度学习," />
+  <meta name="keywords" content="深度学习," />
 
 
 
@@ -69,7 +69,7 @@
 
 
 <meta name="description" content="最近打算写一个关于神经网络量化的入门教程，包括网络量化的基本原理、离线量化、量化训练，以及全量化模型的推理过程，最后我会用 pytorch 从零构建一个量化模型，帮助读者形成更深刻的理解。 之所以要写这系列教程，主要是想帮助初次接触量化的同学快速入门。笔者在刚开始接触模型量化时走了很多弯路，并且发现网上的资料和论文对初学者来说太不友好。目前学术界的量化方法都过于花俏，能落地的极少，工业界广泛使用的">
-<meta name="keywords" content="计算机视觉,深度学习">
+<meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="神经网络量化入门--基本原理">
 <meta property="og:url" content="https://jermmy.github.io/2020/06/13/2020-6-13-network-quantization-1-md/index.html">
@@ -77,7 +77,7 @@
 <meta property="og:description" content="最近打算写一个关于神经网络量化的入门教程，包括网络量化的基本原理、离线量化、量化训练，以及全量化模型的推理过程，最后我会用 pytorch 从零构建一个量化模型，帮助读者形成更深刻的理解。 之所以要写这系列教程，主要是想帮助初次接触量化的同学快速入门。笔者在刚开始接触模型量化时走了很多弯路，并且发现网上的资料和论文对初学者来说太不友好。目前学术界的量化方法都过于花俏，能落地的极少，工业界广泛使用的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-6-13/net-eg.png">
-<meta property="og:updated_time" content="2020-06-20T08:19:43.000Z">
+<meta property="og:updated_time" content="2020-07-05T03:21:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络量化入门--基本原理">
 <meta name="twitter:description" content="最近打算写一个关于神经网络量化的入门教程，包括网络量化的基本原理、离线量化、量化训练，以及全量化模型的推理过程，最后我会用 pytorch 从零构建一个量化模型，帮助读者形成更深刻的理解。 之所以要写这系列教程，主要是想帮助初次接触量化的同学快速入门。笔者在刚开始接触模型量化时走了很多弯路，并且发现网上的资料和论文对初学者来说太不友好。目前学术界的量化方法都过于花俏，能落地的极少，工业界广泛使用的">
@@ -492,8 +492,6 @@ q_{y}^{i,k}=M\sum_{j=1}^N(q_{a2}^{i,j}-Z_{a2})(q_{w2}^{j,k}-Z_{w2})+Z_{y}\tag{11
       
         <div class="post-tags">
           
-            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
-          
             <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
           
         </div>
@@ -516,6 +514,10 @@ q_{y}^{i,k}=M\sum_{j=1}^N(q_{a2}^{i,j}-Z_{a2})(q_{w2}^{j,k}-Z_{w2})+Z_{y}\tag{11
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/04/2020-7-4-post-training-quantization-2/" rel="prev" title="神经网络量化入门--后训练量化">
+                神经网络量化入门--后训练量化 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -594,7 +596,7 @@ q_{y}^{i,k}=M\sum_{j=1}^N(q_{a2}^{i,j}-Z_{a2})(q_{w2}^{j,k}-Z_{w2})+Z_{y}\tag{11
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

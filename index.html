@@ -261,6 +261,283 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2020/07/04/2020-7-4-post-training-quantization-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/07/04/2020-7-4-post-training-quantization-2/" itemprop="url">
+                  神经网络量化入门--后训练量化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-04T11:27:15+08:00">
+                2020-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/04/2020-7-4-post-training-quantization-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/07/04/2020-7-4-post-training-quantization-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/07/04/2020-7-4-post-training-quantization-2/" class="leancloud_visitors" data-flag-title="神经网络量化入门--后训练量化">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>上一篇<a href="http://jermmy.github.io/2020/06/13/2020-6-13-network-quantization-1-md/">文章</a>介绍了矩阵量化的基本原理，并推广到卷积网络中。这一章开始，我会逐步深入到卷积网络的量化细节中，并用 pytorch 从零搭建一个量化模型，帮助读者实际感受量化的具体流程。</p>
+<p>本章中，我们来具体学习最简单的量化方法——后训练量化「post training quantization」</p>
+<p>由于本人接触量化不久，如表述有错，欢迎指正。</p>
+<h2 id="卷积层量化">卷积层量化</h2>
+<p>卷积网络最核心的要素是卷积，前文虽然有提及卷积运算的量化，但省略了很多细节，本文继续深入卷积层的量化。</p>
+<p>这里我们继续沿用之前的公式，用 <span class="math inline">\(S\)</span>、<span class="math inline">\(Z\)</span> 表示 scale 和 zero point，<span class="math inline">\(r\)</span> 表示浮点实数，<span class="math inline">\(q\)</span> 表示定点整数。</p>
+<p>假设卷积的权重 weight 为 <span class="math inline">\(w\)</span>，bias 为 <span class="math inline">\(b\)</span>，输入为 <span class="math inline">\(x\)</span>，输出的激活值为 <span class="math inline">\(a\)</span>。由于卷积本质上就是矩阵运算，因此可以表示成: <span class="math display">\[
+a=\sum_{i}^N w_i x_i+b \tag{1}
+\]</span> 由此得到量化的公式: <span class="math display">\[
+S_a (q_a-Z_a)=\sum_{i}^N S_w(q_w-Z_w)S_x(q_x-Z_x)+S_b(q_b-Z_b) \tag{2}
+\]</span></p>
+<p><span class="math display">\[
+q_a=\frac{S_w S_x}{S_a}\sum_{i}^N (q_w-Z_w)(q_x-Z_x)+\frac{S_b}{S_a}(q_b-Z_b)+Z_a \tag{3}
+\]</span></p>
+<p>这里面非整数的部分就只有 <span class="math inline">\(\frac{S_w S_x}{S_a}\)</span>、<span class="math inline">\(\frac{S_b}{S_a}\)</span>，因此接下来就是把这部分也变成定点运算。</p>
+<p>对于 bias，由于 <span class="math inline">\(\sum_{i}^N (q_w-Z_w)(q_x-Z_x)\)</span> 的结果通常会用 int32 的整数存储，因此 bias 通常也量化到 int32。这里我们可以直接用 <span class="math inline">\(S_w S_x\)</span> 来代替 <span class="math inline">\(S_b\)</span>，由于 <span class="math inline">\(S_w\)</span>、<span class="math inline">\(S_x\)</span> 都是对应 8 个 bit 的缩放比例，因此 <span class="math inline">\(S_w S_x\)</span> 最多就放缩到 16 个 bit，用 32bit 来存放 bias 绰绰有余，而 <span class="math inline">\(Z_b\)</span> 则直接记为 0。</p>
+<p>因此，公式 (3) 再次调整为: <span class="math display">\[
+\begin{align}
+q_a&amp;=\frac{S_w S_x}{S_a}(\sum_{i}^N(q_w-Z_w)(q_x-Z_x)+q_b)+Z_a \notag \\
+&amp;=M(\sum_{i}^N q_wq_x-\sum_i^N q_wZ_x-\sum_i^N q_xZ_w+\sum_i^NZ_wZ_x+q_b)+Z_a \tag{4}
+\end{align}
+\]</span> 其中，<span class="math inline">\(M=\frac{S_w S_x}{S_a}\)</span>。</p>
+<p>根据上一篇文章的介绍，<span class="math inline">\(M\)</span> 可以通过一个定点小数加上 bit shift 来实现，因此公式 (4) 完全可以通过定点运算进行计算。由于 <span class="math inline">\(Z_w\)</span>、<span class="math inline">\(q_w\)</span>、<span class="math inline">\(Z_x\)</span>、<span class="math inline">\(q_b\)</span> 都是可以事先计算的，因此 <span class="math inline">\(\sum_i^N q_wZ_x\)</span>、<span class="math inline">\(\sum_i^NZ_wZ_x+q_b\)</span> 也可以事先计算好，实际 inference 的时候，只需要计算 <span class="math inline">\(\sum_{i}^N q_wq_x\)</span> 和 <span class="math inline">\(\sum_i^N q_xZ_w\)</span> 即可。</p>
+<h2 id="卷积网络量化流程">卷积网络量化流程</h2>
+<p>了解完整个卷积层的量化，现在我们再来完整过一遍卷积网络的量化流程。</p>
+<p>我们继续沿用前文的小网络：</p>
+<center>
+<img src="/images/2020-7-4/net-eg.png" width="500px">
+</center>
+<p>其中，<span class="math inline">\(x\)</span>、<span class="math inline">\(y\)</span> 表示输入和输出，<span class="math inline">\(a_1\)</span>、<span class="math inline">\(a_2\)</span> 是网络中间的 feature map，<span class="math inline">\(q_x\)</span> 表示 <span class="math inline">\(x\)</span> 量化后的定点数，<span class="math inline">\(q_{a1}\)</span> 等同理。</p>
+<p>在后训练量化中，我们需要一些样本来统计 <span class="math inline">\(x\)</span>、<span class="math inline">\(a_1\)</span>、<span class="math inline">\(a_2\)</span> 以及 <span class="math inline">\(y\)</span> 的数值范围「即 min, max」，再根据量化的位数以及量化方法来计算 scale 和 zero point。</p>
+<p>本文中，我们先采用最简单的量化方式，即统计 min、max 后，按照线性量化公式: <span class="math display">\[
+S = \frac{r_{max}-r_{min}}{q_{max}-q_{min}} \tag{5}
+\]</span></p>
+<p><span class="math display">\[
+Z = round(q_{max} - \frac{r_{max}}{S}) \tag{6}
+\]</span></p>
+<p>来计算 scale 和 zero point。</p>
+<p>需要注意的是，除了第一个 conv 需要统计输入 <span class="math inline">\(x\)</span> 的 min、max 外，其他层都只需要统计中间输出 feature 的 min、max 即可。另外，对于 relu、maxpooling 这类激活函数来说，它们会沿用上一层输出的 min、max，不需要额外统计，即上图中 <span class="math inline">\(a_1\)</span>、<span class="math inline">\(a_2\)</span> 会共享相同的 min、max 「为何这些激活函数可以共享 min max，以及哪些激活函数有这种性质，之后有时间可以细说」。</p>
+<p>因此，在最简单的后训练量化算法中，我们会先按照正常的 forward 流程跑一些数据，在这个过程中，统计输入输出以及中间 feature map 的 min、max。等统计得差不多了，我们就可以根据 min、max 来计算 scale 和 zero point，然后根据公式 (4) 中的，对一些数据项提前计算。</p>
+<p>之后，在 inference 的时候，我们会先把输入 <span class="math inline">\(x\)</span> 量化成定点整数 <span class="math inline">\(q_x\)</span>，然后按照公式 (4) 计算卷积的输出 <span class="math inline">\(q_{a1}\)</span>，这个结果依然是整型的，然后继续计算 relu 的输出 <span class="math inline">\(q_{a2}\)</span>。对于 fc 层来说，它本质上也是矩阵运算，因此也可以用公式 (4) 计算，然后得到 <span class="math inline">\(q_y\)</span>。最后，根据 fc 层已经计算出来的 scale 和 zero point，推算回浮点实数 <span class="math inline">\(y\)</span>。除了输入输出的量化和反量化操作，其他流程完全可以用定点运算来完成。</p>
+<h2 id="pytorch实现">pytorch实现</h2>
+<p>有了上面的铺垫，现在开始用 pytorch 从零搭建量化模型。</p>
+<p>下文的代码都可以在 https://github.com/Jermmy/pytorch-quantization-demo 上找到。</p>
+<h3 id="基础量化函数">基础量化函数</h3>
+<p>首先，我们需要把量化的基本公式，也就是公式 (5)(6) 先实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calcScaleZeroPoint</span><span class="params">(min_val, max_val, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">    qmin = <span class="number">0.</span></span><br><span class="line">    qmax = <span class="number">2.</span> ** num_bits - <span class="number">1.</span></span><br><span class="line">    scale = float((max_val - min_val) / (qmax - qmin)) <span class="comment"># S=(rmax-rmin)/(qmax-qmin)</span></span><br><span class="line"></span><br><span class="line">    zero_point = qmax - max_val / scale    <span class="comment"># Z=round(qmax-rmax/scale)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> zero_point &lt; qmin:</span><br><span class="line">        zero_point = qmin</span><br><span class="line">    <span class="keyword">elif</span> zero_point &gt; qmax:</span><br><span class="line">        zero_point = qmax</span><br><span class="line">    </span><br><span class="line">    zero_point = int(zero_point)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> scale, zero_point</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quantize_tensor</span><span class="params">(x, scale, zero_point, num_bits=<span class="number">8</span>, signed=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> signed:</span><br><span class="line">        qmin = - <span class="number">2.</span> ** (num_bits - <span class="number">1</span>)</span><br><span class="line">        qmax = <span class="number">2.</span> ** (num_bits - <span class="number">1</span>) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        qmin = <span class="number">0.</span></span><br><span class="line">        qmax = <span class="number">2.</span>**num_bits - <span class="number">1.</span></span><br><span class="line"> </span><br><span class="line">    q_x = zero_point + x / scale</span><br><span class="line">    q_x.clamp_(qmin, qmax).round_()     <span class="comment"># q=round(r/S+Z)</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> q_x.float()  <span class="comment"># 由于pytorch不支持int类型的运算，因此我们还是用float来表示整数</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dequantize_tensor</span><span class="params">(q_x, scale, zero_point)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> scale * (q_x - zero_point)    <span class="comment"># r=S(q-Z)</span></span><br></pre></td></tr></table></figure>
+<p>前面提到，在后训练量化过程中，需要先统计样本以及中间层的 min、max，同时也频繁涉及到一些量化、反量化操作，因此我们可以把这些功能都封装成一个 <code>QParam</code> 类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QParam</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">        self.num_bits = num_bits</span><br><span class="line">        self.scale = <span class="keyword">None</span></span><br><span class="line">        self.zero_point = <span class="keyword">None</span></span><br><span class="line">        self.min = <span class="keyword">None</span></span><br><span class="line">        self.max = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, tensor)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.max <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> self.max &lt; tensor.max():</span><br><span class="line">            self.max = tensor.max()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> self.min <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> self.min &gt; tensor.min():</span><br><span class="line">            self.min = tensor.min()</span><br><span class="line">        </span><br><span class="line">        self.scale, self.zero_point = calcScaleZeroPoint(self.min, self.max, self.num_bits)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_tensor</span><span class="params">(self, tensor)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> quantize_tensor(tensor, self.scale, self.zero_point, num_bits=self.num_bits)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequantize_tensor</span><span class="params">(self, q_x)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> dequantize_tensor(q_x, self.scale, self.zero_point)</span><br></pre></td></tr></table></figure>
+<p>上面的 <code>update</code> 函数就是用来统计 min、max 的。</p>
+<h3 id="量化网络模块">量化网络模块</h3>
+<p>下面要来实现一些最基本网络模块的量化形式，包括 conv、relu、maxpooling 以及 fc 层。</p>
+<p>首先我们定义一个量化基类，这样可以减少一些重复代码，也能让代码结构更加清晰：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QModule</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, qi=True, qo=True, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">        super(QModule, self).__init__()</span><br><span class="line">        <span class="keyword">if</span> qi:</span><br><span class="line">            self.qi = QParam(num_bits=num_bits)</span><br><span class="line">        <span class="keyword">if</span> qo:</span><br><span class="line">            self.qo = QParam(num_bits=num_bits)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">freeze</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_inference</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError(<span class="string">'quantize_inference should be implemented.'</span>)</span><br></pre></td></tr></table></figure>
+<p>这个基类规定了每个量化模块都需要提供的方法。</p>
+<p>首先是 <code>__init__</code> 函数，除了指定量化的位数外，还需指定是否提供量化输入 (qi) 及输出参数 (qo)。在前面也提到，不是每一个网络模块都需要统计输入的 min、max，大部分中间层都是用上一层的 qo 来作为自己的 qi 的，另外有些中间层的激活函数也是直接用上一层的 qi 来作为自己的 qi 和 qo。</p>
+<p>其次是 <code>freeze</code> 函数，这个函数会在统计完 min、max 后发挥作用。正如上文所说的，公式 (4) 中有很多项是可以提前计算好的，freeze 就是把这些项提前固定下来，同时也将网络的权重由<strong>浮点实数</strong>转化为<strong>定点整数</strong>。</p>
+<p>最后是 <code>quantize_inference</code>，这个函数主要是量化 inference 的时候会使用。实际 inference 的时候和正常的 forward 会有一些差异，可以根据之后的代码体会一下。</p>
+<p>下面重点看量化卷积层的实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QConv2d</span><span class="params">(QModule)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, conv_module, qi=True, qo=True, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">        super(QConv2d, self).__init__(qi=qi, qo=qo, num_bits=num_bits)</span><br><span class="line">        self.num_bits = num_bits</span><br><span class="line">        self.conv_module = conv_module</span><br><span class="line">        self.qw = QParam(num_bits=num_bits)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">freeze</span><span class="params">(self, qi=None, qo=None)</span>:</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>) <span class="keyword">and</span> qi <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'qi has been provided in init function.'</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(self, <span class="string">'qi'</span>) <span class="keyword">and</span> qi <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'qi is not existed, should be provided.'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>) <span class="keyword">and</span> qo <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'qo has been provided in init function.'</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(self, <span class="string">'qo'</span>) <span class="keyword">and</span> qo <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'qo is not existed, should be provided.'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> qi <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            self.qi = qi</span><br><span class="line">        <span class="keyword">if</span> qo <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            self.qo = qo</span><br><span class="line">        self.M = self.qw.scale * self.qi.scale / self.qo.scale</span><br><span class="line"></span><br><span class="line">        self.conv_module.weight.data = self.qw.quantize_tensor(self.conv_module.weight.data)</span><br><span class="line">        self.conv_module.weight.data = self.conv_module.weight.data - self.qw.zero_point</span><br><span class="line"></span><br><span class="line">        self.conv_module.bias.data = quantize_tensor(self.conv_module.bias.data, scale=self.qi.scale * self.qw.scale, zero_point=<span class="number">0</span>, signed=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>):</span><br><span class="line">            self.qi.update(x)</span><br><span class="line"></span><br><span class="line">        self.qw.update(self.conv_module.weight.data)</span><br><span class="line"></span><br><span class="line">        self.conv_module.weight.data = self.qw.quantize_tensor(self.conv_module.weight.data)</span><br><span class="line">        self.conv_module.weight.data = self.qw.dequantize_tensor(self.conv_module.weight.data)</span><br><span class="line"></span><br><span class="line">        x = self.conv_module(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>):</span><br><span class="line">            self.qo.update(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">      </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_inference</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = x - self.qi.zero_point</span><br><span class="line">        x = self.fc_module(x)</span><br><span class="line">        x = self.M * x + self.qo.zero_point</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>这个类基本涵盖了最精华的部分。</p>
+<p>首先是 <code>__init__</code> 函数，可以看到我传入了一个 <code>conv_module</code> 模块，这个模块对应全精度的卷积层，另外的 <code>qw</code> 参数则是用来统计 weight 的 min、max 以及对 weight 进行量化用的。</p>
+<p>其次是 <code>freeze</code> 函数，这个函数主要就是计算公式 (4) 中的 <span class="math inline">\(M\)</span>、<span class="math inline">\(q_w\)</span> 以及 <span class="math inline">\(q_b\)</span>。由于完全实现公式 (4) 的加速效果需要更底层代码的支持，因此在 pytorch 中我用了更简单的实现方式，即优化前的公式 (4): <span class="math display">\[
+q_a=M(\sum_{i}^N(q_w-Z_w)(q_x-Z_x)+q_b)+Z_a \tag{7}
+\]</span> 这里的 <span class="math inline">\(M\)</span> 本来也需要通过移位来实现定点化加速，但 pytorch 中 bit shift 操作不好实现，因此我们还是用原始的乘法操作来代替。</p>
+<p>注意到 freeze 函数可能会传入 qi 或者 qo​，这也是之前提到的，有些中间的模块不会有自己的 qi，而是复用之前层的 qo 作为自己的 qi。</p>
+<p>接着是 <code>forward</code> 函数，这个函数和正常的 forward 一样，也是在 float 上进行的，只不过需要统计输入输出以及 weight 的 min、max 而已。有读者可能会疑惑为什么需要对 weight 量化到 int8 然后又反量化回 float，这里其实就是所谓的伪量化节点，因为我们在实际量化 inference 的时候会把 weight 量化到 int8，这个过程本身是有精度损失的 (来自四舍五入的 round 带来的截断误差)，所以在统计 min、max 的时候，需要把这个过程带来的误差也模拟进去。</p>
+<p>最后是 <code>quantize_inference</code> 函数，这个函数在实际 inference 的时候会被调用，对应的就是上面的公式 (7)。注意，这个函数里面的卷积操作是在 int 上进行的，这是量化推理加速的关键「当然，由于 pytorch 的限制，我们仍然是在 float 上计算，只不过数值都是整数。这也可以看出量化推理是跟底层实现紧密结合的技术」。</p>
+<p>理解 <code>QConv2d</code> 后，其他模块基本上异曲同工，这里不再赘述。</p>
+<h3 id="完整的量化网络">完整的量化网络</h3>
+<p>我们定义一个简单的卷积网络：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num_channels=<span class="number">1</span>)</span>:</span></span><br><span class="line">        super(Net, self).__init__()</span><br><span class="line">        self.conv1 = nn.Conv2d(num_channels, <span class="number">40</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">40</span>, <span class="number">40</span>, <span class="number">3</span>, <span class="number">1</span>, groups=<span class="number">20</span>) <span class="comment"># 这里用分组网络，可以增大量化带来的误差</span></span><br><span class="line">        self.fc = nn.Linear(<span class="number">5</span>*<span class="number">5</span>*<span class="number">40</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = F.relu(self.conv1(x))</span><br><span class="line">        x = F.max_pool2d(x, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        x = F.relu(self.conv2(x))</span><br><span class="line">        x = F.max_pool2d(x, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, <span class="number">5</span>*<span class="number">5</span>*<span class="number">40</span>)</span><br><span class="line">        x = self.fc(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>接下来就是把这个网络的每个模块进行量化，我们单独定义一个 <code>quantize</code> 函数来逐个量化每个模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize</span><span class="params">(self, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">        self.qconv1 = QConv2d(self.conv1, qi=<span class="keyword">True</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br><span class="line">        self.qrelu1 = QReLU()</span><br><span class="line">        self.qmaxpool2d_1 = QMaxPooling2d(kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>, padding=<span class="number">0</span>)</span><br><span class="line">        self.qconv2 = QConv2d(self.conv2, qi=<span class="keyword">False</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br><span class="line">        self.qrelu2 = QReLU()</span><br><span class="line">        self.qmaxpool2d_2 = QMaxPooling2d(kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>, padding=<span class="number">0</span>)</span><br><span class="line">        self.qfc = QLinear(self.fc, qi=<span class="keyword">False</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br></pre></td></tr></table></figure>
+<p>注意，这里只有第一层的 conv 需要 qi，后面的模块基本是复用前面层的 qo 作为当前层的 qi。</p>
+<p>接着定义一个 quantize_forward 函数来统计 min、max，同时模拟量化误差：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = self.qconv1(x)</span><br><span class="line">        x = self.qrelu1(x)</span><br><span class="line">        x = self.qmaxpool2d_1(x)</span><br><span class="line">        x = self.qconv2(x)</span><br><span class="line">        x = self.qrelu2(x)</span><br><span class="line">        x = self.qmaxpool2d_2(x)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, <span class="number">5</span>*<span class="number">5</span>*<span class="number">40</span>)</span><br><span class="line">        x = self.qfc(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>下面的 <code>freeze</code> 函数会在统计完 min、max 后对一些变量进行固化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">freeze</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.qconv1.freeze()</span><br><span class="line">        self.qrelu1.freeze(self.qconv1.qo)</span><br><span class="line">        self.qmaxpool2d_1.freeze(self.qconv1.qo)</span><br><span class="line">        self.qconv2.freeze(qi=self.qconv1.qo)</span><br><span class="line">        self.qrelu2.freeze(self.qconv2.qo)</span><br><span class="line">        self.qmaxpool2d_2.freeze(self.qconv2.qo)</span><br><span class="line">        self.qfc.freeze(qi=self.qconv2.qo)</span><br></pre></td></tr></table></figure>
+<p>由于我们在量化网络的时候，有些模块是没有定义 qi 的，因此这里需要传入前面层的 qo 作为当前层的 qi。</p>
+<p>最后是 <code>quantize_inference</code> 函数，就是实际 inference 的时候用到的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_inference</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        qx = self.qconv1.qi.quantize_tensor(x)</span><br><span class="line">        qx = self.qconv1.quantize_inference(qx)</span><br><span class="line">        qx = self.qrelu1.quantize_inference(qx)</span><br><span class="line">        qx = self.qmaxpool2d_1.quantize_inference(qx)</span><br><span class="line">        qx = self.qconv2.quantize_inference(qx)</span><br><span class="line">        qx = self.qrelu2.quantize_inference(qx)</span><br><span class="line">        qx = self.qmaxpool2d_2.quantize_inference(qx)</span><br><span class="line">        qx = qx.view(<span class="number">-1</span>, <span class="number">5</span>*<span class="number">5</span>*<span class="number">40</span>)</span><br><span class="line">        qx = self.qfc.quantize_inference(qx)</span><br><span class="line">        out = self.qfc.qo.dequantize_tensor(qx)</span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+<p>这里我们会将输入 <code>x</code> 先量化到 int8，然后就是全量化的定点运算，得到最后一层的输出后，再反量化回 float 即可。</p>
+<h3 id="训练全精度网络">训练全精度网络</h3>
+<p>这一部分代码在 train.py 中，我们用 mnist 数据集来训练上面的网络：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line">train_loader = torch.utils.data.DataLoader(</span><br><span class="line">  datasets.MNIST(<span class="string">'data'</span>, train=<span class="keyword">True</span>, download=<span class="keyword">True</span>, </span><br><span class="line">                 transform=transforms.Compose([</span><br><span class="line">                   transforms.ToTensor(),</span><br><span class="line">                   transforms.Normalize((<span class="number">0.1307</span>,), (<span class="number">0.3081</span>,))</span><br><span class="line">                 ])),</span><br><span class="line">  batch_size=batch_size, shuffle=<span class="keyword">True</span>, num_workers=<span class="number">1</span>, pin_memory=<span class="keyword">True</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">test_loader = torch.utils.data.DataLoader(</span><br><span class="line">  datasets.MNIST(<span class="string">'data'</span>, train=<span class="keyword">False</span>, transform=transforms.Compose([</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    transforms.Normalize((<span class="number">0.1307</span>,), (<span class="number">0.3081</span>,))</span><br><span class="line">  ])),</span><br><span class="line">  batch_size=test_batch_size, shuffle=<span class="keyword">True</span>, num_workers=<span class="number">1</span>, pin_memory=<span class="keyword">True</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">model = Net().to(device)</span><br></pre></td></tr></table></figure>
+<p>具体训练细节比较简单，这里不再赘述。</p>
+<p>训练完成后，我测试得到的准确率在 98% 左右。</p>
+<h3 id="后训练量化">后训练量化</h3>
+<p>这一部分代码在 post_training_quantize.py 中。</p>
+<p>我们先加载全精度模型的参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model = Net()</span><br><span class="line">model.load_state_dict(torch.load(<span class="string">'ckpt/mnist_cnn.pt'</span>))</span><br></pre></td></tr></table></figure>
+<p>然后对网络进行量化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.quantize(num_bits=<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<p>接下来就是用一些训练数据来估计 min、max：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">direct_quantize</span><span class="params">(model, test_loader)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i, (data, target) <span class="keyword">in</span> enumerate(test_loader, <span class="number">1</span>):</span><br><span class="line">        output = model.quantize_forward(data)</span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">200</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    print(<span class="string">'direct quantization finish'</span>)</span><br></pre></td></tr></table></figure>
+<p>简单起见，我们就跑 200 个迭代。</p>
+<p>然后，我们把量化参数都固定下来，并进行全量化推理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">model.freeze()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quantize_inference</span><span class="params">(model, test_loader)</span>:</span></span><br><span class="line">    correct = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i, (data, target) <span class="keyword">in</span> enumerate(test_loader, <span class="number">1</span>):</span><br><span class="line">        output = model.quantize_inference(data)</span><br><span class="line">        pred = output.argmax(dim=<span class="number">1</span>, keepdim=<span class="keyword">True</span>)</span><br><span class="line">        correct += pred.eq(target.view_as(pred)).sum().item()</span><br><span class="line">    print(<span class="string">'\nTest set: Quant Model Accuracy: &#123;:.0f&#125;%\n'</span>.format(<span class="number">100.</span> * correct / len(test_loader.dataset)))</span><br><span class="line"></span><br><span class="line">quantize_inference(model, test_loader)</span><br></pre></td></tr></table></figure>
+<p>由于很多细节都封装在量化网络的模块中了，因此外部调用的代码跟全精度模型其实很类似。</p>
+<p>我自己测试了 bit 数为 1～8 的准确率，得到下面这张折线图：</p>
+<center>
+<img src="/images/2020-7-4/acc.png" width="500px">
+</center>
+<p>发现，当 bit &gt;= 3 的时候，精度几乎不会掉，bit = 2 的时候精度下降到 69%，bit = 1 的时候则下降到 10%。</p>
+<p>这一方面是 mnist 分类任务比较简单，但也说明神经网络中的冗余量其实非常大，所以量化在分类网络中普遍有不错的效果「不过 bit =3 或 4 的时候效果依然这么好，让我依稀觉得代码里面应该有 bug，后续还要反复检查」。</p>
+<h2 id="总结">总结</h2>
+<p>这篇文章主要补充了卷积层量化的细节，包括 bias 的量化，以及实际 inference 时一些优化的操作。并梳理了完整的卷积网络量化的流程。然后重点用 pytorch 从零搭建一个量化模型来帮助大家理解其中的细节，以及后训练量化算法的过程。代码是参考了这篇<a href="https://medium.com/@karanbirchahal/how-to-quantise-an-mnist-network-to-8-bits-in-pytorch-no-retraining-required-from-scratch-39f634ac8459" target="_blank" rel="noopener">文章</a>，加上自己拍脑袋构思的，存在很多不足之处，而且应该有不少 bug 存在，也欢迎大家指正。</p>
+<p>之后的文章将继续讲述量化感知训练的流程，并补充其他量化的细节「例如 conv+relu 的合并等」，感谢大家赏脸关注。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://medium.com/@karanbirchahal/how-to-quantise-an-mnist-network-to-8-bits-in-pytorch-no-retraining-required-from-scratch-39f634ac8459" target="_blank" rel="noopener">How to Quantize an MNIST network to 8 bits in Pytorch from scratch (No retraining required)</a></li>
+<li><a href="https://arxiv.org/abs/1712.05877" target="_blank" rel="noopener">Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2020/06/13/2020-6-13-network-quantization-1-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1799,179 +2076,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2018/04/16/2018-4-16-boosting-algorithm/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jermmy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jermmy's Lazy Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/04/16/2018-4-16-boosting-algorithm/" itemprop="url">
-                  浅析boosting算法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-16T20:46:56+08:00">
-                2018-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/04/16/2018-4-16-boosting-algorithm/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/16/2018-4-16-boosting-algorithm/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/04/16/2018-4-16-boosting-algorithm/" class="leancloud_visitors" data-flag-title="浅析boosting算法">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>我在很久以前的一篇<a href="https://jermmy.github.io/2017/04/12/2017-4-12-bagging-boosting-bootstrap/">短文</a>提过一丢丢 boosting，今天翻了下统计学习方法，打算记录一点干货的东西。这篇博文会简单介绍一下 「Adaboost」，并总结一下 Adaboost 方法背后的套路：前向分步加法模型。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/16/2018-4-16-boosting-algorithm/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2016,7 +2125,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
