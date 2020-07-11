@@ -1,0 +1,1061 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章介绍了后训练量化的基本流程，并用 pytorch 演示了最简单的后训练量化算法。 后训练量化虽然操作简单，并且大部分推理框架都提供了这类离线量化算法 (如 tensorrt、ncnn，SNPE 等)，但有时候这种方法并不能保证足够的精度，因此本文介绍另一种比后训练量化更有效地量化方法——量化感知训练。 量化感知训练，顾名思义，就是在量化的过程中，对网络进行训练，从而让网络参数能更好地适应">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="神经网络量化入门--量化感知训练">
+<meta property="og:url" content="https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="上一篇文章介绍了后训练量化的基本流程，并用 pytorch 演示了最简单的后训练量化算法。 后训练量化虽然操作简单，并且大部分推理框架都提供了这类离线量化算法 (如 tensorrt、ncnn，SNPE 等)，但有时候这种方法并不能保证足够的精度，因此本文介绍另一种比后训练量化更有效地量化方法——量化感知训练。 量化感知训练，顾名思义，就是在量化的过程中，对网络进行训练，从而让网络参数能更好地适应">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-11/floor_graph.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-11/exp.png">
+<meta property="og:updated_time" content="2020-07-11T07:29:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="神经网络量化入门--量化感知训练">
+<meta name="twitter:description" content="上一篇文章介绍了后训练量化的基本流程，并用 pytorch 演示了最简单的后训练量化算法。 后训练量化虽然操作简单，并且大部分推理框架都提供了这类离线量化算法 (如 tensorrt、ncnn，SNPE 等)，但有时候这种方法并不能保证足够的精度，因此本文介绍另一种比后训练量化更有效地量化方法——量化感知训练。 量化感知训练，顾名思义，就是在量化的过程中，对网络进行训练，从而让网络参数能更好地适应">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2020-7-11/floor_graph.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/"/>
+
+
+
+
+
+  <title>神经网络量化入门--量化感知训练 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                神经网络量化入门--量化感知训练
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-11T11:13:37+08:00">
+                2020-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/11/2020-7-11-network-quantization-3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/07/11/2020-7-11-network-quantization-3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/07/11/2020-7-11-network-quantization-3/" class="leancloud_visitors" data-flag-title="神经网络量化入门--量化感知训练">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇<a href="http://jermmy.github.io/2020/07/04/2020-7-4-post-training-quantization-2/">文章</a>介绍了后训练量化的基本流程，并用 pytorch 演示了最简单的后训练量化算法。</p>
+<p>后训练量化虽然操作简单，并且大部分推理框架都提供了这类离线量化算法 (如 <a href="https://developer.nvidia.com/tensorrt" target="_blank" rel="noopener">tensorrt</a>、<a href="https://github.com/Tencent/ncnn" target="_blank" rel="noopener">ncnn</a>，<a href="https://developer.qualcomm.com/software/qualcomm-neural-processing-sdk" target="_blank" rel="noopener">SNPE</a> 等)，但有时候这种方法并不能保证足够的精度，因此本文介绍另一种比后训练量化更有效地量化方法——量化感知训练。</p>
+<p>量化感知训练，顾名思义，就是在量化的过程中，对网络进行训练，从而让网络参数能更好地适应量化带来的信息损失。这种方式更加灵活，因此准确性普遍比后训练量化要高。当然，它的一大缺点是操作起来不方便，这一点后面会详谈。</p>
+<p>同样地，这篇文章会讲解最简单的量化训练算法流程，并沿用之前文章的代码框架，用 pytorch 从零构建量化训练算法的流程。</p>
+<a id="more"></a>
+<h2 id="量化训练的困难">量化训练的困难</h2>
+<p>要理解量化训练的困难之处，需要了解量化训练相比普通的全精度训练有什么区别。为了看清这一点，我们回顾一下上一篇文章中卷积量化的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QConv2d</span><span class="params">(QModule)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>):</span><br><span class="line">            self.qi.update(x)</span><br><span class="line"></span><br><span class="line">        self.qw.update(self.conv_module.weight.data)</span><br><span class="line"></span><br><span class="line">        self.conv_module.weight.data = self.qw.quantize_tensor(self.conv_module.weight.data)</span><br><span class="line">        self.conv_module.weight.data = self.qw.dequantize_tensor(self.conv_module.weight.data)</span><br><span class="line"></span><br><span class="line">        x = self.conv_module(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>):</span><br><span class="line">            self.qo.update(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>这里面区别于全精度模型的地方在于，我们在卷积运算前先对 weight 做了一遍量化，然后又再反量化成 float。这一步在后训练量化中其实可有可无，但量化感知训练中却是需要的「之前为了代码上的一致，我提前把这一步加上去了」</p>
+<p>那这一步有什么特别吗？可以回顾一下量化的具体操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quantize_tensor</span><span class="params">(x, scale, zero_point, num_bits=<span class="number">8</span>, signed=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> signed:</span><br><span class="line">        qmin = - <span class="number">2.</span> ** (num_bits - <span class="number">1</span>)</span><br><span class="line">        qmax = <span class="number">2.</span> ** (num_bits - <span class="number">1</span>) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        qmin = <span class="number">0.</span></span><br><span class="line">        qmax = <span class="number">2.</span>**num_bits - <span class="number">1.</span></span><br><span class="line"> </span><br><span class="line">    q_x = zero_point + x / scale</span><br><span class="line">    q_x.clamp_(qmin, qmax).round_()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> q_x.float()</span><br></pre></td></tr></table></figure>
+<p>这里面有个 <code>round</code> 函数，而这个函数是没法训练的。它的函数图像如下：</p>
+<center>
+<img src="/images/2020-7-11/floor_graph.png" width="300px">
+</center>
+<p>这个函数几乎每一处的梯度都是 0，如果网络中存在该函数，会导致反向传播的梯度也变成 0。</p>
+<p>可以看个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">conv = nn.Conv2d(<span class="number">3</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quantize</span><span class="params">(weight)</span>:</span></span><br><span class="line">    w = weight.round()</span><br><span class="line">    <span class="keyword">return</span> w</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QuantConv</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, conv_module)</span>:</span></span><br><span class="line">        super(QuantConv, self).__init__()</span><br><span class="line">        self.conv_module = conv_module</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> F.conv2d(x, quantize(self.conv_module.weight), self.conv_module.bias, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x = torch.randn((<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">quantconv = QuantConv(conv)</span><br><span class="line"></span><br><span class="line">a = quantconv(x).sum().backward()</span><br><span class="line"></span><br><span class="line">print(quantconv.conv_module.weight.grad)</span><br></pre></td></tr></table></figure>
+<p>这个例子里面，我将权重 weight 做了一遍 <code>round</code> 操作后，再进行卷积运算，但返回的梯度全是 0：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tensor([[[[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]],</span><br><span class="line"></span><br><span class="line">         [[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]],</span><br><span class="line"></span><br><span class="line">         [[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">          [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]]]])</span><br></pre></td></tr></table></figure>
+<p>换言之，这个函数是没法学习的，从而导致量化训练进行不下去。</p>
+<h2 id="straight-through-estimator">Straight Through Estimator</h2>
+<p>那要怎么解决这个问题呢？</p>
+<p>一个很容易想到的方法是，直接跳过伪量化的过程，避开 <code>round</code>。直接把卷积层的梯度回传到伪量化之前的 weight 上。这样一来，由于卷积中用的 weight 是经过伪量化操作的，因此可以模拟量化误差，把这些误差的梯度回传到原来的 weight，又可以更新权重，使其适应量化产生的误差，量化训练就可以正常进行下去了。</p>
+<p>这个方法就叫做 Straight Through Estimator(STE)。</p>
+<h2 id="pytorch实现">pytorch实现</h2>
+<h3 id="伪量化节点实现">伪量化节点实现</h3>
+<p>上面讲完量化训练最基本的思路，下面我们继续沿用前文的代码框架，加入量化训练的部分。</p>
+<p>首先，我们需要修改伪量化的写法，之前的代码是直接对 weight 的数值做了伪量化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.conv_module.weight.data = self.qw.quantize_tensor(self.conv_module.weight.data)</span><br><span class="line">self.conv_module.weight.data = self.qw.dequantize_tensor(self.conv_module.weight.data)</span><br></pre></td></tr></table></figure>
+<p>这在后训练量化里面没有问题，但在 pytorch 中，这种写法是没法回传梯度的，因此量化训练里面，需要重新修改伪量化节点的写法。</p>
+<p>另外，STE 需要我们重新定义反向传播的梯度。因此，需要借助 pytorch 中的 <code>Function</code> 接口来重新定义伪量化的过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Function</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FakeQuantize</span><span class="params">(Function)</span>:</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(ctx, x, qparam)</span>:</span></span><br><span class="line">        x = qparam.quantize_tensor(x)</span><br><span class="line">        x = qparam.dequantize_tensor(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(ctx, grad_output)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> grad_output, <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<p>这里面的 forward 函数，和之前的写法是类似的，就是把数值量化之后再反量化回去。但在 backward 中，我们直接返回了后一层传过来的梯度 <code>grad_output</code>，相当于直接跳过了伪量化这一层的梯度计算，让梯度直接流到前一层 (Straight Through)。</p>
+<p>pytorch 定义 <code>backward</code> 函数的返回变量需要与 <code>forward</code> 的输入参数对应，分别表示对应输入的梯度。由于 <code>qparam</code> 只是统计 min、max，不需要梯度，因此返回给它的梯度是 <code>None</code>。</p>
+<h3 id="量化卷积代码">量化卷积代码</h3>
+<p>量化卷积层的代码除了 <code>forward</code> 中需要修改伪量化节点外，其余的和之前的文章基本一致：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QConv2d</span><span class="params">(QModule)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>):</span><br><span class="line">            self.qi.update(x)</span><br><span class="line">            x = FakeQuantize.apply(x, self.qi)</span><br><span class="line"></span><br><span class="line">        self.qw.update(self.conv_module.weight.data)</span><br><span class="line"></span><br><span class="line">        x = F.conv2d(x, FakeQuantize.apply(self.conv_module.weight, self.qw),</span><br><span class="line">                     self.conv_module.bias, </span><br><span class="line">                     stride=self.conv_module.stride,</span><br><span class="line">                     padding=self.conv_module.padding, dilation=self.conv_module.dilation, </span><br><span class="line">                     groups=self.conv_module.groups)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>):</span><br><span class="line">            self.qo.update(x)</span><br><span class="line">            x = FakeQuantize.apply(x, self.qo)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>由于我们需要先对 <code>weight</code> 做一些伪量化的操作，根据 pytorch 中的规则，在做卷积运算的时候，不能像之前一样用 <code>x = self.conv_module(x)</code> 的写法，而要用 <code>F.conv2d</code> 来调用。另外，之前的代码中输入输出没有加伪量化节点，这在后训练量化中没有问题，但在量化训练中最好加上，方便网络更好地感知量化带来的损失。</p>
+<p>由于上一篇文章中做量化推理的时候，我发现精度损失不算太重，3 个 bit 的情况下，准确率依然能达到 96%。为了更好地体会量化训练带来的收益，我们把量化推理的代码再细致一点，加大量化损失：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QConv2d</span><span class="params">(QModule)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quantize_inference</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = x - self.qi.zero_point</span><br><span class="line">        x = self.conv_module(x)</span><br><span class="line">        x = self.M * x</span><br><span class="line">        x.round_()      <span class="comment"># 多加一个round操作</span></span><br><span class="line">        x = x + self.qo.zero_point        </span><br><span class="line">        x.clamp_(<span class="number">0.</span>, <span class="number">2.</span>**self.num_bits<span class="number">-1.</span>).round_()</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>相比之前的代码，其实就是多加了个 <code>round</code>，让量化推理更接近真实的推理过程。</p>
+<h3 id="量化训练的收益">量化训练的收益</h3>
+<p>这里仍然沿用之前文章里的小网络，在 mnist 上测试分类准确率。由于量化推理有修改，为了方便对比，我重新跑了一遍后训练量化的准确率：</p>
+<table>
+<thead>
+<tr class="header">
+<th>bit</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>accuracy</td>
+<td>10%</td>
+<td>47%</td>
+<td>83%</td>
+<td>96%</td>
+<td>98%</td>
+<td>98%</td>
+<td>98%</td>
+<td>98%</td>
+</tr>
+</tbody>
+</table>
+<p>接下来，测试一下量化训练的效果，下面是 <code>bit=3</code> 时输出的 log：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Test set: Full Model Accuracy: 98%</span><br><span class="line"></span><br><span class="line">Quantization bit: 3</span><br><span class="line">Quantize Aware Training Epoch: 1 [3200/60000]   Loss: 0.087867</span><br><span class="line">Quantize Aware Training Epoch: 1 [6400/60000]   Loss: 0.219696</span><br><span class="line">Quantize Aware Training Epoch: 1 [9600/60000]   Loss: 0.283124</span><br><span class="line">Quantize Aware Training Epoch: 1 [12800/60000]  Loss: 0.172751</span><br><span class="line">Quantize Aware Training Epoch: 1 [16000/60000]  Loss: 0.315173</span><br><span class="line">Quantize Aware Training Epoch: 1 [19200/60000]  Loss: 0.302261</span><br><span class="line">Quantize Aware Training Epoch: 1 [22400/60000]  Loss: 0.218039</span><br><span class="line">Quantize Aware Training Epoch: 1 [25600/60000]  Loss: 0.301568</span><br><span class="line">Quantize Aware Training Epoch: 1 [28800/60000]  Loss: 0.252994</span><br><span class="line">Quantize Aware Training Epoch: 1 [32000/60000]  Loss: 0.138346</span><br><span class="line">Quantize Aware Training Epoch: 1 [35200/60000]  Loss: 0.203350</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Test set: Quant Model Accuracy: 90%</span><br></pre></td></tr></table></figure>
+<p>总的实验结果如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>bit</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>accuracy</td>
+<td>10%</td>
+<td>63%</td>
+<td>90%</td>
+<td>97%</td>
+<td>98%</td>
+<td>98%</td>
+<td>98%</td>
+<td>98%</td>
+</tr>
+</tbody>
+</table>
+<p>用曲线把它们 plot 在一起：</p>
+<center>
+<img src="/images/2020-7-11/exp.png" width="500px">
+</center>
+<p>灰色线是量化训练，橙色线是后训练量化，可以看到，在 bit = 2、3 的时候，量化训练能带来很明显的提升。</p>
+<p>在 bit = 1 的时候，我发现量化训练回传的梯度为 0，训练基本失败了。这是因为 bit = 1 的时候，整个网络已经退化成一个二值网络了，而低比特量化训练本身不是一件容易的事情，虽然我们前面用 STE 解决了梯度的问题，但由于低比特会使得网络的信息损失巨大，因此通常的训练方式很难起到作用。</p>
+<p>另外，量化训练本身存在很多 trick，在这个实验中我发现，学习率对结果的影响非常显著，尤其是低比特量化的时候，学习率太高容易导致梯度变为 0，导致量化训练完全不起作用「一度以为代码出错」。</p>
+<h2 id="量化训练部署">量化训练部署</h2>
+<p>前面说过，量化训练虽然收益明显，但实际应用起来却比后训练量化麻烦得多。</p>
+<p>目前大部分主流推理框架在处理后训练量化时，只需要用户把模型和数据扔进去，就可以得到量化模型，然后直接部署。但很少有框架支持量化训练。我想，究其原因在于，目前量化训练缺少大一统的规范，各家推理引擎的量化算法虽然本质一样，但很多细节处很难做到一致。而目前大家做模型训练的前端框架是不统一的「当然主流还是 tf 和 pytorch」，如果各家的推理引擎需要支持不同前端的量化训练，就需要针对不同的前端框架，按照后端部署的实现规则「比如哪些层的量化需要合并、weight 是否采用对称量化等」，从头再搭一套量化训练框架，这个工作量想想就吓人。</p>
+<p>另一方面，如果之后各大厂的程序员们真的从头针对 pytorch、tf 等搭了一套量化训练框架，那这些量化训练框架将五花八门，江湖会变得四分五裂，API 调包侠们要哭晕在厕所。</p>
+<p>有同学觉得只用一个推理引擎走遍天下就好了。然而，随着各种神经网络芯片「NPU、APU」等逐渐成熟，到时候各种模型可能需要适配到这类芯片上，而目前这些芯片根本没有提供对外的接口，你要用高通的 NPU，就只能用高通的推理引擎 SDK，你要用华为的，就得用华为的工具。换句话说，你辛辛苦苦在某个平台上部署好一个模型后，如果要再次部署其他平台的 NPU，就需要重新按照这个平台的工具对你的模型做量化训练。</p>
+<p>作为一个被各种部署工具调戏得团团转的有机后浪，真心希望大家能携起手来，共建 AI 新世界🙄️。</p>
+<h2 id="总结">总结</h2>
+<p>这篇文章主要介绍了量化训练的基本方法，并用 pytorch 构建了一个简单的量化训练实例。下一篇文章会介绍这系列教程的最后一篇文章——关于 fold BatchNorm 相关的知识。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://discuss.pytorch.org/t/torch-round-gradient/28628" target="_blank" rel="noopener">Torch.round() gradient</a></li>
+<li><a href="https://segmentfault.com/a/1190000020993594" target="_blank" rel="noopener">pytorch实现简单的straight-through estimator(STE)</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/" title="神经网络量化入门--量化感知训练">https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/04/2020-7-4-network-quantization-2/" rel="next" title="神经网络量化入门--后训练量化">
+                <i class="fa fa-chevron-left"></i> 神经网络量化入门--后训练量化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#量化训练的困难"><span class="nav-number">1.</span> <span class="nav-text">量化训练的困难</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#straight-through-estimator"><span class="nav-number">2.</span> <span class="nav-text">Straight Through Estimator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch实现"><span class="nav-number">3.</span> <span class="nav-text">pytorch实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#伪量化节点实现"><span class="nav-number">3.1.</span> <span class="nav-text">伪量化节点实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量化卷积代码"><span class="nav-number">3.2.</span> <span class="nav-text">量化卷积代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量化训练的收益"><span class="nav-number">3.3.</span> <span class="nav-text">量化训练的收益</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#量化训练部署"><span class="nav-number">4.</span> <span class="nav-text">量化训练部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/';
+          this.page.identifier = '2020/07/11/2020-7-11-network-quantization-3/';
+          this.page.title = '神经网络量化入门--量化感知训练';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
