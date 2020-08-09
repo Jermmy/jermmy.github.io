@@ -78,7 +78,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-11/floor_graph.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-11/exp.png">
-<meta property="og:updated_time" content="2020-07-11T07:29:09.000Z">
+<meta property="og:updated_time" content="2020-07-28T15:08:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络量化入门--量化感知训练">
 <meta name="twitter:description" content="上一篇文章介绍了后训练量化的基本流程，并用 pytorch 演示了最简单的后训练量化算法。 后训练量化虽然操作简单，并且大部分推理框架都提供了这类离线量化算法 (如 tensorrt、ncnn，SNPE 等)，但有时候这种方法并不能保证足够的精度，因此本文介绍另一种比后训练量化更有效地量化方法——量化感知训练。 量化感知训练，顾名思义，就是在量化的过程中，对网络进行训练，从而让网络参数能更好地适应">
@@ -405,6 +405,7 @@
 <p>一个很容易想到的方法是，直接跳过伪量化的过程，避开 <code>round</code>。直接把卷积层的梯度回传到伪量化之前的 weight 上。这样一来，由于卷积中用的 weight 是经过伪量化操作的，因此可以模拟量化误差，把这些误差的梯度回传到原来的 weight，又可以更新权重，使其适应量化产生的误差，量化训练就可以正常进行下去了。</p>
 <p>这个方法就叫做 Straight Through Estimator(STE)。</p>
 <h2 id="pytorch实现">pytorch实现</h2>
+<p>本文的相关代码都可以在 https://github.com/Jermmy/pytorch-quantization-demo 上找到。</p>
 <h3 id="伪量化节点实现">伪量化节点实现</h3>
 <p>上面讲完量化训练最基本的思路，下面我们继续沿用前文的代码框架，加入量化训练的部分。</p>
 <p>首先，我们需要修改伪量化的写法，之前的代码是直接对 weight 的数值做了伪量化：</p>
@@ -491,10 +492,7 @@
 <p>另外，量化训练本身存在很多 trick，在这个实验中我发现，学习率对结果的影响非常显著，尤其是低比特量化的时候，学习率太高容易导致梯度变为 0，导致量化训练完全不起作用「一度以为代码出错」。</p>
 <h2 id="量化训练部署">量化训练部署</h2>
 <p>前面说过，量化训练虽然收益明显，但实际应用起来却比后训练量化麻烦得多。</p>
-<p>目前大部分主流推理框架在处理后训练量化时，只需要用户把模型和数据扔进去，就可以得到量化模型，然后直接部署。但很少有框架支持量化训练。我想，究其原因在于，目前量化训练缺少大一统的规范，各家推理引擎的量化算法虽然本质一样，但很多细节处很难做到一致。而目前大家做模型训练的前端框架是不统一的「当然主流还是 tf 和 pytorch」，如果各家的推理引擎需要支持不同前端的量化训练，就需要针对不同的前端框架，按照后端部署的实现规则「比如哪些层的量化需要合并、weight 是否采用对称量化等」，从头再搭一套量化训练框架，这个工作量想想就吓人。</p>
-<p>另一方面，如果之后各大厂的程序员们真的从头针对 pytorch、tf 等搭了一套量化训练框架，那这些量化训练框架将五花八门，江湖会变得四分五裂，API 调包侠们要哭晕在厕所。</p>
-<p>有同学觉得只用一个推理引擎走遍天下就好了。然而，随着各种神经网络芯片「NPU、APU」等逐渐成熟，到时候各种模型可能需要适配到这类芯片上，而目前这些芯片根本没有提供对外的接口，你要用高通的 NPU，就只能用高通的推理引擎 SDK，你要用华为的，就得用华为的工具。换句话说，你辛辛苦苦在某个平台上部署好一个模型后，如果要再次部署其他平台的 NPU，就需要重新按照这个平台的工具对你的模型做量化训练。</p>
-<p>作为一个被各种部署工具调戏得团团转的有机后浪，真心希望大家能携起手来，共建 AI 新世界🙄️。</p>
+<p>目前大部分主流推理框架在处理后训练量化时，只需要用户把模型和数据扔进去，就可以得到量化模型，然后直接部署。但很少有框架支持量化训练。目前量化训练缺少统一的规范，各家推理引擎的量化算法虽然本质一样，但很多细节处很难做到一致。而目前大家做模型训练的前端框架是不统一的「当然主流还是 tf 和 pytorch」，如果各家的推理引擎需要支持不同前端的量化训练，就需要针对不同的前端框架，按照后端部署的实现规则「比如哪些层的量化需要合并、weight 是否采用对称量化等」，从头再搭一套量化训练框架，这个工作量想想就吓人。</p>
 <h2 id="总结">总结</h2>
 <p>这篇文章主要介绍了量化训练的基本方法，并用 pytorch 构建了一个简单的量化训练实例。下一篇文章会介绍这系列教程的最后一篇文章——关于 fold BatchNorm 相关的知识。</p>
 <h2 id="参考">参考</h2>
@@ -568,6 +566,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/19/2020-7-19-network-quantization-4/" rel="prev" title="神经网络量化入门--BatchNorm Folding">
+                神经网络量化入门--BatchNorm Folding <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -646,7 +648,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-count">93</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

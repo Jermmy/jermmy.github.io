@@ -1,0 +1,1013 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="神经网络量化入门--BatchNorm Folding">
+<meta property="og:url" content="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/FoldBN.jpg">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/bn_formulation.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/conv_bn.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/BN-quantize.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/QReLU.png">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/conv_relu.png">
+<meta property="og:updated_time" content="2020-08-09T13:27:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="神经网络量化入门--BatchNorm Folding">
+<meta name="twitter:description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2020-7-19/FoldBN.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/"/>
+
+
+
+
+
+  <title>神经网络量化入门--BatchNorm Folding | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                神经网络量化入门--BatchNorm Folding
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-19T14:38:47+08:00">
+                2020-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/19/2020-7-19-network-quantization-4/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/07/19/2020-7-19-network-quantization-4/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/07/19/2020-7-19-network-quantization-4/" class="leancloud_visitors" data-flag-title="神经网络量化入门--BatchNorm Folding">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇<a href="http://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/">文章</a>介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。</p>
+<center>
+<img src="/images/2020-7-19/FoldBN.jpg" width="500px">
+</center>
+<a id="more"></a>
+<h2 id="folding-batchnorm">Folding BatchNorm</h2>
+<p><a href="https://arxiv.org/abs/1502.03167" target="_blank" rel="noopener">BatchNorm</a> 是 Google 提出的一种加速神经网络训练的技术，在很多网络中基本是标配。</p>
+<p>回忆一下，BatchNorm 其实就是在每一层输出的时候做了一遍归一化操作：</p>
+<center>
+<img src="/images/2020-7-19/bn_formulation.png" width="500px">
+</center>
+<p>其中 <span class="math inline">\(x_i\)</span> 是网络中间某一层的激活值，<span class="math inline">\(\mu_{\beta}\)</span>、<span class="math inline">\(\sigma_{\beta}\)</span> 分别是其均值和方差，<span class="math inline">\(y_i\)</span> 则是过了 BN 后的输出。</p>
+<h3 id="一般卷积层与bn合并">一般卷积层与BN合并</h3>
+<p>Folding BatchNorm 不是量化才有的操作，在一般的网络中，为了加速网络推理，我们也可以把 BN 合并到 Conv 中。</p>
+<p>合并的过程是这样的，假设有一个已经训练好的 Conv 和 BN：</p>
+<center>
+<img src="/images/2020-7-19/conv_bn.png" width="500px">
+</center>
+<p>假设 Conv 的 weight 和 bias 分别是 <span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span>。那么卷积层的输出为： <span class="math display">\[
+y=\sum_{i}^N w_i x_i + b \tag{1}
+\]</span> 图中 BN 层的均值和标准差可以表示为 <span class="math inline">\(\mu_{y}\)</span>、<span class="math inline">\(\sigma_{y}\)</span>，那么根据论文的表述，BN 层的输出为： <span class="math display">\[
+\begin{align}
+y_{bn}&amp;=\gamma \hat{y}+\beta \\
+&amp;=\gamma \frac{y-\mu_y}{\sqrt{\sigma_y^2+\epsilon}}+\beta \tag{2}
+\end{align}
+\]</span> 然后我们把 (1) 代入 (2) 中可以得到： <span class="math display">\[
+y_{bn}=\frac{\gamma}{\sqrt{\sigma_y^2+\epsilon}}(\sum_{i}^N w_i x_i + b-\mu_y)+\beta \tag{3}
+\]</span> 我们用 <span class="math inline">\(\gamma&#39;\)</span> 来表示 <span class="math inline">\(\frac{\gamma}{\sqrt{\sigma_y^2+\epsilon}}\)</span>，那么 (3) 可以简化为： <span class="math display">\[
+\begin{align}
+y_{bn}&amp;=\gamma&#39;(\sum_{i}^Nw_ix_i+b-\mu_y)+\beta \\
+&amp;=\sum_{i}^N \gamma&#39;w_ix_i+\gamma&#39;(b-\mu_y)+\beta \tag{4}
+\end{align}
+\]</span> 发现没有，(4) 式形式上跟 (1) 式一模一样，因此它本质上也是一个 Conv 运算，我们只需要用 <span class="math inline">\(w_i&#39;=\gamma&#39;w_i\)</span> 和 <span class="math inline">\(b&#39;=\gamma&#39;(b-\mu_y)+\beta\)</span> 来作为原来卷积的 weight 和 bias，就相当于把 BN 的操作合并到了 Conv 里面。实际 inference 的时候，由于 BN 层的参数已经固定了，因此可以把 BN 层 folding 到 Conv 里面，省去 BN 层的计算开销。</p>
+<h3 id="量化-batchnorm-folding">量化 BatchNorm Folding</h3>
+<p>量化网络时可以用同样的方法把 BN 合并到 Conv 中。</p>
+<p>如果量化时不想更新 BN 的参数 (比如后训练量化)，那我们就先把 BN 合并到 Conv 中，直接量化新的 Conv 即可。</p>
+<p>如果量化时需要更新 BN 的参数 (比如量化感知训练)，那也很好处理。Google 把这个流程的心法写在一张图上了：</p>
+<center>
+<img src="/images/2020-7-19/BN-quantize.png" width="300px">
+</center>
+<p>由于实际 inference 的时候，BN 是 folding 到 Conv 中的，因此在量化训练的时候也需要模拟这个操作，得到新的 weight 和 bias，并用新的 Conv 估计量化误差来回传梯度。</p>
+<h2 id="conv与relu合并">Conv与ReLU合并</h2>
+<p>在量化中，Conv + ReLU 这样的结构一般也是合并成一个 Conv 进行运算的，而这一点在全精度模型中则办不到。</p>
+<p>在之前的<a href="https://jermmy.github.io/2020/06/13/2020-6-13-network-quantization-1/">文章</a>中说过，ReLU 前后应该使用同一个 scale 和 zeropoint。这是因为 ReLU 本身没有做任何的数学运算，只是一个截断函数，如果使用不同的 scale 和 zeropoint，会导致无法量化回 float 域。</p>
+<p>看下图这个例子。假设 ReLU 前的数值范围是 <span class="math inline">\(r_{in} \in [-1, 1]\)</span>，那么经过 ReLU 后的数值范围是 <span class="math inline">\(r_{out} \in [0,1]\)</span>。假设量化到 uint8 类型，即 [0, 255]，那么 ReLU 前后的 scale 分别为 <span class="math inline">\(S_{in}=\frac{2}{255}\)</span>、<span class="math inline">\(S_{out}=\frac{1}{255}\)</span>，zp 分别为 <span class="math inline">\(Z_{in}=128\)</span>、<span class="math inline">\(Z_{out}=0\)</span>。 再假设 ReLU 前的浮点数是 <span class="math inline">\(r_{in}=0.5\)</span>，那么经过 ReLU 后的值依然是 0.5。换算成整型的话，ReLU 前的整数是 <span class="math inline">\(q_{in}=192\)</span>，由于 <span class="math inline">\(Z_{in}=128\)</span>，因此过完 ReLU 后的数值依然是 192。但是，<span class="math inline">\(S_{out}\)</span> 和 <span class="math inline">\(Z_{out}\)</span> 已经发生了变化，因此反量化后的 <span class="math inline">\(r_{out}\)</span> 不再是 0.5，而这不是我们想要的。所以，如果想要保证量化的 ReLU 和浮点型的 ReLU 之间的一致性，就必须保证 <span class="math inline">\(S_{in}\)</span>、<span class="math inline">\(S_{out}\)</span> 以及 <span class="math inline">\(Z_{in}\)</span>、<span class="math inline">\(Z_{out}\)</span> 是一致的。</p>
+<center>
+<img src="/images/2020-7-19/QReLU.png" width="500px">
+</center>
+<p>但是保证前后的 scale 和 zp 一致，没规定一定得用 <span class="math inline">\(S_{in}\)</span> 和 <span class="math inline">\(Z_{in}\)</span>，我们一样可以用 ReLU 之后的 scale 和 zp。不过，使用哪一个 scale 和 zp，意义完全不一样。如果使用 ReLU 之后的 scale 和 zp，那我们就可以用量化本身的截断功能来实现 ReLU 的作用。</p>
+<p>想要理解这一点，需要回顾一下量化的基本公式： <span class="math display">\[
+q=round(\frac{r}{S}+Z) \tag{5}
+\]</span> 注意，这里的 round 除了把 float 型四舍五入转成 int 型外，还需要保证 <span class="math inline">\(q\)</span> 的数值在特定范围内「例如 0～255」，相当于要做一遍 clip 操作。因此，这个公式更准确的写法应该是「假设量化到 uint8 数值」： <span class="math display">\[
+q=round(clip(\frac{r}{S}+Z), 0, 255)
+\]</span> 记住，ReLU 本身就是在做 clip。所以，我们才能用量化的截断功能来模拟 ReLU 的功能。</p>
+<p>再举个例子。</p>
+<center>
+<img src="/images/2020-7-19/conv_relu.png" width="500px">
+</center>
+<p>假设有一个上图所示的 Conv+ReLU 的结构，其中，Conv 后的数值范围是 <span class="math inline">\(r_{in} \in [-1,1]\)</span>。在前面的文章中，我们都是用 ReLU 前的数值来统计 minmax 并计算 scale 和 zp，并把该 scale 和 zp 沿用到 ReLU 之后。这部分的计算可以参照图中上半部分。</p>
+<p>但现在，我们想在 ReLU 之后统计 minmax，并用 ReLU 后的 scale 和 zp 作为 ReLU 前的 scale 和 zp「即 Conv 后面的 scale 和 zp」，结果会怎样呢？</p>
+<p>看图中下半部分，假设 Conv 后的数值是 <span class="math inline">\(r_{in}=-0.5\)</span>，此时，由于 Conv 之后的 scale 和 zp 变成了 <span class="math inline">\(\frac{1}{255}\)</span> 和 <span class="math inline">\(0\)</span>，因此，量化的整型数值为： <span class="math display">\[
+\begin{align}
+q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
+&amp;=round(-128) \\ \notag
+&amp;=0  \tag{6}
+\end{align}
+\]</span> 注意，上面的量化过程中，我们执行了截断操作，把 <span class="math inline">\(q\)</span> 从 -128 截断成 0，而这一步本来应该是在 ReLU 里面计算的！然后，我们如果根据 <span class="math inline">\(S_{out}\)</span> 和 <span class="math inline">\(Z_{out}\)</span> 反量化回去，就会得到 <span class="math inline">\(r_{out}=0\)</span>，而它正是原先 ReLU 计算后得到的数值。</p>
+<p>因此，通过在 Conv 后直接使用 ReLU 后的 scale 和 zp，我们实现了将 ReLU 合并到 Conv 里面的过程。</p>
+<p>那对于 ReLU 外的其他激活函数，是否可以同样合并到 Conv 里面呢？这取决于其他函数是否也只是在做 clip 操作，例如 ReLU6 也有同样的性质。但对于其他绝大部分函数来说，由于它们本身包含其他数学运算，因此就不具备类似性质。</p>
+<h2 id="总结">总结</h2>
+<p>这篇文章主要介绍了如何把 BatchNorm 和 ReLU 合并成一个 Conv，从而加速量化推理。按照计划，应该和之前的文章一样，给出代码实现。但我在测试代码的时候发现有一些 bug 需要解决，正好也控制一下篇幅，下篇文章会给出相关的代码实现。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/" title="神经网络量化入门--BatchNorm Folding">https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/11/2020-7-11-network-quantization-3/" rel="next" title="神经网络量化入门--量化感知训练">
+                <i class="fa fa-chevron-left"></i> 神经网络量化入门--量化感知训练
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">93</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#folding-batchnorm"><span class="nav-number">1.</span> <span class="nav-text">Folding BatchNorm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一般卷积层与bn合并"><span class="nav-number">1.1.</span> <span class="nav-text">一般卷积层与BN合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量化-batchnorm-folding"><span class="nav-number">1.2.</span> <span class="nav-text">量化 BatchNorm Folding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conv与relu合并"><span class="nav-number">2.</span> <span class="nav-text">Conv与ReLU合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/';
+          this.page.identifier = '2020/07/19/2020-7-19-network-quantization-4/';
+          this.page.title = '神经网络量化入门--BatchNorm Folding';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
