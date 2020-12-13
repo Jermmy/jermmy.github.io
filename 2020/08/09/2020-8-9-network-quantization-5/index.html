@@ -1,0 +1,1027 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章介绍了如何把 BatchNorm 和 ReLU 合并到 Conv 中，这篇文章会介绍具体的代码实现。本文相关代码都可以在 github 上找到。">
+<meta name="keywords" content="深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="神经网络量化入门--Folding BN ReLU代码实现">
+<meta property="og:url" content="https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/index.html">
+<meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
+<meta property="og:description" content="上一篇文章介绍了如何把 BatchNorm 和 ReLU 合并到 Conv 中，这篇文章会介绍具体的代码实现。本文相关代码都可以在 github 上找到。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://jermmy.github.io/images/2020-8-9/folding-bn-relu.png">
+<meta property="og:updated_time" content="2020-08-26T14:46:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="神经网络量化入门--Folding BN ReLU代码实现">
+<meta name="twitter:description" content="上一篇文章介绍了如何把 BatchNorm 和 ReLU 合并到 Conv 中，这篇文章会介绍具体的代码实现。本文相关代码都可以在 github 上找到。">
+<meta name="twitter:image" content="https://jermmy.github.io/images/2020-8-9/folding-bn-relu.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/"/>
+
+
+
+
+
+  <title>神经网络量化入门--Folding BN ReLU代码实现 | Jermmy's Lazy Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-84659849-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4d053879042f439aeb8fc5996a907b6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jermmy's Lazy Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jermmy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jermmy's Lazy Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                神经网络量化入门--Folding BN ReLU代码实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-09T21:10:27+08:00">
+                2020-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/09/2020-8-9-network-quantization-5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/09/2020-8-9-network-quantization-5/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/08/09/2020-8-9-network-quantization-5/" class="leancloud_visitors" data-flag-title="神经网络量化入门--Folding BN ReLU代码实现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇<a href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/">文章</a>介绍了如何把 BatchNorm 和 ReLU 合并到 Conv 中，这篇文章会介绍具体的代码实现。本文相关代码都可以在 <a href="https://github.com/Jermmy/pytorch-quantization-demo" target="_blank" rel="noopener">github</a> 上找到。</p>
+<center>
+<img src="/images/2020-8-9/folding-bn-relu.png" width="500px">
+</center>
+<a id="more"></a>
+<h2 id="folding-bn">Folding BN</h2>
+<p>回顾一下<a href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/">前文</a>把 BN 合并到 Conv 中的公式： <span class="math display">\[
+\begin{align}
+y_{bn}&amp;=\frac{\gamma}{\sqrt{\sigma_y^2+\epsilon}}(\sum_{i}^N w_i x_i + b-\mu_y)+\beta \notag \\
+&amp;=\gamma&#39;(\sum_{i}^Nw_ix_i+b-\mu_y)+\beta \notag \\
+&amp;=\sum_{i}^N \gamma&#39;w_ix_i+\gamma&#39;(b-\mu_y)+\beta \tag{1}
+\end{align}
+\]</span> 其中，<span class="math inline">\(x\)</span> 是卷积层的输入，<span class="math inline">\(w\)</span>、<span class="math inline">\(b\)</span> 分别是 Conv 的参数 weight 和 bias，<span class="math inline">\(\gamma\)</span>、<span class="math inline">\(\beta\)</span> 是 BN 层的参数。</p>
+<p>对于 BN 的合并，首先，我们需要熟悉 pytorch 中的 <code>BatchNorm2d</code> 模块。</p>
+<p>pytorch 中的 <code>BatchNorm2d</code> 针对 feature map 的每一个 channel 都会计算一个均值和方差，所以公式 (1) 需要对 weight 和 bias 进行 channel wise 的计算。另外，<code>BatchNorm2d</code> 中有一个布尔变量 <code>affine</code>，当该变量为 true 的时候，(1) 式中的 <span class="math inline">\(\gamma\)</span> 和 <span class="math inline">\(\beta\)</span> 就是可学习的， <code>BatchNorm2d</code> 会中有两个变量：<code>weight</code> 和 <code>bias</code>，来分别存放这两个参数。而当 <code>affine</code> 为 false 的时候，就直接默认 <span class="math inline">\(\gamma=1\)</span>，<span class="math inline">\(\beta=0\)</span>，相当于 BN 中没有可学习的参数。默认情况下，我们都设置 <code>affine=True</code>。</p>
+<p>我们沿用之前的代码，先定义一个 <code>QConvBNReLU</code> 模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QConvBNReLU</span><span class="params">(QModule)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, conv_module, bn_module, qi=True, qo=True, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">        super(QConvBNReLU, self).__init__(qi=qi, qo=qo, num_bits=num_bits)</span><br><span class="line">        self.num_bits = num_bits</span><br><span class="line">        self.conv_module = conv_module</span><br><span class="line">        self.bn_module = bn_module</span><br><span class="line">        self.qw = QParam(num_bits=num_bits)</span><br></pre></td></tr></table></figure>
+<p>这个模块会把全精度网络中的 Conv2d 和 BN 接收进来，并重新封装成量化的模块。</p>
+<p>接着，定义合并 BN 后的 forward 流程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>):</span><br><span class="line">        self.qi.update(x)</span><br><span class="line">        x = FakeQuantize.apply(x, self.qi)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> self.training: <span class="comment"># 开启BN层训练</span></span><br><span class="line">        y = F.conv2d(x, self.conv_module.weight, self.conv_module.bias, </span><br><span class="line">                        stride=self.conv_module.stride,</span><br><span class="line">                        padding=self.conv_module.padding,</span><br><span class="line">                        dilation=self.conv_module.dilation,</span><br><span class="line">                        groups=self.conv_module.groups)</span><br><span class="line">        y = y.permute(<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment"># NCHW -&gt; CNHW</span></span><br><span class="line">        y = y.contiguous().view(self.conv_module.out_channels, <span class="number">-1</span>) <span class="comment"># CNHW -&gt; (C,NHW)，这一步是为了方便channel wise计算均值和方差</span></span><br><span class="line">        mean = y.mean(<span class="number">1</span>)</span><br><span class="line">        var = y.var(<span class="number">1</span>)</span><br><span class="line">        self.bn_module.running_mean = \</span><br><span class="line">            self.bn_module.momentum * self.bn_module.running_mean + \</span><br><span class="line">            (<span class="number">1</span> - self.bn_module.momentum) * mean</span><br><span class="line">        self.bn_module.running_var = \</span><br><span class="line">            self.bn_module.momentum * self.bn_module.running_var + \</span><br><span class="line">            (<span class="number">1</span> - self.bn_module.momentum) * var</span><br><span class="line">    <span class="keyword">else</span>: <span class="comment"># BN层不更新</span></span><br><span class="line">        mean = self.bn_module.running_mean</span><br><span class="line">        var = self.bn_module.running_var</span><br><span class="line"></span><br><span class="line">    std = torch.sqrt(var + self.bn_module.eps)</span><br><span class="line"></span><br><span class="line">    weight, bias = self.fold_bn(mean, std)</span><br><span class="line"></span><br><span class="line">    self.qw.update(weight.data)</span><br><span class="line"></span><br><span class="line">    x = F.conv2d(x, FakeQuantize.apply(weight, self.qw), bias, </span><br><span class="line">            stride=self.conv_module.stride,</span><br><span class="line">            padding=self.conv_module.padding, dilation=self.conv_module.dilation, </span><br><span class="line">            groups=self.conv_module.groups)</span><br><span class="line"></span><br><span class="line">    x = F.relu(x)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>):</span><br><span class="line">        self.qo.update(x)</span><br><span class="line">        x = FakeQuantize.apply(x, self.qo)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>这个过程就是对 Google 论文的那张图的诠释，跟一般的卷积量化的区别就是需要先获得 BN 层的参数，再把它们 folding 到 Conv 中，最后跑正常的卷积量化流程。不过，根据论文的表述，我们还需要在 forward 的过程更新 BN 的均值、方差，这部分对应上面代码 <code>if self.training</code> 分支下的部分。</p>
+<p>然后，根据公式 (1)，我们可以计算出 fold BN 后，卷积层的 weight 和 bias：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fold_bn</span><span class="params">(self, mean, std)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.bn_module.affine:</span><br><span class="line">        gamma_ = self.bn_module.weight / std  <span class="comment"># 这一步计算gamma' </span></span><br><span class="line">        weight = self.conv_module.weight * gamma_.view(self.conv_module.out_channels, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> self.conv_module.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            bias = gamma_ * self.conv_module.bias - gamma_ * mean + self.bn_module.bias</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            bias = self.bn_module.bias - gamma_ * mean</span><br><span class="line">    <span class="keyword">else</span>:  <span class="comment"># affine为False的情况，gamma=1, beta=0</span></span><br><span class="line">        gamma_ = <span class="number">1</span> / std</span><br><span class="line">        weight = self.conv_module.weight * gamma_</span><br><span class="line">        <span class="keyword">if</span> self.conv_module.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            bias = gamma_ * self.conv_module.bias - gamma_ * mean</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            bias = -gamma_ * mean</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> weight, bias</span><br></pre></td></tr></table></figure>
+<p>上面的代码直接参照公式 (1) 就可以看懂，其中 <code>gamma_</code> 就是公式中的 <span class="math inline">\(\gamma&#39;\)</span>。由于前面提到，pytorch 的 <code>BatchNorm2d</code> 中，<span class="math inline">\(\gamma\)</span> 和 <span class="math inline">\(\beta\)</span> 可能是可学习的变量，也可能默认为 1 和 0，因此根据 <code>affine</code> 是否为 <code>True</code> 分了两种情况，原理上基本类似，这里就不再赘述。</p>
+<h2 id="合并relu">合并ReLU</h2>
+<p>前面说了，ReLU 的合并可以通过在 ReLU 之后统计 minmax，再计算 scale 和 zeropoint 的方式来实现，因此这部分代码非常简单，就是在 forward 的时候，在做完 relu 后再统计 minmax 即可，对应代码片段为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> hasattr(self, <span class="string">'qi'</span>):</span><br><span class="line">        self.qi.update(x)</span><br><span class="line">        x = FakeQuantize.apply(x, self.qi)</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    weight, bias = self.fold_bn(mean, std)</span><br><span class="line"></span><br><span class="line">    self.qw.update(weight.data)</span><br><span class="line"></span><br><span class="line">    x = F.conv2d(x, FakeQuantize.apply(weight, self.qw), bias, </span><br><span class="line">            stride=self.conv_module.stride,</span><br><span class="line">            padding=self.conv_module.padding, dilation=self.conv_module.dilation, </span><br><span class="line">            groups=self.conv_module.groups)</span><br><span class="line"></span><br><span class="line">    x = F.relu(x)   <span class="comment"># &lt;-- calculate minmax after relu</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> hasattr(self, <span class="string">'qo'</span>):</span><br><span class="line">        self.qo.update(x)</span><br><span class="line">        x = FakeQuantize.apply(x, self.qo)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>将 BN 和 ReLU 合并到 Conv 中，<code>QConvBNReLU</code> 模块本身就是一个普通的卷积了，因此量化推理的过程和之前文章的 <code>QConv2d</code> 一样，这里不再赘述。</p>
+<h2 id="实验">实验</h2>
+<p>这里照例给出一些实验结果。</p>
+<p>本文的实验还是在 mnist 上进行，我重新定义了一个包含 BN 的新网络：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NetBN</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, num_channels=<span class="number">1</span>)</span>:</span></span><br><span class="line">        super(NetBN, self).__init__()</span><br><span class="line">        self.conv1 = nn.Conv2d(num_channels, <span class="number">40</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">        self.bn1 = nn.BatchNorm2d(<span class="number">40</span>)</span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">40</span>, <span class="number">40</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">        self.bn2 = nn.BatchNorm2d(<span class="number">40</span>)</span><br><span class="line">        self.fc = nn.Linear(<span class="number">5</span> * <span class="number">5</span> * <span class="number">40</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = self.conv1(x)</span><br><span class="line">        x = self.bn1(x)</span><br><span class="line">        x = F.relu(x)</span><br><span class="line">        x = F.max_pool2d(x, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        x = self.conv2(x)</span><br><span class="line">        x = self.bn2(x)</span><br><span class="line">        x = F.relu(x)</span><br><span class="line">        x = F.max_pool2d(x, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, <span class="number">5</span> * <span class="number">5</span> * <span class="number">40</span>)</span><br><span class="line">        x = self.fc(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<p>量化该网络的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quantize</span><span class="params">(self, num_bits=<span class="number">8</span>)</span>:</span></span><br><span class="line">    self.qconv1 = QConvBNReLU(self.conv1, self.bn1, qi=<span class="keyword">True</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br><span class="line">    self.qmaxpool2d_1 = QMaxPooling2d(kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>, padding=<span class="number">0</span>)</span><br><span class="line">    self.qconv2 = QConvBNReLU(self.conv2, self.bn2, qi=<span class="keyword">False</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br><span class="line">    self.qmaxpool2d_2 = QMaxPooling2d(kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>, padding=<span class="number">0</span>)</span><br><span class="line">    self.qfc = QLinear(self.fc, qi=<span class="keyword">False</span>, qo=<span class="keyword">True</span>, num_bits=num_bits)</span><br></pre></td></tr></table></figure>
+<p>整体的代码风格基本和之前一样，不熟悉的读者建议先阅读我之前的量化<a href="https://jermmy.github.io/2020/06/13/2020-6-13-network-quantization-1/">文章</a>。</p>
+<p>先训练一个全精度网络「相关代码在 train.py 里面」，可以得到全精度模型的准确率是 99%。</p>
+<p>然后，我又跑了一遍后训练量化以及量化感知训练，在不同量化 bit 下的精度如下表所示「由于学习率对量化感知训练的影响非常大，这里顺便附上每个 bit 对应的学习率」：</p>
+<table>
+<thead>
+<tr class="header">
+<th>bit</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>后训练量化</td>
+<td>10%</td>
+<td>11%</td>
+<td>10%</td>
+<td>35%</td>
+<td>82%</td>
+<td>85%</td>
+<td>85%</td>
+<td>87%</td>
+</tr>
+<tr class="even">
+<td>量化感知训练</td>
+<td>10%</td>
+<td>19%</td>
+<td>59%</td>
+<td>91%</td>
+<td>92%</td>
+<td>94%</td>
+<td>94%</td>
+<td>95%</td>
+</tr>
+<tr class="odd">
+<td>lr</td>
+<td>0.00001</td>
+<td>0.0001</td>
+<td>0.02</td>
+<td>0.02</td>
+<td>0.02</td>
+<td>0.02</td>
+<td>0.02</td>
+<td>0.04</td>
+</tr>
+</tbody>
+</table>
+<p>对比之前<a href="https://jermmy.github.io/2020/07/11/2020-7-11-network-quantization-3/">文章</a>的结果，加入 BN 后，后训练量化在精度上的下降更加明显，而量化感知训练依然能带来较大的精度提升。但在低 bit 情况下，由于信息损失严重，网络的优化会变的非常困难。</p>
+<h2 id="总结">总结</h2>
+<p>这篇文章给出了 Folding BN 和 ReLU 的代码实现，主要是想帮助初学者加深对公式细节的理解。至此，这系列教程基本告一段落，希望能帮助小白们快速入门这一领域。后面会不定期介绍一些我觉得有趣的 AI 技术，感兴趣的读者欢迎吃瓜吐槽。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jermmy
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/" title="神经网络量化入门--Folding BN ReLU代码实现">https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/19/2020-7-19-network-quantization-4/" rel="next" title="神经网络量化入门--Folding BN ReLU">
+                <i class="fa fa-chevron-left"></i> 神经网络量化入门--Folding BN ReLU
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Jermmy" />
+          <p class="site-author-name" itemprop="name">Jermmy</p>
+           
+              <p class="site-description motion-element" itemprop="description">In me the tiger sniffs the rose.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">94</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/jermmy" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.ruanyifeng.com/blog/" title="阮一峰" target="_blank">阮一峰</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://freemind.pluskid.org/" title="pluskid" target="_blank">pluskid</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#folding-bn"><span class="nav-number">1.</span> <span class="nav-text">Folding BN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合并relu"><span class="nav-number">2.</span> <span class="nav-text">合并ReLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">3.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jermmy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jermmy.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://jermmy.github.io/2020/08/09/2020-8-9-network-quantization-5/';
+          this.page.identifier = '2020/08/09/2020-8-9-network-quantization-5/';
+          this.page.title = '神经网络量化入门--Folding BN ReLU代码实现';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jermmy.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -71,7 +71,7 @@
 <meta name="description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
 <meta name="keywords" content="深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="神经网络量化入门--BatchNorm Folding">
+<meta property="og:title" content="神经网络量化入门--Folding BN ReLU">
 <meta property="og:url" content="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/index.html">
 <meta property="og:site_name" content="Jermmy&#39;s Lazy Blog">
 <meta property="og:description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
@@ -82,9 +82,9 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/BN-quantize.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/QReLU.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/conv_relu.png">
-<meta property="og:updated_time" content="2020-08-09T13:27:17.000Z">
+<meta property="og:updated_time" content="2020-08-26T14:34:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="神经网络量化入门--BatchNorm Folding">
+<meta name="twitter:title" content="神经网络量化入门--Folding BN ReLU">
 <meta name="twitter:description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
 <meta name="twitter:image" content="https://jermmy.github.io/images/2020-7-19/FoldBN.jpg">
 
@@ -120,7 +120,7 @@
 
 
 
-  <title>神经网络量化入门--BatchNorm Folding | Jermmy's Lazy Blog</title>
+  <title>神经网络量化入门--Folding BN ReLU | Jermmy's Lazy Blog</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -289,7 +289,7 @@
             
             
               
-                神经网络量化入门--BatchNorm Folding
+                神经网络量化入门--Folding BN ReLU
               
             
           </h1>
@@ -355,7 +355,7 @@
 
           
           
-             <span id="/2020/07/19/2020-7-19-network-quantization-4/" class="leancloud_visitors" data-flag-title="神经网络量化入门--BatchNorm Folding">
+             <span id="/2020/07/19/2020-7-19-network-quantization-4/" class="leancloud_visitors" data-flag-title="神经网络量化入门--Folding BN ReLU">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -405,14 +405,14 @@
 y=\sum_{i}^N w_i x_i + b \tag{1}
 \]</span> 图中 BN 层的均值和标准差可以表示为 <span class="math inline">\(\mu_{y}\)</span>、<span class="math inline">\(\sigma_{y}\)</span>，那么根据论文的表述，BN 层的输出为： <span class="math display">\[
 \begin{align}
-y_{bn}&amp;=\gamma \hat{y}+\beta \\
+y_{bn}&amp;=\gamma \hat{y}+\beta \notag \\
 &amp;=\gamma \frac{y-\mu_y}{\sqrt{\sigma_y^2+\epsilon}}+\beta \tag{2}
 \end{align}
 \]</span> 然后我们把 (1) 代入 (2) 中可以得到： <span class="math display">\[
 y_{bn}=\frac{\gamma}{\sqrt{\sigma_y^2+\epsilon}}(\sum_{i}^N w_i x_i + b-\mu_y)+\beta \tag{3}
 \]</span> 我们用 <span class="math inline">\(\gamma&#39;\)</span> 来表示 <span class="math inline">\(\frac{\gamma}{\sqrt{\sigma_y^2+\epsilon}}\)</span>，那么 (3) 可以简化为： <span class="math display">\[
 \begin{align}
-y_{bn}&amp;=\gamma&#39;(\sum_{i}^Nw_ix_i+b-\mu_y)+\beta \\
+y_{bn}&amp;=\gamma&#39;(\sum_{i}^Nw_ix_i+b-\mu_y)+\beta \notag \\
 &amp;=\sum_{i}^N \gamma&#39;w_ix_i+\gamma&#39;(b-\mu_y)+\beta \tag{4}
 \end{align}
 \]</span> 发现没有，(4) 式形式上跟 (1) 式一模一样，因此它本质上也是一个 Conv 运算，我们只需要用 <span class="math inline">\(w_i&#39;=\gamma&#39;w_i\)</span> 和 <span class="math inline">\(b&#39;=\gamma&#39;(b-\mu_y)+\beta\)</span> 来作为原来卷积的 weight 和 bias，就相当于把 BN 的操作合并到了 Conv 里面。实际 inference 的时候，由于 BN 层的参数已经固定了，因此可以把 BN 层 folding 到 Conv 里面，省去 BN 层的计算开销。</p>
@@ -435,7 +435,7 @@ y_{bn}&amp;=\gamma&#39;(\sum_{i}^Nw_ix_i+b-\mu_y)+\beta \\
 <p>想要理解这一点，需要回顾一下量化的基本公式： <span class="math display">\[
 q=round(\frac{r}{S}+Z) \tag{5}
 \]</span> 注意，这里的 round 除了把 float 型四舍五入转成 int 型外，还需要保证 <span class="math inline">\(q\)</span> 的数值在特定范围内「例如 0～255」，相当于要做一遍 clip 操作。因此，这个公式更准确的写法应该是「假设量化到 uint8 数值」： <span class="math display">\[
-q=round(clip(\frac{r}{S}+Z), 0, 255)
+q=round(clip(\frac{r}{S}+Z, 0, 255)) \tag{6}
 \]</span> 记住，ReLU 本身就是在做 clip。所以，我们才能用量化的截断功能来模拟 ReLU 的功能。</p>
 <p>再举个例子。</p>
 <center>
@@ -445,9 +445,9 @@ q=round(clip(\frac{r}{S}+Z), 0, 255)
 <p>但现在，我们想在 ReLU 之后统计 minmax，并用 ReLU 后的 scale 和 zp 作为 ReLU 前的 scale 和 zp「即 Conv 后面的 scale 和 zp」，结果会怎样呢？</p>
 <p>看图中下半部分，假设 Conv 后的数值是 <span class="math inline">\(r_{in}=-0.5\)</span>，此时，由于 Conv 之后的 scale 和 zp 变成了 <span class="math inline">\(\frac{1}{255}\)</span> 和 <span class="math inline">\(0\)</span>，因此，量化的整型数值为： <span class="math display">\[
 \begin{align}
-q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
-&amp;=round(-128) \\ \notag
-&amp;=0  \tag{6}
+q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \notag \\ 
+&amp;=round(-128) \notag \\
+&amp;=0  \tag{7}
 \end{align}
 \]</span> 注意，上面的量化过程中，我们执行了截断操作，把 <span class="math inline">\(q\)</span> 从 -128 截断成 0，而这一步本来应该是在 ReLU 里面计算的！然后，我们如果根据 <span class="math inline">\(S_{out}\)</span> 和 <span class="math inline">\(Z_{out}\)</span> 反量化回去，就会得到 <span class="math inline">\(r_{out}=0\)</span>，而它正是原先 ReLU 计算后得到的数值。</p>
 <p>因此，通过在 Conv 后直接使用 ReLU 后的 scale 和 zp，我们实现了将 ReLU 合并到 Conv 里面的过程。</p>
@@ -482,7 +482,7 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/" title="神经网络量化入门--BatchNorm Folding">https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/</a>
+      <a href="https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/" title="神经网络量化入门--Folding BN ReLU">https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -520,6 +520,10 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/09/2020-8-9-network-quantization-5/" rel="prev" title="神经网络量化入门--Folding BN ReLU代码实现">
+                神经网络量化入门--Folding BN ReLU代码实现 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -598,7 +602,7 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">93</span>
+                <span class="site-state-item-count">94</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -829,7 +833,7 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \\ \notag
         var disqus_config = function () {
           this.page.url = 'https://jermmy.github.io/2020/07/19/2020-7-19-network-quantization-4/';
           this.page.identifier = '2020/07/19/2020-7-19-network-quantization-4/';
-          this.page.title = '神经网络量化入门--BatchNorm Folding';
+          this.page.title = '神经网络量化入门--Folding BN ReLU';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://jermmy.disqus.com/embed.js';
