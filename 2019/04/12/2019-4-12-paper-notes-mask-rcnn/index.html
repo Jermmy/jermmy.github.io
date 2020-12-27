@@ -85,7 +85,8 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/roialign-roipooling.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/loss.jpg">
 <meta property="og:image" content="https://jermmy.github.io/images/2019-4-12/feature.jpg">
-<meta property="og:updated_time" content="2019-05-15T15:02:03.000Z">
+<meta property="og:image" content="https://jermmy.github.io/images/wechat.jpg">
+<meta property="og:updated_time" content="2020-12-27T12:26:36.244Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记：Mask R-CNN">
 <meta name="twitter:description" content="之前在一次组会上，师弟诉苦说他用 UNet 处理一个病灶分割的任务，但效果极差，我看了他的数据后发现，那些病灶区域比起整张图而言非常的小，而 UNet 采用的损失函数通常是逐像素的分类损失，如此一来，网络只要能够分割出大部分背景，那么 loss 的值就可以下降很多，自然无法精细地分割出那些细小的病灶。反过来想，这其实类似于正负样本极不均衡的情况，网络拟合了大部分负样本后，即使正样本拟合得较差，整体">
@@ -358,17 +359,6 @@
 
           
           
-             <span id="/2019/04/12/2019-4-12-paper-notes-mask-rcnn/" class="leancloud_visitors" data-flag-title="论文笔记：Mask R-CNN">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
 
           
 
@@ -489,6 +479,10 @@ L=L_{cls}+L_{box}+L_{mask}
 <li><a href="https://arxiv.org/abs/1903.00241" target="_blank" rel="noopener">Mask Scoring RCNN</a></li>
 <li><a href="https://arxiv.org/abs/1703.06870" target="_blank" rel="noopener">Mask RCNN</a></li>
 </ul>
+PS: 之后的文章更多的会发布在公众号上，欢迎有兴趣的读者关注我的个人公众号：AI小男孩，扫描下方的二维码即可关注
+<center>
+<img src="/images/wechat.jpg" width="500px">
+</center>
 
       
     </div>
@@ -914,113 +908,6 @@ L=L_{cls}+L_{box}+L_{mask}
 
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
   
 

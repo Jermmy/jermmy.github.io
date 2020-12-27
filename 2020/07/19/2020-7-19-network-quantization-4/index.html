@@ -82,7 +82,8 @@
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/BN-quantize.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/QReLU.png">
 <meta property="og:image" content="https://jermmy.github.io/images/2020-7-19/conv_relu.png">
-<meta property="og:updated_time" content="2020-12-13T13:00:29.974Z">
+<meta property="og:image" content="https://jermmy.github.io/images/wechat.jpg">
+<meta property="og:updated_time" content="2020-12-27T12:25:46.233Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络量化入门--Folding BN ReLU">
 <meta name="twitter:description" content="上一篇文章介绍了量化训练的基本流程，本文介绍量化中如何把 BatchNorm 和 ReLU 合并到 Conv 中。">
@@ -355,17 +356,6 @@
 
           
           
-             <span id="/2020/07/19/2020-7-19-network-quantization-4/" class="leancloud_visitors" data-flag-title="神经网络量化入门--Folding BN ReLU">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
 
           
 
@@ -454,6 +444,10 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \notag \\
 <p>那对于 ReLU 外的其他激活函数，是否可以同样合并到 Conv 里面呢？这取决于其他函数是否也只是在做 clip 操作，例如 ReLU6 也有同样的性质。但对于其他绝大部分函数来说，由于它们本身包含其他数学运算，因此就不具备类似性质。</p>
 <h2 id="总结">总结</h2>
 <p>这篇文章主要介绍了如何把 BatchNorm 和 ReLU 合并成一个 Conv，从而加速量化推理。按照计划，应该和之前的文章一样，给出代码实现。但我在测试代码的时候发现有一些 bug 需要解决，正好也控制一下篇幅，下篇文章会给出相关的代码实现。</p>
+PS: 之后的文章更多的会发布在公众号上，欢迎有兴趣的读者关注我的个人公众号：AI小男孩，扫描下方的二维码即可关注
+<center>
+<img src="/images/wechat.jpg" width="500px">
+</center>
 
       
     </div>
@@ -875,113 +869,6 @@ q&amp;=round(\frac{-0.5}{\frac{1}{255}}+0) \notag \\
 
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-  <script>AV.initialize("FfkJQoNEh55mO6eDSUYJj0i1-gzGzoHsz", "sjxRrTn3UCxYsAQceJKYEfO7");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
   
 
